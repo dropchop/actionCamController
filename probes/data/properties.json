@@ -1,0 +1,1897 @@
+{
+  "host": "192.168.1.1",
+  "captured_at": "2026-05-15T03:41:19",
+  "standard_version": 100,
+  "operations_supported": [
+    4097,
+    4098,
+    4099,
+    4100,
+    4101,
+    4102,
+    4103,
+    4104,
+    4105,
+    4106,
+    4107,
+    4108,
+    4109,
+    4110,
+    4111,
+    4114,
+    4116,
+    4117,
+    4118,
+    4123,
+    38401,
+    38402,
+    38930,
+    38420,
+    38913,
+    38914,
+    38915,
+    38917
+  ],
+  "events_supported": [
+    16386,
+    16387,
+    16388,
+    16389,
+    16390,
+    16392,
+    16393,
+    16397,
+    50689
+  ],
+  "properties_supported": [
+    54279,
+    54278,
+    20481,
+    20484,
+    20501,
+    54790,
+    54791,
+    54793,
+    54805,
+    54806,
+    20485,
+    20487,
+    20490,
+    20491,
+    20492,
+    20494,
+    20495,
+    20496,
+    20499,
+    20504,
+    20506,
+    54787,
+    54788,
+    54803,
+    20493,
+    20498,
+    20507,
+    54800,
+    20510,
+    20511,
+    55040,
+    55044,
+    55072,
+    55075,
+    55076,
+    55077,
+    55078,
+    55079,
+    55135,
+    55211,
+    55212,
+    55213,
+    55214,
+    55280,
+    55292,
+    55293,
+    55294,
+    55295,
+    55297,
+    55358,
+    55359,
+    54019,
+    53792,
+    20483,
+    54789,
+    20497
+  ],
+  "properties": {
+    "0xd407": {
+      "propcode": 54279,
+      "propcode_hex": "0xd407",
+      "name": null,
+      "is_vendor": true,
+      "desc_rc": "0x2001",
+      "desc_raw_hex": "07d4060000010000000100000000",
+      "desc": {
+        "raw_len": 14,
+        "parse_error": null,
+        "property_code": 54279,
+        "datatype": 6,
+        "datatype_name": "UINT32",
+        "getset": 0,
+        "getset_str": "get-only",
+        "factory_default": 1,
+        "current": 1,
+        "form_flag": 0,
+        "form": "none"
+      },
+      "value_rc": "0x2001",
+      "value_raw_hex": "01000000",
+      "value_parsed": {
+        "raw_hex": "01000000",
+        "datatype": 6,
+        "value": 1
+      }
+    },
+    "0xd406": {
+      "propcode": 54278,
+      "propcode_hex": "0xd406",
+      "name": null,
+      "is_vendor": true,
+      "desc_rc": "0x2001",
+      "desc_raw_hex": "06d4ffff0101000001000000",
+      "desc": {
+        "raw_len": 12,
+        "parse_error": null,
+        "property_code": 54278,
+        "datatype": 65535,
+        "datatype_name": "STRING",
+        "getset": 1,
+        "getset_str": "get/set",
+        "factory_default": "",
+        "current": "",
+        "form_flag": 0,
+        "form": "none"
+      },
+      "value_rc": "0x2001",
+      "value_raw_hex": "010000",
+      "value_parsed": {
+        "raw_hex": "010000",
+        "datatype": 65535,
+        "value": ""
+      }
+    },
+    "0x5001": {
+      "propcode": 20481,
+      "propcode_hex": "0x5001",
+      "name": "BatteryLevel",
+      "is_vendor": false,
+      "desc_rc": "0x2001",
+      "desc_raw_hex": "015002000064ff0206000021214264ff",
+      "desc": {
+        "raw_len": 16,
+        "parse_error": null,
+        "property_code": 20481,
+        "datatype": 2,
+        "datatype_name": "UINT8",
+        "getset": 0,
+        "getset_str": "get-only",
+        "factory_default": 100,
+        "current": 255,
+        "form_flag": 2,
+        "form": "enum",
+        "allowed": [
+          0,
+          33,
+          33,
+          66,
+          100,
+          255
+        ]
+      },
+      "value_rc": "0x2001",
+      "value_raw_hex": "ff",
+      "value_parsed": {
+        "raw_hex": "ff",
+        "datatype": 2,
+        "value": 255
+      }
+    },
+    "0x5004": {
+      "propcode": 20484,
+      "propcode_hex": "0x5004",
+      "name": "CompressionSetting",
+      "is_vendor": false,
+      "desc_rc": "0x2001",
+      "desc_raw_hex": "0450020001050502030005080c",
+      "desc": {
+        "raw_len": 13,
+        "parse_error": null,
+        "property_code": 20484,
+        "datatype": 2,
+        "datatype_name": "UINT8",
+        "getset": 1,
+        "getset_str": "get/set",
+        "factory_default": 5,
+        "current": 5,
+        "form_flag": 2,
+        "form": "enum",
+        "allowed": [
+          5,
+          8,
+          12
+        ]
+      },
+      "value_rc": "0x2001",
+      "value_raw_hex": "05",
+      "value_parsed": {
+        "raw_hex": "05",
+        "datatype": 2,
+        "value": 5
+      }
+    },
+    "0x5015": {
+      "propcode": 20501,
+      "propcode_hex": "0x5015",
+      "name": "Contrast",
+      "is_vendor": false,
+      "desc_rc": "0x2001",
+      "desc_raw_hex": "15500200010102020300010203",
+      "desc": {
+        "raw_len": 13,
+        "parse_error": null,
+        "property_code": 20501,
+        "datatype": 2,
+        "datatype_name": "UINT8",
+        "getset": 1,
+        "getset_str": "get/set",
+        "factory_default": 1,
+        "current": 2,
+        "form_flag": 2,
+        "form": "enum",
+        "allowed": [
+          1,
+          2,
+          3
+        ]
+      },
+      "value_rc": "0x2001",
+      "value_raw_hex": "02",
+      "value_parsed": {
+        "raw_hex": "02",
+        "datatype": 2,
+        "value": 2
+      }
+    },
+    "0xd606": {
+      "propcode": 54790,
+      "propcode_hex": "0xd606",
+      "name": "CAP_LIGHT_FREQUENCY",
+      "is_vendor": true,
+      "desc_rc": "0x2001",
+      "desc_raw_hex": "06d60200010201020300020001",
+      "desc": {
+        "raw_len": 13,
+        "parse_error": null,
+        "property_code": 54790,
+        "datatype": 2,
+        "datatype_name": "UINT8",
+        "getset": 1,
+        "getset_str": "get/set",
+        "factory_default": 2,
+        "current": 1,
+        "form_flag": 2,
+        "form": "enum",
+        "allowed": [
+          2,
+          0,
+          1
+        ]
+      },
+      "value_rc": "0x2001",
+      "value_raw_hex": "01",
+      "value_parsed": {
+        "raw_hex": "01",
+        "datatype": 2,
+        "value": 1
+      }
+    },
+    "0xd607": {
+      "propcode": 54791,
+      "propcode_hex": "0xd607",
+      "name": "CAP_DATE_STAMP",
+      "is_vendor": true,
+      "desc_rc": "0x2001",
+      "desc_raw_hex": "07d60200010103020300010203",
+      "desc": {
+        "raw_len": 13,
+        "parse_error": null,
+        "property_code": 54791,
+        "datatype": 2,
+        "datatype_name": "UINT8",
+        "getset": 1,
+        "getset_str": "get/set",
+        "factory_default": 1,
+        "current": 3,
+        "form_flag": 2,
+        "form": "enum",
+        "allowed": [
+          1,
+          2,
+          3
+        ]
+      },
+      "value_rc": "0x2001",
+      "value_raw_hex": "03",
+      "value_parsed": {
+        "raw_hex": "03",
+        "datatype": 2,
+        "value": 3
+      }
+    },
+    "0xd609": {
+      "propcode": 54793,
+      "propcode_hex": "0xd609",
+      "name": null,
+      "is_vendor": true,
+      "desc_rc": "0x2001",
+      "desc_raw_hex": "09d6020000040402040001020304",
+      "desc": {
+        "raw_len": 14,
+        "parse_error": null,
+        "property_code": 54793,
+        "datatype": 2,
+        "datatype_name": "UINT8",
+        "getset": 0,
+        "getset_str": "get-only",
+        "factory_default": 4,
+        "current": 4,
+        "form_flag": 2,
+        "form": "enum",
+        "allowed": [
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "value_rc": "0x2001",
+      "value_raw_hex": "04",
+      "value_parsed": {
+        "raw_hex": "04",
+        "datatype": 2,
+        "value": 4
+      }
+    },
+    "0xd615": {
+      "propcode": 54805,
+      "propcode_hex": "0xd615",
+      "name": "CAP_SLOW_MOTION",
+      "is_vendor": true,
+      "desc_rc": "0x2001",
+      "desc_raw_hex": "15d602000100000202000001",
+      "desc": {
+        "raw_len": 12,
+        "parse_error": null,
+        "property_code": 54805,
+        "datatype": 2,
+        "datatype_name": "UINT8",
+        "getset": 1,
+        "getset_str": "get/set",
+        "factory_default": 0,
+        "current": 0,
+        "form_flag": 2,
+        "form": "enum",
+        "allowed": [
+          0,
+          1
+        ]
+      },
+      "value_rc": "0x2001",
+      "value_raw_hex": "00",
+      "value_parsed": {
+        "raw_hex": "00",
+        "datatype": 2,
+        "value": 0
+      }
+    },
+    "0xd616": {
+      "propcode": 54806,
+      "propcode_hex": "0xd616",
+      "name": null,
+      "is_vendor": true,
+      "desc_rc": "0x2001",
+      "desc_raw_hex": "16d6020000282802010028",
+      "desc": {
+        "raw_len": 11,
+        "parse_error": null,
+        "property_code": 54806,
+        "datatype": 2,
+        "datatype_name": "UINT8",
+        "getset": 0,
+        "getset_str": "get-only",
+        "factory_default": 40,
+        "current": 40,
+        "form_flag": 2,
+        "form": "enum",
+        "allowed": [
+          40
+        ]
+      },
+      "value_rc": "0x2001",
+      "value_raw_hex": "28",
+      "value_parsed": {
+        "raw_hex": "28",
+        "datatype": 2,
+        "value": 40
+      }
+    },
+    "0x5005": {
+      "propcode": 20485,
+      "propcode_hex": "0x5005",
+      "name": "WhiteBalance",
+      "is_vendor": false,
+      "desc_rc": "0x2001",
+      "desc_raw_hex": "05500400010100010002050001000200030004000500",
+      "desc": {
+        "raw_len": 22,
+        "parse_error": null,
+        "property_code": 20485,
+        "datatype": 4,
+        "datatype_name": "UINT16",
+        "getset": 1,
+        "getset_str": "get/set",
+        "factory_default": 1,
+        "current": 1,
+        "form_flag": 2,
+        "form": "enum",
+        "allowed": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      "value_rc": "0x2001",
+      "value_raw_hex": "0100",
+      "value_parsed": {
+        "raw_hex": "0100",
+        "datatype": 4,
+        "value": 1
+      }
+    },
+    "0x5007": {
+      "propcode": 20487,
+      "propcode_hex": "0x5007",
+      "name": "FNumber",
+      "is_vendor": false,
+      "desc_rc": "0x2001",
+      "desc_raw_hex": "07500400011801180102020018013002",
+      "desc": {
+        "raw_len": 16,
+        "parse_error": null,
+        "property_code": 20487,
+        "datatype": 4,
+        "datatype_name": "UINT16",
+        "getset": 1,
+        "getset_str": "get/set",
+        "factory_default": 280,
+        "current": 280,
+        "form_flag": 2,
+        "form": "enum",
+        "allowed": [
+          280,
+          560
+        ]
+      },
+      "value_rc": "0x2001",
+      "value_raw_hex": "1801",
+      "value_parsed": {
+        "raw_hex": "1801",
+        "datatype": 4,
+        "value": 280
+      }
+    },
+    "0x500a": {
+      "propcode": 20490,
+      "propcode_hex": "0x500a",
+      "name": "FocusMode",
+      "is_vendor": false,
+      "desc_rc": "0x2002",
+      "value_rc": "0x2001",
+      "value_raw_hex": "0000",
+      "value_parsed": {
+        "raw_hex": "0000",
+        "datatype": 0,
+        "value": null
+      }
+    },
+    "0x500b": {
+      "propcode": 20491,
+      "propcode_hex": "0x500b",
+      "name": "ExposureMeteringMode",
+      "is_vendor": false,
+      "desc_rc": "0x2001",
+      "desc_raw_hex": "0b5004000101000200020300010002000300",
+      "desc": {
+        "raw_len": 18,
+        "parse_error": null,
+        "property_code": 20491,
+        "datatype": 4,
+        "datatype_name": "UINT16",
+        "getset": 1,
+        "getset_str": "get/set",
+        "factory_default": 1,
+        "current": 2,
+        "form_flag": 2,
+        "form": "enum",
+        "allowed": [
+          1,
+          2,
+          3
+        ]
+      },
+      "value_rc": "0x2001",
+      "value_raw_hex": "0200",
+      "value_parsed": {
+        "raw_hex": "0200",
+        "datatype": 4,
+        "value": 2
+      }
+    },
+    "0x500c": {
+      "propcode": 20492,
+      "propcode_hex": "0x500c",
+      "name": "FlashMode",
+      "is_vendor": false,
+      "desc_rc": "0x2002",
+      "value_rc": "0x2001",
+      "value_raw_hex": "0000",
+      "value_parsed": {
+        "raw_hex": "0000",
+        "datatype": 0,
+        "value": null
+      }
+    },
+    "0x500e": {
+      "propcode": 20494,
+      "propcode_hex": "0x500e",
+      "name": "ExposureProgramMode",
+      "is_vendor": false,
+      "desc_rc": "0x2001",
+      "desc_raw_hex": "0e5004000002000200020700010002000400070001c002c003c0",
+      "desc": {
+        "raw_len": 26,
+        "parse_error": null,
+        "property_code": 20494,
+        "datatype": 4,
+        "datatype_name": "UINT16",
+        "getset": 0,
+        "getset_str": "get-only",
+        "factory_default": 2,
+        "current": 2,
+        "form_flag": 2,
+        "form": "enum",
+        "allowed": [
+          1,
+          2,
+          4,
+          7,
+          49153,
+          49154,
+          49155
+        ]
+      },
+      "value_rc": "0x2001",
+      "value_raw_hex": "0200",
+      "value_parsed": {
+        "raw_hex": "0200",
+        "datatype": 4,
+        "value": 2
+      }
+    },
+    "0x500f": {
+      "propcode": 20495,
+      "propcode_hex": "0x500f",
+      "name": "ExposureIndex",
+      "is_vendor": false,
+      "desc_rc": "0x2001",
+      "desc_raw_hex": "0f500400010000000002070000006400c800900120034006800c",
+      "desc": {
+        "raw_len": 26,
+        "parse_error": null,
+        "property_code": 20495,
+        "datatype": 4,
+        "datatype_name": "UINT16",
+        "getset": 1,
+        "getset_str": "get/set",
+        "factory_default": 0,
+        "current": 0,
+        "form_flag": 2,
+        "form": "enum",
+        "allowed": [
+          0,
+          100,
+          200,
+          400,
+          800,
+          1600,
+          3200
+        ]
+      },
+      "value_rc": "0x2001",
+      "value_raw_hex": "0000",
+      "value_parsed": {
+        "raw_hex": "0000",
+        "datatype": 4,
+        "value": 0
+      }
+    },
+    "0x5010": {
+      "propcode": 20496,
+      "propcode_hex": "0x5010",
+      "name": "ExposureBiasCompensation",
+      "is_vendor": false,
+      "desc_rc": "0x2001",
+      "desc_raw_hex": "10500300010000000002050030f818fc0000e803d007",
+      "desc": {
+        "raw_len": 22,
+        "parse_error": null,
+        "property_code": 20496,
+        "datatype": 3,
+        "datatype_name": "INT16",
+        "getset": 1,
+        "getset_str": "get/set",
+        "factory_default": 0,
+        "current": 0,
+        "form_flag": 2,
+        "form": "enum",
+        "allowed": [
+          -2000,
+          -1000,
+          0,
+          1000,
+          2000
+        ]
+      },
+      "value_rc": "0x2001",
+      "value_raw_hex": "0000",
+      "value_parsed": {
+        "raw_hex": "0000",
+        "datatype": 3,
+        "value": 0
+      }
+    },
+    "0x5013": {
+      "propcode": 20499,
+      "propcode_hex": "0x5013",
+      "name": "StillCaptureMode",
+      "is_vendor": false,
+      "desc_rc": "0x2001",
+      "desc_raw_hex": "13500400010100010002020001000200",
+      "desc": {
+        "raw_len": 16,
+        "parse_error": null,
+        "property_code": 20499,
+        "datatype": 4,
+        "datatype_name": "UINT16",
+        "getset": 1,
+        "getset_str": "get/set",
+        "factory_default": 1,
+        "current": 1,
+        "form_flag": 2,
+        "form": "enum",
+        "allowed": [
+          1,
+          2
+        ]
+      },
+      "value_rc": "0x2001",
+      "value_raw_hex": "0100",
+      "value_parsed": {
+        "raw_hex": "0100",
+        "datatype": 4,
+        "value": 1
+      }
+    },
+    "0x5018": {
+      "propcode": 20504,
+      "propcode_hex": "0x5018",
+      "name": "BurstNumber",
+      "is_vendor": false,
+      "desc_rc": "0x2001",
+      "desc_raw_hex": "18500400010100010002050001000200050006000700",
+      "desc": {
+        "raw_len": 22,
+        "parse_error": null,
+        "property_code": 20504,
+        "datatype": 4,
+        "datatype_name": "UINT16",
+        "getset": 1,
+        "getset_str": "get/set",
+        "factory_default": 1,
+        "current": 1,
+        "form_flag": 2,
+        "form": "enum",
+        "allowed": [
+          1,
+          2,
+          5,
+          6,
+          7
+        ]
+      },
+      "value_rc": "0x2001",
+      "value_raw_hex": "0100",
+      "value_parsed": {
+        "raw_hex": "0100",
+        "datatype": 4,
+        "value": 1
+      }
+    },
+    "0x501a": {
+      "propcode": 20506,
+      "propcode_hex": "0x501a",
+      "name": "TimelapseNumber",
+      "is_vendor": false,
+      "desc_rc": "0x2001",
+      "desc_raw_hex": "1a500400010000ffff020700ffff05000a000f0014001e003c00",
+      "desc": {
+        "raw_len": 26,
+        "parse_error": null,
+        "property_code": 20506,
+        "datatype": 4,
+        "datatype_name": "UINT16",
+        "getset": 1,
+        "getset_str": "get/set",
+        "factory_default": 0,
+        "current": 65535,
+        "form_flag": 2,
+        "form": "enum",
+        "allowed": [
+          65535,
+          5,
+          10,
+          15,
+          20,
+          30,
+          60
+        ]
+      },
+      "value_rc": "0x2001",
+      "value_raw_hex": "ffff",
+      "value_parsed": {
+        "raw_hex": "ffff",
+        "datatype": 4,
+        "value": 65535
+      }
+    },
+    "0xd603": {
+      "propcode": 54787,
+      "propcode_hex": "0xd603",
+      "name": null,
+      "is_vendor": true,
+      "desc_rc": "0x2001",
+      "desc_raw_hex": "03d60400010100010002050001000200030004000500",
+      "desc": {
+        "raw_len": 22,
+        "parse_error": null,
+        "property_code": 54787,
+        "datatype": 4,
+        "datatype_name": "UINT16",
+        "getset": 1,
+        "getset_str": "get/set",
+        "factory_default": 1,
+        "current": 1,
+        "form_flag": 2,
+        "form": "enum",
+        "allowed": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      "value_rc": "0x2001",
+      "value_raw_hex": "0100",
+      "value_parsed": {
+        "raw_hex": "0100",
+        "datatype": 4,
+        "value": 1
+      }
+    },
+    "0xd604": {
+      "propcode": 54788,
+      "propcode_hex": "0xd604",
+      "name": null,
+      "is_vendor": true,
+      "desc_rc": "0x2001",
+      "desc_raw_hex": "04d604000101000100020b0001001100020003000400050006000700080009000a00",
+      "desc": {
+        "raw_len": 34,
+        "parse_error": null,
+        "property_code": 54788,
+        "datatype": 4,
+        "datatype_name": "UINT16",
+        "getset": 1,
+        "getset_str": "get/set",
+        "factory_default": 1,
+        "current": 1,
+        "form_flag": 2,
+        "form": "enum",
+        "allowed": [
+          1,
+          17,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      "value_rc": "0x2001",
+      "value_raw_hex": "0100",
+      "value_parsed": {
+        "raw_hex": "0100",
+        "datatype": 4,
+        "value": 1
+      }
+    },
+    "0xd613": {
+      "propcode": 54803,
+      "propcode_hex": "0xd613",
+      "name": null,
+      "is_vendor": true,
+      "desc_rc": "0x2001",
+      "desc_raw_hex": "13d604000002010201010000ffff0100",
+      "desc": {
+        "raw_len": 16,
+        "parse_error": null,
+        "property_code": 54803,
+        "datatype": 4,
+        "datatype_name": "UINT16",
+        "getset": 0,
+        "getset_str": "get-only",
+        "factory_default": 258,
+        "current": 258,
+        "form_flag": 1,
+        "form": "range",
+        "min": 0,
+        "max": 65535,
+        "step": 1
+      },
+      "value_rc": "0x2001",
+      "value_raw_hex": "0201",
+      "value_parsed": {
+        "raw_hex": "0201",
+        "datatype": 4,
+        "value": 258
+      }
+    },
+    "0x500d": {
+      "propcode": 20493,
+      "propcode_hex": "0x500d",
+      "name": "ExposureTime",
+      "is_vendor": false,
+      "desc_rc": "0x2001",
+      "desc_raw_hex": "0d5006000028000000102700000101000000ffff000010270000",
+      "desc": {
+        "raw_len": 26,
+        "parse_error": null,
+        "property_code": 20493,
+        "datatype": 6,
+        "datatype_name": "UINT32",
+        "getset": 0,
+        "getset_str": "get-only",
+        "factory_default": 40,
+        "current": 10000,
+        "form_flag": 1,
+        "form": "range",
+        "min": 1,
+        "max": 65535,
+        "step": 10000
+      },
+      "value_rc": "0x2001",
+      "value_raw_hex": "10270000",
+      "value_parsed": {
+        "raw_hex": "10270000",
+        "datatype": 6,
+        "value": 10000
+      }
+    },
+    "0x5012": {
+      "propcode": 20498,
+      "propcode_hex": "0x5012",
+      "name": "CaptureDelay",
+      "is_vendor": false,
+      "desc_rc": "0x2001",
+      "desc_raw_hex": "125006000100000000d007000002040000000000d00700008813000010270000",
+      "desc": {
+        "raw_len": 32,
+        "parse_error": null,
+        "property_code": 20498,
+        "datatype": 6,
+        "datatype_name": "UINT32",
+        "getset": 1,
+        "getset_str": "get/set",
+        "factory_default": 0,
+        "current": 2000,
+        "form_flag": 2,
+        "form": "enum",
+        "allowed": [
+          0,
+          2000,
+          5000,
+          10000
+        ]
+      },
+      "value_rc": "0x2001",
+      "value_raw_hex": "d0070000",
+      "value_parsed": {
+        "raw_hex": "d0070000",
+        "datatype": 6,
+        "value": 2000
+      }
+    },
+    "0x501b": {
+      "propcode": 20507,
+      "propcode_hex": "0x501b",
+      "name": "TimelapseInterval",
+      "is_vendor": false,
+      "desc_rc": "0x2001",
+      "desc_raw_hex": "1b500600010000000000000000020700000000000100000003000000050000000a0000001e0000003c000000",
+      "desc": {
+        "raw_len": 44,
+        "parse_error": null,
+        "property_code": 20507,
+        "datatype": 6,
+        "datatype_name": "UINT32",
+        "getset": 1,
+        "getset_str": "get/set",
+        "factory_default": 0,
+        "current": 0,
+        "form_flag": 2,
+        "form": "enum",
+        "allowed": [
+          0,
+          1,
+          3,
+          5,
+          10,
+          30,
+          60
+        ]
+      },
+      "value_rc": "0x2001",
+      "value_raw_hex": "00000000",
+      "value_parsed": {
+        "raw_hex": "00000000",
+        "datatype": 6,
+        "value": 0
+      }
+    },
+    "0xd610": {
+      "propcode": 54800,
+      "propcode_hex": "0xd610",
+      "name": null,
+      "is_vendor": true,
+      "desc_rc": "0x2001",
+      "desc_raw_hex": "10d60600008b2800008b2800000101000000ffffffff01000000",
+      "desc": {
+        "raw_len": 26,
+        "parse_error": null,
+        "property_code": 54800,
+        "datatype": 6,
+        "datatype_name": "UINT32",
+        "getset": 0,
+        "getset_str": "get-only",
+        "factory_default": 10379,
+        "current": 10379,
+        "form_flag": 1,
+        "form": "range",
+        "min": 1,
+        "max": 4294967295,
+        "step": 1
+      },
+      "value_rc": "0x2001",
+      "value_raw_hex": "8b280000",
+      "value_parsed": {
+        "raw_hex": "8b280000",
+        "datatype": 6,
+        "value": 10379
+      }
+    },
+    "0x501e": {
+      "propcode": 20510,
+      "propcode_hex": "0x501e",
+      "name": "ProductName",
+      "is_vendor": false,
+      "desc_rc": "0x2001",
+      "desc_raw_hex": "1e50ffff00045600310031000000045600310031000000ff",
+      "desc": {
+        "raw_len": 24,
+        "parse_error": null,
+        "property_code": 20510,
+        "datatype": 65535,
+        "datatype_name": "STRING",
+        "getset": 0,
+        "getset_str": "get-only",
+        "factory_default": "V11",
+        "current": "V11",
+        "form_flag": 255,
+        "form": "unknown 255"
+      },
+      "value_rc": "0x2001",
+      "value_raw_hex": "045600310031000000",
+      "value_parsed": {
+        "raw_hex": "045600310031000000",
+        "datatype": 65535,
+        "value": "V11"
+      }
+    },
+    "0x501f": {
+      "propcode": 20511,
+      "propcode_hex": "0x501f",
+      "name": "FwVersion",
+      "is_vendor": false,
+      "desc_rc": "0x2001",
+      "desc_raw_hex": "1f50ffff000932003000320035003100320030003600000009320030003200350031003200300036000000ff",
+      "desc": {
+        "raw_len": 44,
+        "parse_error": null,
+        "property_code": 20511,
+        "datatype": 65535,
+        "datatype_name": "STRING",
+        "getset": 0,
+        "getset_str": "get-only",
+        "factory_default": "20251206",
+        "current": "20251206",
+        "form_flag": 255,
+        "form": "unknown 255"
+      },
+      "value_rc": "0x2001",
+      "value_raw_hex": "09320030003200350031003200300036000000",
+      "value_parsed": {
+        "raw_hex": "09320030003200350031003200300036000000",
+        "datatype": 65535,
+        "value": "20251206"
+      }
+    },
+    "0xd700": {
+      "propcode": 55040,
+      "propcode_hex": "0xd700",
+      "name": null,
+      "is_vendor": true,
+      "desc_rc": "0x2001",
+      "desc_raw_hex": "00d70600000300000007000000020300010000000300000007000000",
+      "desc": {
+        "raw_len": 28,
+        "parse_error": null,
+        "property_code": 55040,
+        "datatype": 6,
+        "datatype_name": "UINT32",
+        "getset": 0,
+        "getset_str": "get-only",
+        "factory_default": 3,
+        "current": 7,
+        "form_flag": 2,
+        "form": "enum",
+        "allowed": [
+          1,
+          3,
+          7
+        ]
+      },
+      "value_rc": "0x2001",
+      "value_raw_hex": "07000000",
+      "value_parsed": {
+        "raw_hex": "07000000",
+        "datatype": 6,
+        "value": 7
+      }
+    },
+    "0xd704": {
+      "propcode": 55044,
+      "propcode_hex": "0xd704",
+      "name": null,
+      "is_vendor": true,
+      "desc_rc": "0x2001",
+      "desc_raw_hex": "04d706000001000000010000000202000100000000000000",
+      "desc": {
+        "raw_len": 24,
+        "parse_error": null,
+        "property_code": 55044,
+        "datatype": 6,
+        "datatype_name": "UINT32",
+        "getset": 0,
+        "getset_str": "get-only",
+        "factory_default": 1,
+        "current": 1,
+        "form_flag": 2,
+        "form": "enum",
+        "allowed": [
+          1,
+          0
+        ]
+      },
+      "value_rc": "0x2001",
+      "value_raw_hex": "01000000",
+      "value_parsed": {
+        "raw_hex": "01000000",
+        "datatype": 6,
+        "value": 1
+      }
+    },
+    "0xd720": {
+      "propcode": 55072,
+      "propcode_hex": "0xd720",
+      "name": null,
+      "is_vendor": true,
+      "desc_rc": "0x2001",
+      "desc_raw_hex": "20d70600010000000000000000020400000000003c000000b40000002c010000",
+      "desc": {
+        "raw_len": 32,
+        "parse_error": null,
+        "property_code": 55072,
+        "datatype": 6,
+        "datatype_name": "UINT32",
+        "getset": 1,
+        "getset_str": "get/set",
+        "factory_default": 0,
+        "current": 0,
+        "form_flag": 2,
+        "form": "enum",
+        "allowed": [
+          0,
+          60,
+          180,
+          300
+        ]
+      },
+      "value_rc": "0x2001",
+      "value_raw_hex": "00000000",
+      "value_parsed": {
+        "raw_hex": "00000000",
+        "datatype": 6,
+        "value": 0
+      }
+    },
+    "0xd723": {
+      "propcode": 55075,
+      "propcode_hex": "0xd723",
+      "name": null,
+      "is_vendor": true,
+      "desc_rc": "0x2001",
+      "desc_raw_hex": "23d706000100000000000000000205000200008001000080000000000100000002000000",
+      "desc": {
+        "raw_len": 36,
+        "parse_error": null,
+        "property_code": 55075,
+        "datatype": 6,
+        "datatype_name": "UINT32",
+        "getset": 1,
+        "getset_str": "get/set",
+        "factory_default": 0,
+        "current": 0,
+        "form_flag": 2,
+        "form": "enum",
+        "allowed": [
+          2147483650,
+          2147483649,
+          0,
+          1,
+          2
+        ]
+      },
+      "value_rc": "0x2001",
+      "value_raw_hex": "00000000",
+      "value_parsed": {
+        "raw_hex": "00000000",
+        "datatype": 6,
+        "value": 0
+      }
+    },
+    "0xd724": {
+      "propcode": 55076,
+      "propcode_hex": "0xd724",
+      "name": null,
+      "is_vendor": true,
+      "desc_rc": "0x2001",
+      "desc_raw_hex": "24d706000100000000000000000202000000000001000000",
+      "desc": {
+        "raw_len": 24,
+        "parse_error": null,
+        "property_code": 55076,
+        "datatype": 6,
+        "datatype_name": "UINT32",
+        "getset": 1,
+        "getset_str": "get/set",
+        "factory_default": 0,
+        "current": 0,
+        "form_flag": 2,
+        "form": "enum",
+        "allowed": [
+          0,
+          1
+        ]
+      },
+      "value_rc": "0x2001",
+      "value_raw_hex": "00000000",
+      "value_parsed": {
+        "raw_hex": "00000000",
+        "datatype": 6,
+        "value": 0
+      }
+    },
+    "0xd725": {
+      "propcode": 55077,
+      "propcode_hex": "0xd725",
+      "name": null,
+      "is_vendor": true,
+      "desc_rc": "0x2001",
+      "desc_raw_hex": "25d70600010000000000000000020400000000003c000000b40000002c010000",
+      "desc": {
+        "raw_len": 32,
+        "parse_error": null,
+        "property_code": 55077,
+        "datatype": 6,
+        "datatype_name": "UINT32",
+        "getset": 1,
+        "getset_str": "get/set",
+        "factory_default": 0,
+        "current": 0,
+        "form_flag": 2,
+        "form": "enum",
+        "allowed": [
+          0,
+          60,
+          180,
+          300
+        ]
+      },
+      "value_rc": "0x2001",
+      "value_raw_hex": "00000000",
+      "value_parsed": {
+        "raw_hex": "00000000",
+        "datatype": 6,
+        "value": 0
+      }
+    },
+    "0xd726": {
+      "propcode": 55078,
+      "propcode_hex": "0xd726",
+      "name": null,
+      "is_vendor": true,
+      "desc_rc": "0x2001",
+      "desc_raw_hex": "26d70600010000000000000000020600000000000200000004000000060000000a0000000f000000",
+      "desc": {
+        "raw_len": 40,
+        "parse_error": null,
+        "property_code": 55078,
+        "datatype": 6,
+        "datatype_name": "UINT32",
+        "getset": 1,
+        "getset_str": "get/set",
+        "factory_default": 0,
+        "current": 0,
+        "form_flag": 2,
+        "form": "enum",
+        "allowed": [
+          0,
+          2,
+          4,
+          6,
+          10,
+          15
+        ]
+      },
+      "value_rc": "0x2001",
+      "value_raw_hex": "00000000",
+      "value_parsed": {
+        "raw_hex": "00000000",
+        "datatype": 6,
+        "value": 0
+      }
+    },
+    "0xd727": {
+      "propcode": 55079,
+      "propcode_hex": "0xd727",
+      "name": null,
+      "is_vendor": true,
+      "desc_rc": "0x2001",
+      "desc_raw_hex": "27d706000100000000010000000202000000000001000000",
+      "desc": {
+        "raw_len": 24,
+        "parse_error": null,
+        "property_code": 55079,
+        "datatype": 6,
+        "datatype_name": "UINT32",
+        "getset": 1,
+        "getset_str": "get/set",
+        "factory_default": 0,
+        "current": 1,
+        "form_flag": 2,
+        "form": "enum",
+        "allowed": [
+          0,
+          1
+        ]
+      },
+      "value_rc": "0x2001",
+      "value_raw_hex": "01000000",
+      "value_parsed": {
+        "raw_hex": "01000000",
+        "datatype": 6,
+        "value": 1
+      }
+    },
+    "0xd75f": {
+      "propcode": 55135,
+      "propcode_hex": "0xd75f",
+      "name": null,
+      "is_vendor": true,
+      "desc_rc": "0x2001",
+      "desc_raw_hex": "5fd706000101000000010000000202000000000001000000",
+      "desc": {
+        "raw_len": 24,
+        "parse_error": null,
+        "property_code": 55135,
+        "datatype": 6,
+        "datatype_name": "UINT32",
+        "getset": 1,
+        "getset_str": "get/set",
+        "factory_default": 1,
+        "current": 1,
+        "form_flag": 2,
+        "form": "enum",
+        "allowed": [
+          0,
+          1
+        ]
+      },
+      "value_rc": "0x2001",
+      "value_raw_hex": "01000000",
+      "value_parsed": {
+        "raw_hex": "01000000",
+        "datatype": 6,
+        "value": 1
+      }
+    },
+    "0xd7ab": {
+      "propcode": 55211,
+      "propcode_hex": "0xd7ab",
+      "name": null,
+      "is_vendor": true,
+      "desc_rc": "0x2001",
+      "desc_raw_hex": "abd70600010c6801140c6801140209000c6801140c6801140c6801140c6801140c6801140c6801140c6801140c6801140c680114",
+      "desc": {
+        "raw_len": 52,
+        "parse_error": null,
+        "property_code": 55211,
+        "datatype": 6,
+        "datatype_name": "UINT32",
+        "getset": 1,
+        "getset_str": "get/set",
+        "factory_default": 335636492,
+        "current": 335636492,
+        "form_flag": 2,
+        "form": "enum",
+        "allowed": [
+          335636492,
+          335636492,
+          335636492,
+          335636492,
+          335636492,
+          335636492,
+          335636492,
+          335636492,
+          335636492
+        ]
+      },
+      "value_rc": "0x2001",
+      "value_raw_hex": "0c680114",
+      "value_parsed": {
+        "raw_hex": "0c680114",
+        "datatype": 6,
+        "value": 335636492
+      }
+    },
+    "0xd7ac": {
+      "propcode": 55212,
+      "propcode_hex": "0xd7ac",
+      "name": null,
+      "is_vendor": true,
+      "desc_rc": "0x2001",
+      "desc_raw_hex": "acd7060001010000000100000001000000000c68011401000000",
+      "desc": {
+        "raw_len": 26,
+        "parse_error": null,
+        "property_code": 55212,
+        "datatype": 6,
+        "datatype_name": "UINT32",
+        "getset": 1,
+        "getset_str": "get/set",
+        "factory_default": 1,
+        "current": 1,
+        "form_flag": 1,
+        "form": "range",
+        "min": 0,
+        "max": 335636492,
+        "step": 1
+      },
+      "value_rc": "0x2001",
+      "value_raw_hex": "01000000",
+      "value_parsed": {
+        "raw_hex": "01000000",
+        "datatype": 6,
+        "value": 1
+      }
+    },
+    "0xd7ad": {
+      "propcode": 55213,
+      "propcode_hex": "0xd7ad",
+      "name": null,
+      "is_vendor": true,
+      "desc_rc": "0x2001",
+      "desc_raw_hex": "add7060001010000000100000001000000000c68011401000000",
+      "desc": {
+        "raw_len": 26,
+        "parse_error": null,
+        "property_code": 55213,
+        "datatype": 6,
+        "datatype_name": "UINT32",
+        "getset": 1,
+        "getset_str": "get/set",
+        "factory_default": 1,
+        "current": 1,
+        "form_flag": 1,
+        "form": "range",
+        "min": 0,
+        "max": 335636492,
+        "step": 1
+      },
+      "value_rc": "0x2001",
+      "value_raw_hex": "01000000",
+      "value_parsed": {
+        "raw_hex": "01000000",
+        "datatype": 6,
+        "value": 1
+      }
+    },
+    "0xd7ae": {
+      "propcode": 55214,
+      "propcode_hex": "0xd7ae",
+      "name": null,
+      "is_vendor": true,
+      "desc_rc": "0x2001",
+      "desc_raw_hex": "aed70600011e0000001e0000000209001e0000001e0000001e0000001e0000001e0000001e0000001e0000001e0000001e000000",
+      "desc": {
+        "raw_len": 52,
+        "parse_error": null,
+        "property_code": 55214,
+        "datatype": 6,
+        "datatype_name": "UINT32",
+        "getset": 1,
+        "getset_str": "get/set",
+        "factory_default": 30,
+        "current": 30,
+        "form_flag": 2,
+        "form": "enum",
+        "allowed": [
+          30,
+          30,
+          30,
+          30,
+          30,
+          30,
+          30,
+          30,
+          30
+        ]
+      },
+      "value_rc": "0x2001",
+      "value_raw_hex": "1e000000",
+      "value_parsed": {
+        "raw_hex": "1e000000",
+        "datatype": 6,
+        "value": 30
+      }
+    },
+    "0xd7f0": {
+      "propcode": 55280,
+      "propcode_hex": "0xd7f0",
+      "name": null,
+      "is_vendor": true,
+      "desc_rc": "0x2001",
+      "desc_raw_hex": "f0d706000001000000010000000202000100000000000000",
+      "desc": {
+        "raw_len": 24,
+        "parse_error": null,
+        "property_code": 55280,
+        "datatype": 6,
+        "datatype_name": "UINT32",
+        "getset": 0,
+        "getset_str": "get-only",
+        "factory_default": 1,
+        "current": 1,
+        "form_flag": 2,
+        "form": "enum",
+        "allowed": [
+          1,
+          0
+        ]
+      },
+      "value_rc": "0x2001",
+      "value_raw_hex": "01000000",
+      "value_parsed": {
+        "raw_hex": "01000000",
+        "datatype": 6,
+        "value": 1
+      }
+    },
+    "0xd7fc": {
+      "propcode": 55292,
+      "propcode_hex": "0xd7fc",
+      "name": null,
+      "is_vendor": true,
+      "desc_rc": "0x2001",
+      "desc_raw_hex": "fcd706000101000000010000000202000000000001000000",
+      "desc": {
+        "raw_len": 24,
+        "parse_error": null,
+        "property_code": 55292,
+        "datatype": 6,
+        "datatype_name": "UINT32",
+        "getset": 1,
+        "getset_str": "get/set",
+        "factory_default": 1,
+        "current": 1,
+        "form_flag": 2,
+        "form": "enum",
+        "allowed": [
+          0,
+          1
+        ]
+      },
+      "value_rc": "0x2001",
+      "value_raw_hex": "01000000",
+      "value_parsed": {
+        "raw_hex": "01000000",
+        "datatype": 6,
+        "value": 1
+      }
+    },
+    "0xd7fd": {
+      "propcode": 55293,
+      "propcode_hex": "0xd7fd",
+      "name": null,
+      "is_vendor": true,
+      "desc_rc": "0x2001",
+      "desc_raw_hex": "fdd7060001000000000000000001000000001e000000ffffffff",
+      "desc": {
+        "raw_len": 26,
+        "parse_error": null,
+        "property_code": 55293,
+        "datatype": 6,
+        "datatype_name": "UINT32",
+        "getset": 1,
+        "getset_str": "get/set",
+        "factory_default": 0,
+        "current": 0,
+        "form_flag": 1,
+        "form": "range",
+        "min": 0,
+        "max": 30,
+        "step": 4294967295
+      },
+      "value_rc": "0x2001",
+      "value_raw_hex": "00000000",
+      "value_parsed": {
+        "raw_hex": "00000000",
+        "datatype": 6,
+        "value": 0
+      }
+    },
+    "0xd7fe": {
+      "propcode": 55294,
+      "propcode_hex": "0xd7fe",
+      "name": null,
+      "is_vendor": true,
+      "desc_rc": "0x2001",
+      "desc_raw_hex": "fed706000064000000cc00000001000000005802000001000000",
+      "desc": {
+        "raw_len": 26,
+        "parse_error": null,
+        "property_code": 55294,
+        "datatype": 6,
+        "datatype_name": "UINT32",
+        "getset": 0,
+        "getset_str": "get-only",
+        "factory_default": 100,
+        "current": 204,
+        "form_flag": 1,
+        "form": "range",
+        "min": 0,
+        "max": 600,
+        "step": 1
+      },
+      "value_rc": "0x2001",
+      "value_raw_hex": "cc000000",
+      "value_parsed": {
+        "raw_hex": "cc000000",
+        "datatype": 6,
+        "value": 204
+      }
+    },
+    "0xd7ff": {
+      "propcode": 55295,
+      "propcode_hex": "0xd7ff",
+      "name": null,
+      "is_vendor": true,
+      "desc_rc": "0x2001",
+      "desc_raw_hex": "ffd706000101000000010000000202000000000001000000",
+      "desc": {
+        "raw_len": 24,
+        "parse_error": null,
+        "property_code": 55295,
+        "datatype": 6,
+        "datatype_name": "UINT32",
+        "getset": 1,
+        "getset_str": "get/set",
+        "factory_default": 1,
+        "current": 1,
+        "form_flag": 2,
+        "form": "enum",
+        "allowed": [
+          0,
+          1
+        ]
+      },
+      "value_rc": "0x2001",
+      "value_raw_hex": "01000000",
+      "value_parsed": {
+        "raw_hex": "01000000",
+        "datatype": 6,
+        "value": 1
+      }
+    },
+    "0xd801": {
+      "propcode": 55297,
+      "propcode_hex": "0xd801",
+      "name": null,
+      "is_vendor": true,
+      "desc_rc": "0x2001",
+      "desc_raw_hex": "01d8ffff000e47003a005c005300500048004f00530054002e00420052004e0000000e47003a005c005300500048004f00530054002e00420052004e000000ff",
+      "desc": {
+        "raw_len": 64,
+        "parse_error": null,
+        "property_code": 55297,
+        "datatype": 65535,
+        "datatype_name": "STRING",
+        "getset": 0,
+        "getset_str": "get-only",
+        "factory_default": "G:\\SPHOST.BRN",
+        "current": "G:\\SPHOST.BRN",
+        "form_flag": 255,
+        "form": "unknown 255"
+      },
+      "value_rc": "0x2001",
+      "value_raw_hex": "0e47003a005c005300500048004f00530054002e00420052004e000000",
+      "value_parsed": {
+        "raw_hex": "0e47003a005c005300500048004f00530054002e00420052004e000000",
+        "datatype": 65535,
+        "value": "G:\\SPHOST.BRN"
+      }
+    },
+    "0xd83e": {
+      "propcode": 55358,
+      "propcode_hex": "0xd83e",
+      "name": null,
+      "is_vendor": true,
+      "desc_rc": "0x2001",
+      "desc_raw_hex": "3ed8ffff010e47003a005c005300500048004f00530054002e00420052004e0000000e47003a005c005300500048004f00530054002e00420052004e000000ff",
+      "desc": {
+        "raw_len": 64,
+        "parse_error": null,
+        "property_code": 55358,
+        "datatype": 65535,
+        "datatype_name": "STRING",
+        "getset": 1,
+        "getset_str": "get/set",
+        "factory_default": "G:\\SPHOST.BRN",
+        "current": "G:\\SPHOST.BRN",
+        "form_flag": 255,
+        "form": "unknown 255"
+      },
+      "value_rc": "0x2001",
+      "value_raw_hex": "0e47003a005c005300500048004f00530054002e00420052004e000000",
+      "value_parsed": {
+        "raw_hex": "0e47003a005c005300500048004f00530054002e00420052004e000000",
+        "datatype": 65535,
+        "value": "G:\\SPHOST.BRN"
+      }
+    },
+    "0xd83f": {
+      "propcode": 55359,
+      "propcode_hex": "0xd83f",
+      "name": null,
+      "is_vendor": true,
+      "desc_rc": "0x2002",
+      "value_rc": "0x2001",
+      "value_raw_hex": "010000",
+      "value_parsed": {
+        "raw_hex": "010000",
+        "datatype": 0,
+        "value": null
+      }
+    },
+    "0xd303": {
+      "propcode": 54019,
+      "propcode_hex": "0xd303",
+      "name": null,
+      "is_vendor": true,
+      "desc_rc": "0x2001",
+      "desc_raw_hex": "03d3020000010100",
+      "desc": {
+        "raw_len": 8,
+        "parse_error": null,
+        "property_code": 54019,
+        "datatype": 2,
+        "datatype_name": "UINT8",
+        "getset": 0,
+        "getset_str": "get-only",
+        "factory_default": 1,
+        "current": 1,
+        "form_flag": 0,
+        "form": "none"
+      },
+      "value_rc": "0x2001",
+      "value_raw_hex": "01",
+      "value_parsed": {
+        "raw_hex": "01",
+        "datatype": 2,
+        "value": 1
+      }
+    },
+    "0xd220": {
+      "propcode": 53792,
+      "propcode_hex": "0xd220",
+      "name": null,
+      "is_vendor": true,
+      "desc_rc": "0x2001",
+      "desc_raw_hex": "20d2060000000000000000000001000000000100000000000000",
+      "desc": {
+        "raw_len": 26,
+        "parse_error": null,
+        "property_code": 53792,
+        "datatype": 6,
+        "datatype_name": "UINT32",
+        "getset": 0,
+        "getset_str": "get-only",
+        "factory_default": 0,
+        "current": 0,
+        "form_flag": 1,
+        "form": "range",
+        "min": 0,
+        "max": 1,
+        "step": 0
+      },
+      "value_rc": "0x2001",
+      "value_raw_hex": "20d2060000000000000000000001000000000100000000000000",
+      "value_parsed": {
+        "raw_hex": "20d2060000000000000000000001000000000100000000000000",
+        "datatype": 6,
+        "value": 447008
+      }
+    },
+    "0x5003": {
+      "propcode": 20483,
+      "propcode_hex": "0x5003",
+      "name": "ImageSize",
+      "is_vendor": false,
+      "desc_rc": "0x2001",
+      "desc_raw_hex": "0350ffff010a39003200310036007800350031003800340000000a39003200310036007800350031003800340000000209000a39003200310036007800350031003800340000000a36003500320038007800330036003700320000000a36003000310036007800330033003800340000000a35003300370036007800330030003200340000000a34003900390032007800320038003000380000000a34003200320034007800320033003700360000000a33003800340030007800320031003600300000000a33003000370032007800310037003200380000000a3100390032003000780031003000380030000000",
+      "desc": {
+        "raw_len": 239,
+        "parse_error": null,
+        "property_code": 20483,
+        "datatype": 65535,
+        "datatype_name": "STRING",
+        "getset": 1,
+        "getset_str": "get/set",
+        "factory_default": "9216x5184",
+        "current": "9216x5184",
+        "form_flag": 2,
+        "form": "enum",
+        "allowed": [
+          "9216x5184",
+          "6528x3672",
+          "6016x3384",
+          "5376x3024",
+          "4992x2808",
+          "4224x2376",
+          "3840x2160",
+          "3072x1728",
+          "1920x1080"
+        ]
+      },
+      "value_rc": "0x2001",
+      "value_raw_hex": "0a3900320031003600780035003100380034000000",
+      "value_parsed": {
+        "raw_hex": "0a3900320031003600780035003100380034000000",
+        "datatype": 65535,
+        "value": "9216x5184"
+      }
+    },
+    "0xd605": {
+      "propcode": 54789,
+      "propcode_hex": "0xd605",
+      "name": "CAP_VIDEO_SIZE",
+      "is_vendor": true,
+      "desc_rc": "0x2001",
+      "desc_raw_hex": "05d6ffff010d35003100320030007800320038003800300020003300300000000d33003800340030007800320031003600300020003600300000000209000d35003100320030007800320038003800300020003300300000000d33003800340030007800320031003600300020003600300000000d33003800340030007800320031003600300020003300300000000d32003700300034007800310035003200300020003600300000000d32003700300034007800310035003200300020003300300000000d31003900320030007800310030003800300020003600300000000d31003900320030007800310030003800300020003300300000000d31003200380030007800370032003000200031003200300000000c310032003800300078003700320030002000360030000000",
+      "desc": {
+        "raw_len": 303,
+        "parse_error": null,
+        "property_code": 54789,
+        "datatype": 65535,
+        "datatype_name": "STRING",
+        "getset": 1,
+        "getset_str": "get/set",
+        "factory_default": "5120x2880 30",
+        "current": "3840x2160 60",
+        "form_flag": 2,
+        "form": "enum",
+        "allowed": [
+          "5120x2880 30",
+          "3840x2160 60",
+          "3840x2160 30",
+          "2704x1520 60",
+          "2704x1520 30",
+          "1920x1080 60",
+          "1920x1080 30",
+          "1280x720 120",
+          "1280x720 60"
+        ]
+      },
+      "value_rc": "0x2001",
+      "value_raw_hex": "0d3300380034003000780032003100360030002000360030000000",
+      "value_parsed": {
+        "raw_hex": "0d3300380034003000780032003100360030002000360030000000",
+        "datatype": 65535,
+        "value": "3840x2160 60"
+      }
+    },
+    "0x5011": {
+      "propcode": 20497,
+      "propcode_hex": "0x5011",
+      "name": "DateTime",
+      "is_vendor": false,
+      "desc_rc": "0x2001",
+      "desc_raw_hex": "1150ffff01123200300032003600300035003100350054003000330034003100310039002e0030000000123200300032003600300035003100350054003000330034003100310039002e003000000000",
+      "desc": {
+        "raw_len": 80,
+        "parse_error": null,
+        "property_code": 20497,
+        "datatype": 65535,
+        "datatype_name": "STRING",
+        "getset": 1,
+        "getset_str": "get/set",
+        "factory_default": "20260515T034119.0",
+        "current": "20260515T034119.0",
+        "form_flag": 0,
+        "form": "none"
+      },
+      "value_rc": "0x2001",
+      "value_raw_hex": "123200300032003600300035003100350054003000330034003100310039002e0030000000",
+      "value_parsed": {
+        "raw_hex": "123200300032003600300035003100350054003000330034003100310039002e0030000000",
+        "datatype": 65535,
+        "value": "20260515T034119.0"
+      }
+    }
+  }
+}
