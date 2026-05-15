@@ -308,7 +308,7 @@ proceed to building a client. **Project is currently paused at this point.**
 ## Hardware / network setup that worked
 
 The probing required the laptop to talk to the camera over WiFi *without*
-losing internet over Cool_Guy WiFi on `wlp1s0`. The final setup:
+losing internet over $HOME_WIFI WiFi on `wlp1s0`. The final setup:
 
 - USB WiFi dongle: Realtek RTL8812AU (`0bda:8812`), surfaces as
   `wlx00c0caac3206`. Driver: aircrack-ng fork of `rtl8812au` built via DKMS;
@@ -317,7 +317,7 @@ losing internet over Cool_Guy WiFi on `wlp1s0`. The final setup:
 - Dongle joined `ActionCam_1A80DF` (WPA2-PSK, password `1234567890`,
   channel 1). Got `192.168.1.10/24` via DHCP. Camera ARP'd at `192.168.1.1`,
   MAC `00:E0:4C:1A:80:DF`.
-- Both interfaces wound up on `192.168.1.0/24` (Cool_Guy gave the laptop
+- Both interfaces wound up on `192.168.1.0/24` ($HOME_WIFI gave the laptop
   `192.168.1.185` from a different physical LAN that happens to share the
   same RFC1918 prefix). Resolved by adding a `/32` host route to the camera
   via the dongle, saved into the NM connection profile so it survives

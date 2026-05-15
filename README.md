@@ -38,7 +38,7 @@ What's stuck:
 ## Install
 
 ```bash
-git clone https://github.com/micahantonb/actionCamController.git
+git clone https://github.com/dropchop/actionCamController.git
 cd actionCamController
 
 # Library only (pure stdlib at the core):

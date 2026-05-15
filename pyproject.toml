@@ -9,7 +9,7 @@ description = "Python client for Larkfly A6+ / iCatch action cameras (PTP/IP wit
 readme = "README.md"
 license = { text = "MIT" }
 authors = [
-    { name = "Micah Anton" },
+    { name = "dropchop" },
 ]
 requires-python = ">=3.10"
 classifiers = [
@@ -45,8 +45,8 @@ all = [
 ]
 
 [project.urls]
-Repository = "https://github.com/micahantonb/actionCamController"
-Issues = "https://github.com/micahantonb/actionCamController/issues"
+Repository = "https://github.com/dropchop/actionCamController"
+Issues = "https://github.com/dropchop/actionCamController/issues"
 
 [tool.setuptools]
 packages = ["larkfly"]
