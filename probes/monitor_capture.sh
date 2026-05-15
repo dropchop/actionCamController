@@ -19,8 +19,15 @@ set -e
 
 IFACE="${IFACE:-wlx00c0caac3206}"
 CHANNEL="${CHANNEL:-1}"
-PCAP="${PCAP:-/tmp/larkfly-capture.pcap}"
+# Use a timestamped path so a stale file from a previous run (owned by the
+# tcpdump user) doesn't block the new one with "Permission denied".
+PCAP="${PCAP:-/tmp/larkfly-capture-$(date +%Y%m%d-%H%M%S).pcap}"
+LATEST_SYMLINK="/tmp/larkfly-capture-latest.pcap"
 BSSID="00:E0:4C:1A:80:DF"
+
+# If user explicitly set PCAP, remove stale file (best effort)
+rm -f "$PCAP" 2>/dev/null
+ln -sf "$PCAP" "$LATEST_SYMLINK"
 
 if [ "$EUID" -ne 0 ]; then
     echo "ERROR: must run as root (need it to set monitor mode + tcpdump)"

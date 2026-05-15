@@ -946,3 +946,79 @@ git log --oneline:
 ```
 
 Nothing has been pushed to a remote — all local commits only.
+
+---
+
+# SimpleConfig reverse-engineering — 2026-05-15 (continued)
+
+## What's in libcontrol.so
+
+The simpleConfig path is fully laid out in the binary:
+
+```
+ICatchCameraAssist_net::simpleConfig (0x6f460) — thunk
+        → simple_config (0xa722c) — sets up worker threads, logs lots
+                → pthread_create × 2 — broadcast workers
+                → simplecfg_set_stop — stops workers on timeout
+        → uses AES_set_key / AES_cbc_encrypt_sdk / AES_encrytion
+        → uses encrypt_lenbase, encrypt_textbase (.rodata tables)
+
+simpleconfig_main (0xade14) — standalone CLI variant; same algorithm
+        → socket(SOCK_DGRAM)
+        → bind() to local; setsockopt() for SO_BROADCAST
+        → broadcasts to 234.168.168.168:10000 (likely)
+```
+
+## Confirmed constants (from binary RE)
+
+| Constant            | Value                                  | How we know |
+|---------------------|----------------------------------------|-------------|
+| **Default AES key** | `b"echo1234echo1234"` (16 bytes ASCII) | First 16 bytes of `encrypt_lenbase` / `encrypt_textbase` in `.rodata`. iCatch firmware uses this for the default-key fallback path. |
+| **Broadcast IP**    | `234.168.168.168` (class-D multicast)  | Only IPv4 literal in `.rodata` near `simpleconfig_main`. |
+| **UDP port**        | `10000` (likely)                       | `MOVZ W0, #0x2710` at offset +2108 in `simpleconfig_main`, into the arg-passing register without a byte-swap intermediate. |
+
+`encrypt_lenbase` and `encrypt_textbase` are both 121 bytes and identical:
+`"echo1234echo1234echo1234echo1234echo1234echo1234echo1234echo1234" + "echo1234567890echo1234567890echo1234567890echo1234567890" + "\0"`
+
+These are the **lookup tables** that map encrypted-credential bytes to:
+- packet LENGTHS to send (via `lenbase`)
+- packet CONTENTS to send (via `textbase`)
+
+The camera (still in AP mode) listens for these UDP packets on its
+channel and decodes the WiFi creds from observed lengths.
+
+## Camera-side WPA2 password is suspiciously close to the key
+
+The camera's default WiFi password (`1234567890`) is literally a
+substring of the same `echo1234567890` pattern. Almost certainly the
+iCatch firmware uses the same constant for both the WiFi AP password
+default AND the SimpleConfig AES key default.
+
+## What's still missing for a working implementation
+
+1. **Exact encoding algorithm** — how is a credential byte mapped through
+   `encrypt_lenbase` / `encrypt_textbase` to a UDP packet length/content?
+   The C++ source pattern is something like:
+   ```c
+   for (byte b in encrypted_creds):
+       send_packet(length = lenbase[base_idx + offset],
+                   content = textbase[base_idx + offset])
+   ```
+   …but the exact relationship between b and base_idx needs more RE.
+2. **Cred packing format before encryption** — is it `ssid || \0 || pwd ||
+   \0 || crc`? Or a JSON blob? Or fixed-width fields? Need to look at
+   `AES_cbc_encrypt_sdk` callers.
+3. **Channel hopping** — the binary doesn't seem to do channel hopping
+   (it's broadcasting on the same channel the phone is associated to).
+   This means the phone-to-camera path is simpler than full SmartConfig
+   (where the camera has to scan all channels).
+
+## Estimate to finish
+
+Pessimistic: another full day of binary RE + Python implementation
++ debugging against the camera. Optimistic: maybe a half-day if we can
+find a Realtek RTL8xxx published SDK with the matching algorithm
+already in C.
+
+iSmart DV2's `simpleConfig` is dormant (not called from any UI flow),
+so we cannot get the algorithm by capturing the app in action.
