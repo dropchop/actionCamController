@@ -19,6 +19,7 @@ used for outgoing PTP-IP connections.
 from __future__ import annotations
 
 import argparse
+import glob
 import os
 import sys
 import threading
@@ -31,6 +32,7 @@ from flask import Flask, Response, jsonify, render_template, request
 # Make `larkfly` importable
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from webui.worker import LarkflyWorker
+from webui.uvc_worker import UvcWorker
 
 app = Flask(__name__,
             template_folder=os.path.join(os.path.dirname(__file__), 'templates'))
@@ -230,24 +232,58 @@ def api_burst():
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--camera', action='append', default=[],
-                    help="camera IP (repeat for multiple). Default: 192.168.1.1")
+                    help="WiFi PTP-IP camera IP (repeat for multiple).")
+    ap.add_argument('--usb', action='append', default=[],
+                    help="UVC USB device path (e.g. /dev/video0). Repeat for "
+                         "multiple. Use '--usb auto' once to auto-detect all "
+                         "/dev/video* devices.")
     ap.add_argument('--bind', default='192.168.1.10',
-                    help="local source IP for PTP-IP socket binding. Default: "
-                         "192.168.1.10")
+                    help="local source IP for PTP-IP socket binding. Only "
+                         "applies to --camera. Default: 192.168.1.10")
     ap.add_argument('--port', type=int, default=5000,
                     help="HTTP port (default 5000)")
     ap.add_argument('--host', default='127.0.0.1',
                     help="HTTP bind address (default 127.0.0.1)")
     args = ap.parse_args()
 
-    cameras = args.camera or ['192.168.1.1']
-    for i, host in enumerate(cameras):
-        w = LarkflyWorker(slot=i, host=host, bind=args.bind, name=f"cam{i}")
+    slot = 0
+    # WiFi PTP-IP cameras
+    for host in args.camera:
+        w = LarkflyWorker(slot=slot, host=host, bind=args.bind,
+                          name=f"wifi{slot}")
         WORKERS.append(w)
         w.start()
-        print(f"[slot {i}] starting worker for {host}")
+        print(f"[slot {slot}] starting WiFi PTP-IP worker → {host}")
+        slot += 1
+
+    # USB UVC cameras
+    usb_paths = []
+    for spec in args.usb:
+        if spec == 'auto':
+            # Pick even-indexed /dev/video* (UVC usually creates pairs;
+            # video0/2/4/... are the main capture devices)
+            all_dev = sorted(glob.glob('/dev/video[0-9]*'))
+            for i, p in enumerate(all_dev):
+                if i % 2 == 0:
+                    usb_paths.append(p)
+        else:
+            usb_paths.append(spec)
+    for path in usb_paths:
+        w = UvcWorker(slot=slot, dev_path=path, name=f"usb{slot}")
+        WORKERS.append(w)
+        w.start()
+        print(f"[slot {slot}] starting UVC worker → {path}")
+        slot += 1
+
+    if not WORKERS:
+        # If nothing was specified, fall back to the WiFi camera at default IP
+        w = LarkflyWorker(slot=0, host='192.168.1.1', bind=args.bind, name='wifi0')
+        WORKERS.append(w)
+        w.start()
+        print("[slot 0] no cameras specified — defaulting to WiFi at 192.168.1.1")
 
     print(f"\nUI: http://{args.host}:{args.port}/")
+    print(f"Recordings (USB cameras only): ~/larkfly_recordings/")
     app.run(host=args.host, port=args.port, debug=False, threaded=True)
 
 
