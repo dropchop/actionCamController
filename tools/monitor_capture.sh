@@ -2,7 +2,7 @@
 # Put the dongle into monitor mode on the camera's channel and capture all
 # 802.11 frames between the camera and any client until you CTRL-C.
 #
-# Usage: sudo bash probes/monitor_capture.sh
+# Usage: sudo bash tools/monitor_capture.sh
 #
 # Output: /tmp/larkfly-capture.pcap (decrypt with WPA-PSK "1234567890")
 #
@@ -13,7 +13,7 @@
 #   3. Open iSmart DV2; let it do its full setup + a few actions
 #      (preview, snapshot, list files).
 #   4. CTRL-C here to stop the capture.
-#   5. Run probes/monitor_restore.sh to put the dongle back in managed mode.
+#   5. Run tools/monitor_restore.sh to put the dongle back in managed mode.
 
 set -e
 

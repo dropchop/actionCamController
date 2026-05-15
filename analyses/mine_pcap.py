@@ -15,7 +15,7 @@ guess-and-poke the live camera.
 
 Usage:
   python3 mine_pcap.py /tmp/larkfly-capture-decrypted.pcap \\
-      [-o probes/data/transactions.json]
+      [-o analyses/data/transactions.json]
 """
 from __future__ import annotations
 
@@ -144,7 +144,7 @@ def parse_op_resp(body: bytes):
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument('pcap', nargs='?', default='/tmp/larkfly-capture-decrypted.pcap')
-    ap.add_argument('-o', '--output', default='probes/data/transactions.json')
+    ap.add_argument('-o', '--output', default='analyses/data/transactions.json')
     args = ap.parse_args()
 
     if not os.path.exists(args.pcap):

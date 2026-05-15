@@ -1,93 +1,136 @@
 # actionCamController
 
-Linux controller for **Larkfly A6+** action cameras (iCatch chipset
-internal product code `V11`, firmware `20251206`), replacing the
-iSmart DV2 Android app.
+A Linux controller for **Larkfly A6+** action cameras (internal iCatch
+product code `V11`, firmware 20251206), reverse-engineered from the
+iSmart DV2 Android app and a real device. Replaces the official app for
+single-camera control and (eventually, see caveats below) coordinates
+several cameras at once.
+
+Born from the realization that the camera speaks an off-spec dialect of
+PTP/IP with three undocumented quirks. The library encapsulates those
+so a normal Python client can drive it.
 
 ## Status
 
-**Functional single-camera control proven; multi-camera architecture
-designed and built.** What works as of the latest commit:
+**Functional for single-camera WiFi control.** Builds on `larkfly` (the
+client library, 23 unit tests) plus a Flask web UI for live preview +
+burst recording. Multi-camera works in principle but needs cameras to
+be on a shared network — see `docs/architecture.md` for the tradeoffs.
 
-- Full PTP-IP session against a real Larkfly A6+
-- All 56 device properties enumerated (`probes/data/properties.json`)
-- Live RTSP preview at ~30 fps in a Flask web UI
-- Video recording start/stop via the `D604` mode property
-  (`D604=17` → record, `D604=1` → stop; produces real `.MOV` files on
-  the SD card)
-- Synchronized "burst" recording across all configured cameras with
-  auto-stop after N seconds
-- File access via FTP (`wificam:wificam@<camera>/JPG`, `/VIDEO`)
+What works:
+- PTP/IP session against the camera; the protocol-level wire format is
+  reverse-engineered and tested
+- All 56 device properties enumerated + named where they matter
+- Live RTSP preview (~30 fps) in a browser via the Flask UI
+- Video recording start / stop / burst via property `0xD604`
+- File access via FTP (`wificam` / `wificam`)
+- USB UVC capture (1080p MJPEG) — but the camera doesn't dual-record
+  to SD in UVC mode, so this is host-streaming only
 
-What does **not** yet work:
+What's stuck:
+- Photo capture via PTP — `InitiateCapture` returns OK but doesn't
+  produce a JPG. Workaround: the camera's physical shutter button.
+- Putting multiple cameras on one shared WiFi (STATION mode) — the
+  camera-side protocol is Realtek SmartConfig (UDP-broadcast, AES-
+  encrypted). We have the default AES key + multicast target but the
+  encoding algorithm needs more work. See `docs/findings.md`.
 
-- Photo capture via PTP (`InitiateCapture` returns OK but no JPG
-  appears on the SD card — see `docs/findings.md` for the trail).
-  Workaround: the camera's physical shutter button.
-- Multi-camera scaling has been **designed** but only validated with
-  one physical camera so far (we have only one Larkfly on hand).
+## Install
+
+```bash
+git clone https://github.com/micahantonb/actionCamController.git
+cd actionCamController
+
+# Library only (pure stdlib at the core):
+pip install -e .
+
+# Library + web UI deps:
+pip install -e '.[webui]'
+
+# Library + capture-tool deps (cryptography for pcap decryption):
+pip install -e '.[capture]'
+
+# Everything:
+pip install -e '.[all]'
+```
+
+Runs on Python 3.10+.
 
 ## Quick start
 
+```python
+# Talk to a camera that's at 192.168.1.1 (its factory default).
+# `bind` is the local source IP — only needed when multiple interfaces
+# share the 192.168.1.0/24 subnet.
+from larkfly import Camera
+
+with Camera('192.168.1.1', bind='192.168.1.10') as cam:
+    info = cam.device_info()
+    print(info['operations_supported'])
+
+    # Read a property
+    print(cam.get_prop_value(0x501E))   # 'V11'  — ProductName
+    print(cam.get_prop_value(0x501F))   # '20251206' — FwVersion
+
+    # Record video for 3 seconds (mode-toggle paradigm)
+    cam.start_recording()        # sets D604=17 (VIDEO_ON)
+    time.sleep(3)
+    cam.stop_recording()         # sets D604=1  (VIDEO_OFF)
+    # → .MOV file appears in the camera's /VIDEO/ via FTP
+
+    # Browse / download
+    for handle in cam.list_objects():
+        print(cam.object_info(handle))
+```
+
+## Repo layout
+
+```
+actionCamController/
+├── larkfly/         the Python client library (protocol + high-level Camera)
+├── webui/           Flask multi-camera controller (preview + burst record)
+├── tools/           operational utilities (probe, pcap decryption, monitor capture)
+├── analyses/        one-shot RE scripts + their outputs (data/*.json)
+├── tests/           unit tests for the protocol codec
+├── examples/        library usage demos
+├── docs/            findings.md, architecture.md, archived chronology
+└── apk-analysis/    APK + decompile artifacts (gitignored — large + copyrighted)
+```
+
+## Run the web UI
+
 ```bash
-# Assumes the workstation is on the camera's WiFi (the original setup
-# documented in docs/findings.md uses a USB WiFi dongle for this; the
-# laptop's built-in WiFi stays on its primary network).
-python3 -m unittest tests/test_protocol.py   # 23 unit tests, no hardware
-
-# Live tests against the camera:
-python3 probes/ptpip_probe.py 192.168.1.1 --bind 192.168.1.10
-python3 examples/quickstart.py 192.168.1.1 --bind 192.168.1.10
-
-# Run the web UI:
+# Single-camera (default IP):
 python3 webui/app.py --bind 192.168.1.10
-# → http://127.0.0.1:5000/
+# Then open http://127.0.0.1:5000
+
+# Mixed sources — one WiFi camera + one USB UVC camera:
+python3 webui/app.py \
+    --camera 192.168.1.1 --bind 192.168.1.10 \
+    --usb /dev/video0
 ```
 
-## Layout
+See `webui/README.md` for the API endpoints and `docs/architecture.md`
+for the multi-camera deployment plan.
 
-```
-larkfly/        Python client library — PTP-IP with iCatch quirks
-webui/          Flask multi-camera controller (analog of ClaudesWorld/webcam)
-probes/         Standalone diagnostic scripts (probes, capture tools)
-docs/           Protocol notes + findings log
-examples/       Usage demos
-tests/          Unit tests (no hardware required)
-apk-analysis/   APK decompile artifacts (gitignored)
-```
+## What's in docs/
 
-The full reverse-engineering trail — APK static analysis, packet
-captures, the three iCatch wire-format quirks, the D604 mode-toggle
-discovery — is documented in `docs/findings.md`. Read that doc first
-for context.
+| File | When to read |
+| --- | --- |
+| `docs/findings.md` | **Start here.** Current-state reference: protocol quirks, opcodes, recording paradigm, multi-camera status. |
+| `docs/architecture.md` | Deciding how to deploy 4 cameras (USB UVC vs WiFi multi-dongle vs STATION). |
+| `docs/archive/investigation-log.md` | The full chronological RE story, including dead ends. |
+| `docs/archive/original-protocol-notes.md` | The pre-investigation hypothesis (mostly disproved). |
 
-## Required setup (one-time)
+## Acknowledgements
 
-A USB WiFi dongle (Realtek RTL8812AU works) lets the host stay on its
-normal WiFi while a second interface holds the camera AP. The
-[aircrack-ng rtl8812au fork](https://github.com/aircrack-ng/rtl8812au)
-is needed on kernel ≥6.x; an install script is at
-`/tmp/install_rtl8812au.sh` after running this project once.
-
-Routing: both interfaces wind up on `192.168.1.0/24` when the camera
-hands out IPs from its default subnet. Add a `/32` host route to the
-camera via the dongle:
-
-```bash
-sudo nmcli connection modify ActionCam_<MAC> \
-    +ipv4.routes "192.168.1.1/32 0.0.0.0"
-```
-
-Pass `--bind 192.168.1.10` (the dongle's IP) to all the Python tools so
-they source-bind correctly.
-
-## Acknowledgements / sources
-
-- [`clerie/rollei-AC-420`](https://github.com/clerie/rollei-AC-420) —
-  same iCatch hardware family, confirmed RTSP + FTP paths.
+- libgphoto2's `camlibs/ptp2/ptpip.c` — clean reference implementation
+  that resolved the packet-type-11-vs-12 spec ambiguity.
+- [`clerie/rollei-AC-420`](https://github.com/clerie/rollei-AC-420) — same
+  iCatch hardware family; confirmed the RTSP + FTP paths early on.
 - [`Linouth/iCatch-V50-Playground`](https://github.com/Linouth/iCatch-V50-Playground)
-  — firmware/debug notes for related chipset.
-- libgphoto2's `camlibs/ptp2/ptpip.c` — reference PTP-IP implementation,
-  resolved the packet-type-12-is-EndData ambiguity.
-- The iSmart DV2 APK itself — provided the wire format and the SDK
-  Java enums that pointed at `D604` as the mode property.
+  — adjacent chipset debug notes.
+
+## License
+
+MIT — see `LICENSE`.

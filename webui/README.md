@@ -1,7 +1,8 @@
 # webui — multi-camera Larkfly Flask controller
 
-Mirrors the parent `ClaudesWorld/webcam/app.py` architecture but targets
-PTP-IP cameras instead of V4L2 webcams.
+Slot-based architecture (one worker thread per camera, MJPEG previews
+streamed to the browser, fan-out control endpoints) targeting PTP-IP
+WiFi cameras and UVC USB cameras in the same UI.
 
 ## Quick start
 

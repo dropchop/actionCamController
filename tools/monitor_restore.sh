@@ -1,6 +1,6 @@
 #!/bin/bash
 # Restore the dongle to NM-managed mode after a monitor capture.
-# Usage: sudo bash probes/monitor_restore.sh
+# Usage: sudo bash tools/monitor_restore.sh
 
 set -e
 IFACE="${IFACE:-wlx00c0caac3206}"

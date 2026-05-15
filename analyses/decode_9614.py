@@ -4,7 +4,7 @@
 Initial inspection suggested it's a concatenation of length-prefixed
 PropertyDescriptor records. Confirmed below by parsing record-by-record
 and cross-referencing each property's already-known datatype + current
-value from probes/data/properties.json.
+value from analyses/data/properties.json.
 
 Usage:
     python3 decode_9614.py [--live]   # --live reissues the call (camera)
@@ -24,7 +24,7 @@ from larkfly import protocol as p
 
 
 # Default: read the 233-byte response captured to disk. Generate via
-# probes/data/op_9614_response.bin (the script saves it on --live runs).
+# analyses/data/op_9614_response.bin (the script saves it on --live runs).
 CAPTURED_BIN = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                              'data', 'op_9614_response.bin')
 
@@ -125,7 +125,7 @@ def main():
 
     # Load the known property catalog (from earlier enumeration) for cross-ref
     known = {}
-    cat_path = 'probes/data/properties.json'
+    cat_path = 'analyses/data/properties.json'
     if os.path.exists(cat_path):
         cat = json.load(open(cat_path))
         for code_str, p_data in cat['properties'].items():

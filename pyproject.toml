@@ -1,0 +1,55 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "larkfly"
+version = "0.1.0"
+description = "Python client for Larkfly A6+ / iCatch action cameras (PTP/IP with iCatch wire-format quirks handled)"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [
+    { name = "Micah Anton" },
+]
+requires-python = ">=3.10"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Multimedia :: Video :: Capture",
+    "Topic :: System :: Hardware",
+]
+# Core library is pure stdlib.
+dependencies = []
+
+[project.optional-dependencies]
+# Web UI: Flask app + OpenCV for the V4L2 / RTSP frame paths.
+webui = [
+    "flask>=2.0",
+    "opencv-python>=4.5",
+]
+# Capture-tool extras: monitor-mode pcap decryption.
+capture = [
+    "cryptography>=3.0",
+]
+# Everything (handy for development).
+all = [
+    "flask>=2.0",
+    "opencv-python>=4.5",
+    "cryptography>=3.0",
+]
+
+[project.urls]
+Repository = "https://github.com/micahantonb/actionCamController"
+Issues = "https://github.com/micahantonb/actionCamController/issues"
+
+[tool.setuptools]
+packages = ["larkfly"]
+
+[tool.setuptools.package-data]
+larkfly = ["py.typed"]
