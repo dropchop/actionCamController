@@ -179,6 +179,26 @@ OF_DEFINED     = 0x3800
 OF_MP4         = 0xB982  # vendor / extension (advertised by Larkfly)
 
 # ---- Property codes — named ones from iCatch SDK + standard PTP -------
+# ---- iCatch camera operating modes (property 0xD604 values) ------------
+# Empirically confirmed: setting D604=17 starts video recording, D604=1
+# stops it. Other modes are listed in the Java SDK enum; meanings of
+# 5/6/9/10 aren't fully documented.
+MODE_VIDEO_OFF        = 1      # idle (camera ready, not recording)
+MODE_SHARED           = 2
+MODE_CAMERA           = 3      # photo / still capture mode
+MODE_IDLE             = 4
+MODE_VIDEO_ON         = 17     # ACTIVELY RECORDING video
+MODE_VIDEO            = 42     # (not in Larkfly A6+'s allowed values)
+MODE_TIMELAPSE        = 43     # (likewise)
+
+MODE_NAMES = {
+    1: 'VIDEO_OFF', 2: 'SHARED', 3: 'CAMERA', 4: 'IDLE',
+    5: '?5', 6: '?6', 7: 'TIMELAPSE_STILL', 8: 'TIMELAPSE_VIDEO',
+    9: '?9', 10: '?10', 17: 'VIDEO_ON', 42: 'VIDEO', 43: 'TIMELAPSE',
+}
+
+PROP_MODE = 0xD604   # The camera-mode property
+
 # Names that this firmware actually advertises.
 PROP_NAMES = {
     # Standard PTP capture-control properties

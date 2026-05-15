@@ -287,30 +287,58 @@ class Camera:
                 context=f"SetDevicePropValue(0x{prop_code:04x})")
 
     # ---------- capture --------------------------------------------
+    # Important: this firmware uses a MODE-TOGGLE paradigm for video.
+    # Setting property 0xD604 to 17 (VIDEO_ON) starts recording; setting
+    # it back to 1 (VIDEO_OFF) stops. The PTP InitiateOpenCapture op
+    # (0x100D) is advertised as supported but isn't what actually
+    # triggers a recording.
+    #
+    # For photos, PTP InitiateCapture (0x100C) returns a new handle but
+    # no JPG appears on the SD card via FTP. The photo trigger over PTP
+    # is not yet figured out. Pressing the camera's physical shutter
+    # button does produce real JPGs.
+    def get_mode(self) -> int:
+        """Read the current operating mode (property 0xD604)."""
+        return self.get_prop_value(t.PROP_MODE)
+
+    def set_mode(self, mode: int) -> None:
+        """Set the operating mode. Use the MODE_* constants from larkfly.types."""
+        self.set_prop_value(t.PROP_MODE, mode, datatype=t.DT_UINT16)
+
     def take_photo(self, storage_id: int = 0, format_code: int = 0) -> Optional[int]:
-        """InitiateCapture. Returns the new object handle if the camera
-        reports it in resp_params[2], else None."""
+        """Send PTP InitiateCapture. Returns the new object handle if the
+        camera reports it in resp_params[2], else None.
+
+        NOTE: This op succeeds at the protocol level but doesn't appear to
+        produce a JPG file on the SD card. Use the physical shutter button
+        to take photos until we figure out the right trigger mechanism."""
+        # Switch to CAMERA mode so InitiateCapture is at least valid
+        try:
+            current = self.get_mode()
+            if current != t.MODE_CAMERA:
+                self.set_mode(t.MODE_CAMERA)
+                time.sleep(0.5)
+        except Exception:
+            pass
         rp, _ = self.op(t.OP_INITIATE_CAPTURE, [storage_id, format_code],
                         context="InitiateCapture")
         return rp[2] if len(rp) >= 3 and rp[2] != 0 else None
 
-    def start_recording(self, storage_id: int = 0, format_code: int = 0) -> int:
-        """InitiateOpenCapture. Returns the transaction ID — needed to
-        stop the recording with stop_recording().
+    def start_recording(self) -> None:
+        """Start video recording by switching mode to VIDEO_ON.
+        Empirically: produces a .MOV file in /VIDEO on the SD card."""
+        self.set_mode(t.MODE_VIDEO_ON)
 
-        WARNING: as of writing, the param shape that stop_recording wants
-        isn't fully figured out. See docs/findings.md."""
-        # Record the txid manually since we need to return it
-        before_txid = self._txid
-        self.op(t.OP_INITIATE_OPEN_CAPTURE, [storage_id, format_code],
-                context="InitiateOpenCapture")
-        return self._txid  # the txid of the OpenCapture we just sent
+    def stop_recording(self) -> None:
+        """Stop video recording by switching mode to VIDEO_OFF."""
+        self.set_mode(t.MODE_VIDEO_OFF)
 
-    def stop_recording(self, start_txid: int) -> None:
-        """TerminateOpenCapture. `start_txid` is the value returned by
-        start_recording()."""
-        self.op(t.OP_TERMINATE_OPEN_CAPTURE, [start_txid],
-                context="TerminateOpenCapture")
+    def is_recording(self) -> bool:
+        """True if the camera is currently in VIDEO_ON mode."""
+        try:
+            return self.get_mode() == t.MODE_VIDEO_ON
+        except Exception:
+            return False
 
     # ---------- iCatch vendor ops --------------------------------------
     def icatch_poll(self) -> tuple[int, list[int]]:
