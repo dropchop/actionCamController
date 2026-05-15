@@ -702,20 +702,247 @@ previous hypothesis that "DeviceScan must precede PTP/IP" was wrong.
 
 ## Specific next steps when resuming
 
-1. **Reverse-engineer `0x9601`.** It's called 303 times in a normal
-   session with a 2- or 3-parameter signature. The first param is a
-   16-bit ID (or 32-bit; need to confirm). Sniff iSmart DV2 doing
-   specific actions (start recording, take photo, change a setting)
-   and watch which `0x9601` params correspond to each action.
-2. **Map vendor property codes.** Read `GetDevicePropDesc` for each
-   `0xD2xx-0xD8xx` property; the descriptor includes a type, default,
-   and (for enums) a list of allowed values. That gives us names for
-   most properties without further RE.
-3. **Find the movie-recording start/stop ops.** Probably `0x9602` or
-   `0x9614` (untouched by the current capture). Sniff iSmart DV2
-   starting/stopping a recording.
-4. **Verify the multi-camera STATION-mode flow still holds.** With PTP/IP
-   confirmed working, the architecture in the previous section becomes
-   actionable. Use `simpleConfig` (still untested) to push the camera
-   into Station mode joining a controlled AP, then verify a normal
-   PTP/IP session works against the new IP.
+(superseded — see the "Overnight autonomous session" section below)
+
+---
+
+# Overnight autonomous session — 2026-05-15 04:00
+
+A roughly 4-hour session run while the user was asleep. Goals: enumerate
+every property, mine the existing pcap for vendor opcode patterns, build
+a Python client library, and stand up the multi-camera Flask UI.
+
+## What got built
+
+### Property enumeration (`probes/enumerate_props.py` + `probes/data/properties.json`)
+
+All 56 device properties read via `GetDevicePropDesc` (0x1014) +
+`GetDevicePropValue` (0x1015). Highlights:
+
+- **`ProductName` (0x501E) = `'V11'`** — that's the iCatch internal
+  product code; "Larkfly A6+" is the marketing skin.
+- **`FwVersion` (0x501F) = `'20251206'`** (Dec 6, 2025).
+- **`ImageSize` (0x5003) = `'9216x5184'`** (~48 MP photos).
+- **`VideoSize` (0xD605) = `'3840x2160 60'`** (4K@60 fps).
+- Storage: 62.5 GB SD card, fully empty at session start.
+
+### iCatch camera mode = property 0xD604
+
+The biggest discovery of the night. Property `0xD604` has allowed values
+`[1, 17, 2, 3, 4, 5, 6, 7, 8, 9, 10]` — these match the
+`ICatchCamMode` enum from the Java SDK almost exactly:
+
+| Value | Java SDK name        | Behavior                                    |
+| ----- | -------------------- | ------------------------------------------- |
+| 1     | `VIDEO_OFF`          | idle (default state)                        |
+| 2     | `SHARED`             | (camera forces back to 3 when written)      |
+| 3     | `CAMERA`             | photo / still-capture mode                  |
+| 4     | `IDLE`               | currently active in 0xD609                  |
+| 5–10  | (unnamed)            | accepted but purpose unclear                |
+| 17    | `VIDEO_ON`           | **ACTIVELY RECORDING video to /VIDEO/**     |
+
+**Setting `D604=17` is the way to start a video recording.** Setting it
+back to `1` stops. Confirmed by writing this and watching a new
+`.MOV` file appear on the SD card (via FTP):
+
+```
+20260515_035416.MOV  562544 B   (~3s recording)
+20260515_035727.MOV  312441 B   (~2s recording)
+20260515_040107.MOV  785828 B   (~3s burst via /api/burst)
+```
+
+The Java SDK had this paradigm all along — the property gates the
+camera's internal recording state machine. Sending `InitiateOpenCapture`
+(PTP op `0x100D`) returns OK at the protocol level but doesn't actually
+start a recording; it's a no-op against this firmware.
+
+### 0x9601 is a polling op, not a property reader
+
+`mine_pcap.py` walked the decrypted iSmart DV2 capture and reassembled
+all 574 PTP transactions. `0x9601` was called **224 times**, but **223
+of those used identical params `(0xD001, 0xFFFFFFFF, 0x00000000)`**.
+The one anomaly used `(0xD83F, 0, 4)` — `0xD83F` is one of the
+properties whose descriptor doesn't parse cleanly, suggesting `0x9601`
+is the camera's "vendor read" interface for properties the standard
+`GetDevicePropValue` can't handle.
+
+The 223 identical calls happened ~once per second over the 217-second
+session — **`0x9601(0xD001, 0xFFFFFFFF, 0)` is a heartbeat/keepalive**,
+not a property fetch. The Larkfly camera doesn't strictly require it
+(we held a session for many minutes without sending any), but a robust
+client should poll it periodically against possible firmware variants.
+
+### Untouched vendor opcodes probed
+
+| Op     | rc with no params | Notes                                            |
+| ------ | ----------------- | ------------------------------------------------ |
+| 0x9602 | 0x2006 (PNS)      | Needs parameters; purpose unknown.               |
+| 0x9614 | 0x2002 + 233 B    | Returns property-table-looking data even on a "GeneralError" rc. Promising. |
+| 0x9801 | 0xA802 (vendor)   | Non-standard response code, no data.             |
+| 0x9802 | 0xA80A (vendor)   | Non-standard response code, no data.             |
+| 0x9803 | 0x2009 (InvObjHandle) | Needs an object handle param.                |
+| 0x9812 | 0x2005 (OpNotSup) | Not implemented at all.                          |
+
+`0x9614` is the most interesting — worth examining its returned data
+properly in a follow-up. `0x9803` taking an object-handle param hints
+at file operations (delete? open?).
+
+### Photo trigger via PTP still unsolved
+
+`InitiateCapture` (op `0x100C`) returns OK and a new object handle, but
+**no JPG appears on the SD card** regardless of camera mode (tried
+D604 ∈ {2, 3, 5, 6, 9, 10}). The created PTP handles have
+`format=0x3000 (Undefined)` and tiny sizes (5–21 bytes) — they're
+metadata stubs, not actual files. None of the unknown vendor ops above
+appeared to trigger a save either.
+
+The iSmart DV2 capture session didn't include a photo capture (the user
+only browsed files), so there's no reference traffic to compare against.
+Photos via the camera's physical shutter button continue to work fine
+— this is purely a protocol-driven trigger gap.
+
+Next-session moves: (a) capture iSmart DV2 deliberately taking a photo
+to see the exact op sequence; (b) try `0x9603`/`0x9604`/etc. (codes the
+camera doesn't advertise as supported but might still respond to);
+(c) try `SetDevicePropValue` on properties we haven't touched
+(`D7xx` block) right before InitiateCapture.
+
+## The `larkfly` Python client library
+
+```
+larkfly/
+├── __init__.py
+├── types.py        constants (op codes, prop codes, mode values, rc names)
+├── protocol.py     PTP-IP framing & codecs with all three iCatch quirks baked in
+├── exceptions.py   typed exceptions: TransportError, InitFailError, PtpError
+└── camera.py       high-level Camera class with context-manager support
+
+tests/test_protocol.py    23 unit tests covering codec roundtrips,
+                          InitCmdReq encoding matching real captured bytes,
+                          DeviceInfo/ObjectInfo parsing against real bytes,
+                          OpResp parsing with iCatch zero-padding.
+
+examples/quickstart.py    runs end-to-end against the live camera; prints
+                          DeviceInfo, lists storage, takes a photo,
+                          downloads thumb.
+```
+
+Usage:
+
+```python
+from larkfly import Camera, types
+
+with Camera('192.168.1.1', bind='192.168.1.10') as cam:
+    info = cam.device_info()
+    print(info['model'])      # always '' on this firmware
+
+    print(cam.get_prop_value(0x501E))  # ProductName -> 'V11'
+    print(cam.get_prop_value(0xD605))  # VideoSize   -> '3840x2160 60'
+
+    cam.start_recording()
+    time.sleep(5)
+    cam.stop_recording()      # produces ~5s .MOV in /VIDEO
+
+    for h in cam.list_objects():
+        print(cam.object_info(h))
+```
+
+All 23 unit tests pass with no hardware connected — they exercise the
+codec logic against real captured bytes.
+
+## The `webui` Flask multi-camera controller
+
+Mirrors the architecture of the parent ClaudesWorld webcam project but
+targets PTP-IP cameras:
+
+```
+webui/
+├── app.py              Flask routes
+├── worker.py           LarkflyWorker (per-camera background thread)
+├── templates/index.html  UI: preview grid + Photo/Record/Burst buttons
+└── README.md
+```
+
+Verified end-to-end:
+
+- HTTP `GET /` returns the HTML grid (one slot per `--camera` arg).
+- `GET /video_feed/<slot>` streams MJPEG-over-multipart at ~30 fps from
+  the camera's RTSP `/MJPG?W=720&H=400&Q=50&BR=5000000` endpoint.
+- `POST /api/burst {"duration": 3}` triggers a synchronized recording on
+  all RUNNING workers, auto-stops after 3 s, and a new .MOV appears on
+  the SD card.
+- All control endpoints fan out concurrently to slots (threaded), so a
+  4-camera burst hits all cameras within a few ms.
+
+What it does NOT yet have:
+
+- A file browser / gallery (the parent webcam project has one;
+  porting is straightforward — use the FTP client).
+- Auto-detection of new cameras (currently you pass `--camera <ip>` for
+  each).
+- The photo button works at the protocol level but does nothing visible
+  (see "Photo trigger" above).
+
+## Suggested next steps when resuming
+
+In priority order:
+
+1. **Verify multi-camera scaling.** With one camera the UI works clean.
+   The next blocking experiment is whether two cameras on the same
+   `192.168.1.x` subnet can be reached from this host simultaneously
+   (using the dongle + built-in WiFi, or using the camera STATION mode
+   we know is supported but haven't tested).
+2. **Crack the photo trigger.** Sniff iSmart DV2 explicitly taking a
+   photo via the in-app shutter (NOT the camera's physical button).
+   The action will produce 1–2 PTP transactions we can decode directly.
+3. **Build the file browser.** FTP at `wificam:wificam@<ip>/JPG/` and
+   `/VIDEO/` is the easy path. Bonus: parse `.MOV` thumbnails for the
+   gallery view.
+4. **Decode `0x9614`'s 233-byte response.** Likely a vendor property
+   table; could reveal hidden capabilities.
+5. **Implement `simpleConfig`-based STATION setup** to put cameras on
+   a shared AP for the production multi-camera rig (see the original
+   architecture proposal in the first half of this doc).
+
+## State of the repo
+
+```
+.
+├── README.md
+├── apk-analysis/           # gitignored — APK + decompile artifacts
+├── docs/
+│   ├── findings.md         # this file
+│   └── protocol.md         # original (now partly superseded) facts
+├── larkfly/                # Python client library
+├── tests/test_protocol.py  # 23 passing unit tests
+├── examples/quickstart.py
+├── webui/
+│   ├── app.py
+│   ├── worker.py
+│   ├── templates/index.html
+│   └── README.md
+└── probes/
+    ├── ptpip_probe.py      # original probe, still works
+    ├── wifi_provision.py
+    ├── enumerate_props.py
+    ├── mine_pcap.py
+    ├── decrypt_pcap.py
+    ├── monitor_capture.sh
+    ├── monitor_restore.sh
+    └── data/               # JSON output from enumerate_props + mine_pcap
+```
+
+Git history (chronological):
+
+```
+git log --oneline:
+  baseline: APK decompile findings + working PTP/IP probe
+  ignore .claude/
+  full property enumeration
+  pcap mining + live capture tests
+  larkfly: Python client library + tests + quickstart
+  video record via mode toggle (D604=17/1) — confirmed working
+  webui: multi-camera Flask controller
+```
+
+Nothing has been pushed to a remote — all local commits only.
