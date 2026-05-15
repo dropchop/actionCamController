@@ -1,0 +1,7 @@
+apk-analysis/
+*.apk
+*.dex
+*.smali
+__pycache__/
+*.pyc
+.venv/
