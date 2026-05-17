@@ -4,6 +4,88 @@ Living document tracking the exploration described in plan
 `/home/micah/.claude/plans/jiggly-jingling-adleman.md`. Updated after
 each step.
 
+## 2026-05-17 evening — 🎯 REMOTE PRE-AUTH DoS in PTP service (CVE-class)
+
+**The first real vulnerability found in the entire investigation.**
+
+Minimum reproducer:
+
+```
+1. TCP connect to 192.168.1.1:15740
+2. Send a valid InitCmdReq (PTP-IP ptype=1) with payload
+     "localhost" raw UTF-16LE null-terminated + protocol version u32
+3. Receive InitCmdAck normally
+4. Send a SECOND container with:
+       length = 14 (u32 LE)
+       ptype  = 0  (or 1, or other "unhandled" ptypes)
+       body   = any 6 bytes
+5. The camera does not respond and the PTP service is now bricked
+6. ALL subsequent `InitCmdReq` from any client get
+   `InitFail reason=0x00000003` (= "name not allowed") regardless of
+   the actually-whitelisted name.
+7. Recovery requires power-cycling the camera.
+```
+
+**Properties:**
+- **Remote** — any host on the camera's WiFi AP (default PSK
+  `1234567890`).
+- **Pre-auth** — no credentials. The PTP/IP InitCmdReq is itself
+  unauthenticated.
+- **Single-packet (after a 1-RTT handshake)** — one malformed packet
+  after the handshake is sufficient.
+- **Persistent until power-cycle** — the camera's primary control
+  surface (PTP/IP on port 15740) is unreachable for any legitimate
+  client (incl. the official iSmart DV2 app) once triggered.
+**Confirmed DoS triggers** (`tools/ptp_container_fuzz.py` Phase 3 +
+`tools/ptp_p3_isolate.py`):
+- `ptype=0` (1/1, deterministic)
+
+**Untested in isolation** (all of these were tested in the v1 fuzz
+sequence AFTER ptype=0, so the results are contaminated by the
+already-broken camera and cannot be trusted): ptypes 1, 2, 5, 8, 9,
+10, 11, 12, 13, 14, 99, 0xFFFFFFFF. Each individual ptype test costs
+one power-cycle to fully isolate. A previous claim in this doc that
+"`ptype=1` is also a DoS trigger" was incorrect — the test was run
+without a power-cycle after the ptype=0 trigger, so the camera was
+already in the bad state. Retracted.
+
+The "alternating recv-timeout / closed-by-peer" pattern observed in
+the v1 fuzz across multiple ptypes was likewise an artifact of the
+already-broken camera responding inconsistently to further inputs,
+not a real signal about the parser branching on `ptype & 1`.
+Retracted.
+
+**Theory:** the post-init op-dispatcher in the camera's PTP service
+has a switch statement on the incoming packet's ptype. The default
+branch (for any ptype that's not a known op-channel type:
+PT_OP_REQ=6, PT_DATA=10, PT_START_DATA=9, PT_END_DATA=12,
+PT_CANCEL=11) doesn't properly release a session lock / connection-
+pool slot / heap allocation, leaving the service in a state where
+new InitCmdReq attempts can't initialize and degrade with the
+misleading `InitFail reason=3`. The "name not allowed" error code
+is almost certainly **wrong** — the real failure mode is internal
+state corruption being reported with the closest available PIMA
+error code.
+
+**Tools:**
+- `tools/ptp_container_fuzz.py` — full PTP container/packet-type
+  fuzz (4 phases). Phase 3 is the DoS trigger.
+- `tools/ptp_p3_isolate.py` — one-ptype-per-session isolation
+  framework. Each DoS-triggering ptype requires a power-cycle to
+  recover.
+
+**Worth follow-up:**
+1. Confirm the remaining 11 untested ptypes also trigger (each is
+   one power-cycle).
+2. Check whether the bug is exploitable beyond DoS — e.g. is the
+   dispatcher's failure mode a controllable heap corruption that
+   could let us hijack RIP/PC?
+3. Disclose to Larkfly (likely no PSIRT; iCatch SDK upstream?) — the
+   bug almost certainly affects all V11-family cameras using the
+   stock iCatch PTP service, possibly other iCatch chips.
+4. The race condition on `ptype=1` is interesting per se — could be
+   a TOCTOU between two threads of the PTP service.
+
 ## 2026-05-17 evening — Parking lot: DateTime parser irregularities to circle back to
 
 `tools/datetime_parser_fuzz.py` (40 payloads on `0x5011`) — the parser
