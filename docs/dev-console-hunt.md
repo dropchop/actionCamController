@@ -4,6 +4,44 @@ Living document tracking the exploration described in plan
 `/home/micah/.claude/plans/jiggly-jingling-adleman.md`. Updated after
 each step.
 
+## 2026-05-17 evening — Parking lot: DateTime parser irregularities to circle back to
+
+`tools/datetime_parser_fuzz.py` (40 payloads on `0x5011`) — the parser
+is a robust libc `strptime` + `mktime` chain, no crashes, no buffer
+overflow. **But three behaviours stand out as worth a follow-up:**
+
+1. **Empty-string input → suspicious giant negative year.** Writing
+   `''` to `0x5011` produced read-back `-473660215T054733.0`. That
+   year is `-473,660,215` — much larger than any "default sentinel"
+   would be. Could be **uninitialized `struct tm` memory** that the
+   parser reads after failing to find any fields. If so, this is an
+   info-disclosure primitive (~30 bytes of kernel/heap state per
+   read). Cheap to probe: write `''` repeatedly, check whether the
+   bizarre year is stable or drifts between calls. If it drifts → we
+   have a stack/heap leak.
+
+2. **Embedded format chars produce 1950s-era years.** Writing
+   `'20%n0517T183733.0'` produced year `1952`; `'20%s...'` produced
+   `1957`. The parser doesn't actually process `%n` (no crash) but
+   the resulting years are oddly specific and reproducible. Likely
+   sscanf partial-parse followed by a `%y` 2-digit-year fallback
+   (1952 = 1900 + 52 ≈ 0x34, a plausible truncated-seconds value).
+   Not security but reveals parser internals — useful if we later
+   need to reason about what the firmware is doing under the hood.
+
+3. **Surrogate-pair high-Unicode codepoints are the ONLY input
+   rejected.** All 40 payloads accepted except
+   `'\U00020000\U00020000\U00020000'` (U+20000 needs UTF-16 surrogate
+   pair encoding) → `rc=0x200A DeviceProp_Not_Supported`. **Unique
+   error code at a unique boundary.** Some layer (likely the UTF-16LE
+   decoder, possibly in `larkfly` actually — need to disambiguate)
+   bails on surrogate pairs. Worth probing: do other STRING property
+   writes also reject surrogate pairs? If the rejection is firmware-
+   side, it suggests a tightly-coded UTF-16 parser; if client-side,
+   we should patch it out so we can test with the full UTF-16 range.
+
+Raw output saved at `/tmp/datetime_fuzz.log` (host-local; not committed).
+
 ## 2026-05-17 PM (later) — Three more vectors ruled out: factory-mode flip, magic-filename re-test, Bluetooth
 
 After PTP quirk #4 was found and patched, three follow-up experiments
