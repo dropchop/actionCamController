@@ -29,7 +29,7 @@ firmware's `G:\SPHOST.BRN` config file lives) is gated off.
 ## How the PTP/IP protocol works on this camera
 
 It IS standard PIMA 15740-2 PTP/IP — but iCatch's implementation has
-three quirks that break naïve spec-conforming clients:
+**four** quirks that break naïve spec-conforming clients:
 
 1. **No length-prefix on the initiator name in `InitCmdReq`.** The PIMA
    spec wants a `PTP-string` (1-byte char count + UTF-16LE chars + null).
@@ -41,8 +41,19 @@ three quirks that break naïve spec-conforming clients:
    supplement has two interpretations in the wild; iCatch + libgphoto2
    follow this one. A client that has `Cancel=12 / EndData=11` will
    silently drop the data phase of every operation.
+4. **`SendObjectInfo.Filename` requires a 4-byte alignment header after
+   the length byte.** Standard PIMA PTP STRING is `[u8 length] + [N × u16
+   UTF-16LE chars]`. The iCatch ObjectInfo parser instead expects
+   `[u8 length] + [4 bytes of padding] + [N × u16 chars]`. Without the
+   padding, every uploaded filename loses its first 2 characters:
+   "SPHOST.BRN" → "OST.BRN" (= never triggers the bootloader FW UPDATE
+   menu); "sta.conf" → "a.conf"; "_BACKDOOR.CONF" → "ACKDOOR.CONF".
+   Characterized in `tools/ptp_string_quirk.py`. **Quirk is specific to
+   the Filename field** — `SetDevicePropValue` for STRING properties and
+   all outgoing PTP strings parse correctly per spec. Helper:
+   `larkfly.protocol.encode_ptp_string_icatch_objinfo()`.
 
-All three are handled in `larkfly/protocol.py`.
+All four are handled in `larkfly/protocol.py`.
 
 The camera also persists session state across TCP disconnections —
 issuing `OpenSession` again from a fresh socket returns `DeviceBusy

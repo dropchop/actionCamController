@@ -27,11 +27,23 @@ TARGETS = [0xD75F, 0xD7FC, 0xD7FF]
 
 
 def encode_ptp_string(s: str) -> bytes:
+    """Standard PTP STRING — used for non-Filename ObjectInfo fields."""
     if not s:
         return b'\x00'
     encoded = (s + '\x00').encode('utf-16-le')
-    n = len(s) + 1   # char count including null
+    n = len(s) + 1
     return bytes([n]) + encoded
+
+
+def encode_ptp_string_icatch_objinfo(s: str) -> bytes:
+    """iCatch quirk for ObjectInfo.Filename: 4 bytes of padding after the
+    length byte. Without this, every filename loses its first 2 chars.
+    See docs/findings.md PTP quirk #4 + tools/ptp_string_quirk.py."""
+    if not s:
+        return b'\x00' + b'\x00' * 4
+    encoded = (s + '\x00').encode('utf-16-le')
+    n = len(s) + 1
+    return bytes([n]) + b'\x00' * 4 + encoded
 
 
 def build_object_info(filename: str, payload_len: int,
@@ -54,10 +66,10 @@ def build_object_info(filename: str, payload_len: int,
     out += struct.pack('<H', 0)                 # AssociationType
     out += struct.pack('<I', 0)                 # AssociationDesc
     out += struct.pack('<I', 0)                 # SequenceNumber
-    out += encode_ptp_string(filename)          # Filename
-    out += encode_ptp_string('')                # CaptureDate
-    out += encode_ptp_string('')                # ModificationDate
-    out += encode_ptp_string('')                # Keywords
+    out += encode_ptp_string_icatch_objinfo(filename)  # Filename (4-byte-padded; iCatch quirk)
+    out += encode_ptp_string('')                       # CaptureDate
+    out += encode_ptp_string('')                       # ModificationDate
+    out += encode_ptp_string('')                       # Keywords
     return out
 
 

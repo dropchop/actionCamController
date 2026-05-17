@@ -98,6 +98,25 @@ def encode_ptp_string(s: str) -> bytes:
     return bytes([char_count]) + encoded
 
 
+# iCatch quirk for SendObjectInfo Filename field ONLY: the firmware's
+# ObjectInfo parser consumes [u8 length] + [4 bytes 'alignment header']
+# + [N × UTF-16LE chars]. Standard PTP STRING (used in DeviceInfo,
+# property values, etc.) parses correctly — this is specific to
+# ObjectInfo.Filename. Characterized 2026-05-17 via tools/ptp_string_quirk.py
+# — see docs/findings.md "iCatch wire-format quirks".
+# Without the 4-byte padding, every filename loses its first 2 chars
+# (e.g. "SPHOST.BRN" becomes "OST.BRN" on disk, and never triggers
+# the bootloader's FW UPDATE menu).
+def encode_ptp_string_icatch_objinfo(s: str) -> bytes:
+    if not s:
+        return b'\x00' + b'\x00' * 4
+    encoded = s.encode('utf-16-le') + b'\x00\x00'
+    char_count = len(s) + 1
+    if char_count > 255:
+        raise ValueError("PTP string too long (>254 chars)")
+    return bytes([char_count]) + b'\x00' * 4 + encoded
+
+
 # ---------- typed value codec (used in property descriptors etc.) ----
 def decode_value(buf: bytes, off: int, dt: int) -> tuple:
     """Decode one value of PTP data type `dt`. Returns (value, new_offset)."""
