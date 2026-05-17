@@ -8,6 +8,7 @@
 | [`ports.md`](ports.md) | Exhaustive network surface — every TCP/UDP port we tested. Verdict: no dev console reachable over the network. |
 | [`ptp-vendor.md`](ptp-vendor.md) | Per-opcode behaviour of all 8 PTP/IP vendor ops (`0x9601-0x9812`), including the parameter-shape matrix and wedge triggers. |
 | [`dev-console-hunt.md`](dev-console-hunt.md) | Running log of the "find a dev console" investigation: hidden properties, PTP write-access, the SPHOST.BRN bootloader trigger. **Updated with overnight RE — includes the full SCSI command table and verify-handshake spec.** |
+| [`untried-vectors.md`](untried-vectors.md) | **Forward-looking inventory.** Attack vectors that remain untried (or are partially explored), each with concrete test commands, references, and risk assessment. Compiled from two deep-RE agents + live verification 2026-05-17. |
 | [`archive/`](archive/) | Stale-but-preserved earlier docs: the chronological investigation log + the original (now-disproven) protocol hypothesis. |
 
 ## Where to look for specific things
