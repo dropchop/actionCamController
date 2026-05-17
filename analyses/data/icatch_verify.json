@@ -1,0 +1,18 @@
+{
+  "host": "192.168.1.1",
+  "storage_ids": [
+    "0x50001"
+  ],
+  "storage_info_hex": "0400030000000000009f0f0000000000a09b0f000000361e0000010000010000",
+  "sd_card_id": "0x50001",
+  "image_cnt": 65536,
+  "op_9614_rc": "0x2002",
+  "op_9614_len": 233,
+  "record_count": 13,
+  "timeDate": null,
+  "encdata_found": false,
+  "set_d617_rc": "0x200a",
+  "post_verify_ops_count": 28,
+  "post_verify_props_count": 0,
+  "post_verify_has_d617": false
+}

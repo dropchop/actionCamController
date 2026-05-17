@@ -1,0 +1,734 @@
+{
+  "host": "192.168.1.1",
+  "bind": "192.168.1.10",
+  "started_at": "2026-05-16T20:25:51",
+  "finished_at": "2026-05-16T20:43:15",
+  "aborted_at": null,
+  "aborted_reason": null,
+  "notes": [],
+  "probes": [
+    {
+      "label": "baseline:0x9601-poll",
+      "opcode": 38401,
+      "params": [
+        53249,
+        4294967295,
+        0
+      ],
+      "rc": 42497,
+      "resp_params": [
+        53250,
+        3,
+        0,
+        0,
+        0
+      ],
+      "data_len": 0,
+      "data_hex": "",
+      "elapsed_ms": 24.1,
+      "error": null
+    },
+    {
+      "label": "baseline:0x9614-bulk-propdesc",
+      "opcode": 38420,
+      "params": [],
+      "rc": 8194,
+      "resp_params": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "data_len": 233,
+      "data_hex": "1200000007d40600000100000001000000001000000006d4ffff010100000100000014000000015002000064ff0206000021214264ff110000000450020001050502030005080c11000000155002000101020203000102031100000006d602000102010203000200011100000007d602000101030203000102031200000009d60200000404020400010203041000000015d6020001000002020000010f00000016d60200002828020100281a000000055004000101000100020500010002000300040005001400000007500400011801180102020018013002090000000a5004000100000000020d30",
+      "elapsed_ms": 198.9,
+      "error": null
+    },
+    {
+      "label": "baseline:0x9805-global",
+      "opcode": 38917,
+      "params": [
+        4294967295,
+        0,
+        4294967295,
+        0,
+        4294967295
+      ],
+      "rc": 8193,
+      "resp_params": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "data_len": 1388,
+      "data_hex": "980000000200000001dc0600010005000200000002dc040001300200000041dc0a00020000000000000000000000000000000200000004dc080000000000000000000200000007dcffff044a00500047000000020000000bdc0600000000000200000044dcffff044a005000470000000200000003dc040000000100000001dc0600010005000100000002dc040001300100000041dc0a00010000000000000000000000000000000100000004dc080000000000000000000100000007dcffff0656004900440045004f000000010000000bdc0600000000000100000044dcffff0656004900440045004f0000000100000003dc040000000500000001dc0600",
+      "elapsed_ms": 111.0,
+      "error": null
+    },
+    {
+      "label": "probe:0x9602:no-params",
+      "opcode": 38402,
+      "params": [],
+      "rc": 8198,
+      "resp_params": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "data_len": 0,
+      "data_hex": "",
+      "elapsed_ms": 4.9,
+      "error": null
+    },
+    {
+      "label": "probe:0x9602:1=0",
+      "opcode": 38402,
+      "params": [
+        0
+      ],
+      "rc": -1,
+      "resp_params": [],
+      "data_len": 0,
+      "data_hex": "",
+      "elapsed_ms": 4004.3,
+      "error": "TransportError: recv after 0/8 bytes: timed out [SKIP-ON-RESUME: confirmed wedge]"
+    },
+    {
+      "label": "probe:0x9602:1=allFs",
+      "opcode": 38402,
+      "params": [
+        4294967295
+      ],
+      "rc": 8192,
+      "resp_params": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "data_len": 0,
+      "data_hex": "",
+      "elapsed_ms": 9.2,
+      "error": null
+    },
+    {
+      "label": "probe:0x9602:1=propcode-D001",
+      "opcode": 38402,
+      "params": [
+        53249
+      ],
+      "rc": 8201,
+      "resp_params": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "data_len": 0,
+      "data_hex": "",
+      "elapsed_ms": 4.1,
+      "error": null
+    },
+    {
+      "label": "probe:0x9602:2=0,0",
+      "opcode": 38402,
+      "params": [
+        0,
+        0
+      ],
+      "rc": -1,
+      "resp_params": [],
+      "data_len": 0,
+      "data_hex": "",
+      "elapsed_ms": 4004.9,
+      "error": "TransportError: recv after 0/8 bytes: timed out [SKIP-ON-RESUME: confirmed wedge]"
+    },
+    {
+      "label": "probe:0x9602:3=9601-shape",
+      "opcode": 38402,
+      "params": [
+        53249,
+        4294967295,
+        0
+      ],
+      "rc": 8201,
+      "resp_params": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "data_len": 0,
+      "data_hex": "",
+      "elapsed_ms": 4.0,
+      "error": null
+    },
+    {
+      "label": "probe:0x9602:5=9805-shape",
+      "opcode": 38402,
+      "params": [
+        4294967295,
+        0,
+        4294967295,
+        0,
+        4294967295
+      ],
+      "rc": 8192,
+      "resp_params": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "data_len": 0,
+      "data_hex": "",
+      "elapsed_ms": 9.7,
+      "error": null
+    },
+    {
+      "label": "probe:0x9801:no-params",
+      "opcode": 38913,
+      "params": [],
+      "rc": 43010,
+      "resp_params": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "data_len": 0,
+      "data_hex": "",
+      "elapsed_ms": 6.0,
+      "error": null
+    },
+    {
+      "label": "probe:0x9801:1=0",
+      "opcode": 38913,
+      "params": [
+        0
+      ],
+      "rc": 43010,
+      "resp_params": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "data_len": 0,
+      "data_hex": "",
+      "elapsed_ms": 4.1,
+      "error": null
+    },
+    {
+      "label": "probe:0x9801:1=allFs",
+      "opcode": 38913,
+      "params": [
+        4294967295
+      ],
+      "rc": 43010,
+      "resp_params": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "data_len": 0,
+      "data_hex": "",
+      "elapsed_ms": 4.6,
+      "error": null
+    },
+    {
+      "label": "probe:0x9801:1=propcode-D001",
+      "opcode": 38913,
+      "params": [
+        53249
+      ],
+      "rc": 43010,
+      "resp_params": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "data_len": 0,
+      "data_hex": "",
+      "elapsed_ms": 4.6,
+      "error": null
+    },
+    {
+      "label": "probe:0x9801:2=0,0",
+      "opcode": 38913,
+      "params": [
+        0,
+        0
+      ],
+      "rc": 43010,
+      "resp_params": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "data_len": 0,
+      "data_hex": "",
+      "elapsed_ms": 4.1,
+      "error": null
+    },
+    {
+      "label": "probe:0x9801:3=9601-shape",
+      "opcode": 38913,
+      "params": [
+        53249,
+        4294967295,
+        0
+      ],
+      "rc": 43010,
+      "resp_params": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "data_len": 0,
+      "data_hex": "",
+      "elapsed_ms": 5.5,
+      "error": null
+    },
+    {
+      "label": "probe:0x9801:5=9805-shape",
+      "opcode": 38913,
+      "params": [
+        4294967295,
+        0,
+        4294967295,
+        0,
+        4294967295
+      ],
+      "rc": 43010,
+      "resp_params": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "data_len": 0,
+      "data_hex": "",
+      "elapsed_ms": 4.1,
+      "error": null
+    },
+    {
+      "label": "probe:0x9802:no-params",
+      "opcode": 38914,
+      "params": [],
+      "rc": 43018,
+      "resp_params": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "data_len": 0,
+      "data_hex": "",
+      "elapsed_ms": 2.1,
+      "error": null
+    },
+    {
+      "label": "probe:0x9802:1=0",
+      "opcode": 38914,
+      "params": [],
+      "rc": -1,
+      "resp_params": [],
+      "data_len": 0,
+      "data_hex": "",
+      "elapsed_ms": 0.0,
+      "error": "[SKIP-ON-RESUME: 0x9802 demonstrated delayed wedge on no-params; not retrying others]"
+    },
+    {
+      "label": "probe:0x9802:1=allFs",
+      "opcode": 38914,
+      "params": [],
+      "rc": -1,
+      "resp_params": [],
+      "data_len": 0,
+      "data_hex": "",
+      "elapsed_ms": 0.0,
+      "error": "[SKIP-ON-RESUME: 0x9802 demonstrated delayed wedge on no-params; not retrying others]"
+    },
+    {
+      "label": "probe:0x9802:1=propcode-D001",
+      "opcode": 38914,
+      "params": [],
+      "rc": -1,
+      "resp_params": [],
+      "data_len": 0,
+      "data_hex": "",
+      "elapsed_ms": 0.0,
+      "error": "[SKIP-ON-RESUME: 0x9802 demonstrated delayed wedge on no-params; not retrying others]"
+    },
+    {
+      "label": "probe:0x9802:2=0,0",
+      "opcode": 38914,
+      "params": [],
+      "rc": -1,
+      "resp_params": [],
+      "data_len": 0,
+      "data_hex": "",
+      "elapsed_ms": 0.0,
+      "error": "[SKIP-ON-RESUME: 0x9802 demonstrated delayed wedge on no-params; not retrying others]"
+    },
+    {
+      "label": "probe:0x9802:3=9601-shape",
+      "opcode": 38914,
+      "params": [],
+      "rc": -1,
+      "resp_params": [],
+      "data_len": 0,
+      "data_hex": "",
+      "elapsed_ms": 0.0,
+      "error": "[SKIP-ON-RESUME: 0x9802 demonstrated delayed wedge on no-params; not retrying others]"
+    },
+    {
+      "label": "probe:0x9802:5=9805-shape",
+      "opcode": 38914,
+      "params": [],
+      "rc": -1,
+      "resp_params": [],
+      "data_len": 0,
+      "data_hex": "",
+      "elapsed_ms": 0.0,
+      "error": "[SKIP-ON-RESUME: 0x9802 demonstrated delayed wedge on no-params; not retrying others]"
+    },
+    {
+      "label": "probe:0x9803:no-params",
+      "opcode": 38915,
+      "params": [],
+      "rc": 8202,
+      "resp_params": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "data_len": 0,
+      "data_hex": "",
+      "elapsed_ms": 2.3,
+      "error": null
+    },
+    {
+      "label": "probe:0x9803:1=0",
+      "opcode": 38915,
+      "params": [
+        0
+      ],
+      "rc": 8202,
+      "resp_params": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "data_len": 0,
+      "data_hex": "",
+      "elapsed_ms": 2.2,
+      "error": null
+    },
+    {
+      "label": "probe:0x9803:1=allFs",
+      "opcode": 38915,
+      "params": [
+        4294967295
+      ],
+      "rc": 8201,
+      "resp_params": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "data_len": 0,
+      "data_hex": "",
+      "elapsed_ms": 7.3,
+      "error": null
+    },
+    {
+      "label": "probe:0x9803:1=propcode-D001",
+      "opcode": 38915,
+      "params": [
+        53249
+      ],
+      "rc": 8201,
+      "resp_params": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "data_len": 0,
+      "data_hex": "",
+      "elapsed_ms": 4.0,
+      "error": null
+    },
+    {
+      "label": "probe:0x9803:2=0,0",
+      "opcode": 38915,
+      "params": [
+        0,
+        0
+      ],
+      "rc": 8202,
+      "resp_params": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "data_len": 0,
+      "data_hex": "",
+      "elapsed_ms": 2.2,
+      "error": null
+    },
+    {
+      "label": "probe:0x9803:3=9601-shape",
+      "opcode": 38915,
+      "params": [
+        53249,
+        4294967295,
+        0
+      ],
+      "rc": 8201,
+      "resp_params": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "data_len": 0,
+      "data_hex": "",
+      "elapsed_ms": 4.0,
+      "error": null
+    },
+    {
+      "label": "probe:0x9803:5=9805-shape",
+      "opcode": 38915,
+      "params": [
+        4294967295,
+        0,
+        4294967295,
+        0,
+        4294967295
+      ],
+      "rc": 8201,
+      "resp_params": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "data_len": 0,
+      "data_hex": "",
+      "elapsed_ms": 6.8,
+      "error": null
+    },
+    {
+      "label": "probe:0x9812:no-params",
+      "opcode": 38930,
+      "params": [],
+      "rc": 8197,
+      "resp_params": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "data_len": 0,
+      "data_hex": "",
+      "elapsed_ms": 6.5,
+      "error": null
+    },
+    {
+      "label": "probe:0x9812:1=0",
+      "opcode": 38930,
+      "params": [
+        0
+      ],
+      "rc": 8197,
+      "resp_params": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "data_len": 0,
+      "data_hex": "",
+      "elapsed_ms": 4.1,
+      "error": null
+    },
+    {
+      "label": "probe:0x9812:1=allFs",
+      "opcode": 38930,
+      "params": [
+        4294967295
+      ],
+      "rc": 8197,
+      "resp_params": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "data_len": 0,
+      "data_hex": "",
+      "elapsed_ms": 4.0,
+      "error": null
+    },
+    {
+      "label": "probe:0x9812:1=propcode-D001",
+      "opcode": 38930,
+      "params": [],
+      "rc": -1,
+      "resp_params": [],
+      "data_len": 0,
+      "data_hex": "",
+      "elapsed_ms": 0.0,
+      "error": "[SKIP-ON-RESUME: 0x9812 delayed-wedge after 3 prior calls; not retrying]"
+    },
+    {
+      "label": "probe:0x9812:2=0,0",
+      "opcode": 38930,
+      "params": [],
+      "rc": -1,
+      "resp_params": [],
+      "data_len": 0,
+      "data_hex": "",
+      "elapsed_ms": 0.0,
+      "error": "[SKIP-ON-RESUME: 0x9812 delayed-wedge after 3 prior calls; not retrying]"
+    },
+    {
+      "label": "probe:0x9812:3=9601-shape",
+      "opcode": 38930,
+      "params": [],
+      "rc": -1,
+      "resp_params": [],
+      "data_len": 0,
+      "data_hex": "",
+      "elapsed_ms": 0.0,
+      "error": "[SKIP-ON-RESUME: 0x9812 delayed-wedge after 3 prior calls; not retrying]"
+    },
+    {
+      "label": "probe:0x9812:5=9805-shape",
+      "opcode": 38930,
+      "params": [],
+      "rc": -1,
+      "resp_params": [],
+      "data_len": 0,
+      "data_hex": "",
+      "elapsed_ms": 0.0,
+      "error": "[SKIP-ON-RESUME: 0x9812 delayed-wedge after 3 prior calls; not retrying]"
+    },
+    {
+      "label": "single:0x9602=[0x00000001]",
+      "opcode": 38402,
+      "params": [
+        1
+      ],
+      "rc": 8192,
+      "resp_params": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "data_len": 0,
+      "data_hex": "",
+      "elapsed_ms": 9.6,
+      "error": null
+    },
+    {
+      "label": "single:0x9803=[0x00000001]",
+      "opcode": 38915,
+      "params": [
+        1
+      ],
+      "rc": 8202,
+      "resp_params": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "data_len": 0,
+      "data_hex": "",
+      "elapsed_ms": 2.3,
+      "error": null
+    },
+    {
+      "label": "single:0x9803=[0x00000001, 0x00000001]",
+      "opcode": 38915,
+      "params": [
+        1,
+        1
+      ],
+      "rc": 8202,
+      "resp_params": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "data_len": 0,
+      "data_hex": "",
+      "elapsed_ms": 2.1,
+      "error": null
+    },
+    {
+      "label": "single:0x9803=[0x00000001, 0xffffffff]",
+      "opcode": 38915,
+      "params": [
+        1,
+        4294967295
+      ],
+      "rc": 8202,
+      "resp_params": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "data_len": 0,
+      "data_hex": "",
+      "elapsed_ms": 5.0,
+      "error": null
+    }
+  ]
+}

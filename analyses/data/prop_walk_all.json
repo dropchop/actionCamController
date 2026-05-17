@@ -1,0 +1,1289 @@
+[
+  {
+    "code": "0xD407",
+    "desc": {
+      "raw_len": 14,
+      "property_code": 54279,
+      "datatype": 6,
+      "datatype_name": "UINT32",
+      "getset": 0,
+      "factory_default": 1,
+      "current_value": 1,
+      "form": "none"
+    },
+    "datatype": "0x0000",
+    "get_set": "RO",
+    "default": null,
+    "current_from_desc": 1,
+    "form": "NONE",
+    "live_value": 1
+  },
+  {
+    "code": "0xD406",
+    "desc": {
+      "raw_len": 12,
+      "property_code": 54278,
+      "datatype": 65535,
+      "datatype_name": "STRING",
+      "getset": 1,
+      "factory_default": "",
+      "current_value": "",
+      "form": "none"
+    },
+    "datatype": "0x0000",
+    "get_set": "RO",
+    "default": null,
+    "current_from_desc": "",
+    "form": "NONE",
+    "live_value": ""
+  },
+  {
+    "code": "0x5001",
+    "desc": {
+      "raw_len": 16,
+      "property_code": 20481,
+      "datatype": 2,
+      "datatype_name": "UINT8",
+      "getset": 0,
+      "factory_default": 100,
+      "current_value": 255,
+      "form": "enum",
+      "allowed_values": [
+        0,
+        33,
+        33,
+        66,
+        100,
+        255
+      ]
+    },
+    "datatype": "0x0000",
+    "get_set": "RO",
+    "default": null,
+    "current_from_desc": 255,
+    "form": "NONE",
+    "live_value": 255
+  },
+  {
+    "code": "0x5004",
+    "desc": {
+      "raw_len": 13,
+      "property_code": 20484,
+      "datatype": 2,
+      "datatype_name": "UINT8",
+      "getset": 1,
+      "factory_default": 5,
+      "current_value": 5,
+      "form": "enum",
+      "allowed_values": [
+        5,
+        8,
+        12
+      ]
+    },
+    "datatype": "0x0000",
+    "get_set": "RO",
+    "default": null,
+    "current_from_desc": 5,
+    "form": "NONE",
+    "live_value": 5
+  },
+  {
+    "code": "0x5015",
+    "desc": {
+      "raw_len": 13,
+      "property_code": 20501,
+      "datatype": 2,
+      "datatype_name": "UINT8",
+      "getset": 1,
+      "factory_default": 1,
+      "current_value": 2,
+      "form": "enum",
+      "allowed_values": [
+        1,
+        2,
+        3
+      ]
+    },
+    "datatype": "0x0000",
+    "get_set": "RO",
+    "default": null,
+    "current_from_desc": 2,
+    "form": "NONE",
+    "live_value": 2
+  },
+  {
+    "code": "0xD606",
+    "desc": {
+      "raw_len": 13,
+      "property_code": 54790,
+      "datatype": 2,
+      "datatype_name": "UINT8",
+      "getset": 1,
+      "factory_default": 2,
+      "current_value": 1,
+      "form": "enum",
+      "allowed_values": [
+        2,
+        0,
+        1
+      ]
+    },
+    "datatype": "0x0000",
+    "get_set": "RO",
+    "default": null,
+    "current_from_desc": 1,
+    "form": "NONE",
+    "live_value": 1
+  },
+  {
+    "code": "0xD607",
+    "desc": {
+      "raw_len": 13,
+      "property_code": 54791,
+      "datatype": 2,
+      "datatype_name": "UINT8",
+      "getset": 1,
+      "factory_default": 1,
+      "current_value": 3,
+      "form": "enum",
+      "allowed_values": [
+        1,
+        2,
+        3
+      ]
+    },
+    "datatype": "0x0000",
+    "get_set": "RO",
+    "default": null,
+    "current_from_desc": 3,
+    "form": "NONE",
+    "live_value": 3
+  },
+  {
+    "code": "0xD609",
+    "desc": {
+      "raw_len": 14,
+      "property_code": 54793,
+      "datatype": 2,
+      "datatype_name": "UINT8",
+      "getset": 0,
+      "factory_default": 4,
+      "current_value": 4,
+      "form": "enum",
+      "allowed_values": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    "datatype": "0x0000",
+    "get_set": "RO",
+    "default": null,
+    "current_from_desc": 4,
+    "form": "NONE",
+    "live_value": 4
+  },
+  {
+    "code": "0xD615",
+    "desc": {
+      "raw_len": 12,
+      "property_code": 54805,
+      "datatype": 2,
+      "datatype_name": "UINT8",
+      "getset": 1,
+      "factory_default": 0,
+      "current_value": 0,
+      "form": "enum",
+      "allowed_values": [
+        0,
+        1
+      ]
+    },
+    "datatype": "0x0000",
+    "get_set": "RO",
+    "default": null,
+    "current_from_desc": 0,
+    "form": "NONE",
+    "live_value": 0
+  },
+  {
+    "code": "0xD616",
+    "desc": {
+      "raw_len": 11,
+      "property_code": 54806,
+      "datatype": 2,
+      "datatype_name": "UINT8",
+      "getset": 0,
+      "factory_default": 40,
+      "current_value": 40,
+      "form": "enum",
+      "allowed_values": [
+        40
+      ]
+    },
+    "datatype": "0x0000",
+    "get_set": "RO",
+    "default": null,
+    "current_from_desc": 40,
+    "form": "NONE",
+    "live_value": 40
+  },
+  {
+    "code": "0x5005",
+    "desc": {
+      "raw_len": 22,
+      "property_code": 20485,
+      "datatype": 4,
+      "datatype_name": "UINT16",
+      "getset": 1,
+      "factory_default": 1,
+      "current_value": 1,
+      "form": "enum",
+      "allowed_values": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    "datatype": "0x0000",
+    "get_set": "RO",
+    "default": null,
+    "current_from_desc": 1,
+    "form": "NONE",
+    "live_value": 1
+  },
+  {
+    "code": "0x5007",
+    "desc": {
+      "raw_len": 16,
+      "property_code": 20487,
+      "datatype": 4,
+      "datatype_name": "UINT16",
+      "getset": 1,
+      "factory_default": 280,
+      "current_value": 280,
+      "form": "enum",
+      "allowed_values": [
+        280,
+        560
+      ]
+    },
+    "datatype": "0x0000",
+    "get_set": "RO",
+    "default": null,
+    "current_from_desc": 280,
+    "form": "NONE",
+    "live_value": 280
+  },
+  {
+    "code": "0x500A",
+    "desc_rc": "0x2002",
+    "value_rc": "0x2002"
+  },
+  {
+    "code": "0x500B",
+    "desc": {
+      "raw_len": 18,
+      "property_code": 20491,
+      "datatype": 4,
+      "datatype_name": "UINT16",
+      "getset": 1,
+      "factory_default": 1,
+      "current_value": 2,
+      "form": "enum",
+      "allowed_values": [
+        1,
+        2,
+        3
+      ]
+    },
+    "datatype": "0x0000",
+    "get_set": "RO",
+    "default": null,
+    "current_from_desc": 2,
+    "form": "NONE",
+    "live_value": 2
+  },
+  {
+    "code": "0x500C",
+    "desc_rc": "0x2002",
+    "value_rc": "0x2002"
+  },
+  {
+    "code": "0x500E",
+    "desc": {
+      "raw_len": 26,
+      "property_code": 20494,
+      "datatype": 4,
+      "datatype_name": "UINT16",
+      "getset": 0,
+      "factory_default": 2,
+      "current_value": 2,
+      "form": "enum",
+      "allowed_values": [
+        1,
+        2,
+        4,
+        7,
+        49153,
+        49154,
+        49155
+      ]
+    },
+    "datatype": "0x0000",
+    "get_set": "RO",
+    "default": null,
+    "current_from_desc": 2,
+    "form": "NONE",
+    "live_value": 2
+  },
+  {
+    "code": "0x500F",
+    "desc": {
+      "raw_len": 26,
+      "property_code": 20495,
+      "datatype": 4,
+      "datatype_name": "UINT16",
+      "getset": 1,
+      "factory_default": 0,
+      "current_value": 0,
+      "form": "enum",
+      "allowed_values": [
+        0,
+        100,
+        200,
+        400,
+        800,
+        1600,
+        3200
+      ]
+    },
+    "datatype": "0x0000",
+    "get_set": "RO",
+    "default": null,
+    "current_from_desc": 0,
+    "form": "NONE",
+    "live_value": 0
+  },
+  {
+    "code": "0x5010",
+    "desc": {
+      "raw_len": 22,
+      "property_code": 20496,
+      "datatype": 3,
+      "datatype_name": "INT16",
+      "getset": 1,
+      "factory_default": 0,
+      "current_value": 0,
+      "form": "enum",
+      "allowed_values": [
+        -2000,
+        -1000,
+        0,
+        1000,
+        2000
+      ]
+    },
+    "datatype": "0x0000",
+    "get_set": "RO",
+    "default": null,
+    "current_from_desc": 0,
+    "form": "NONE",
+    "live_value": 0
+  },
+  {
+    "code": "0x5013",
+    "desc": {
+      "raw_len": 16,
+      "property_code": 20499,
+      "datatype": 4,
+      "datatype_name": "UINT16",
+      "getset": 1,
+      "factory_default": 1,
+      "current_value": 1,
+      "form": "enum",
+      "allowed_values": [
+        1,
+        2
+      ]
+    },
+    "datatype": "0x0000",
+    "get_set": "RO",
+    "default": null,
+    "current_from_desc": 1,
+    "form": "NONE",
+    "live_value": 1
+  },
+  {
+    "code": "0x5018",
+    "desc": {
+      "raw_len": 22,
+      "property_code": 20504,
+      "datatype": 4,
+      "datatype_name": "UINT16",
+      "getset": 1,
+      "factory_default": 1,
+      "current_value": 1,
+      "form": "enum",
+      "allowed_values": [
+        1,
+        2,
+        5,
+        6,
+        7
+      ]
+    },
+    "datatype": "0x0000",
+    "get_set": "RO",
+    "default": null,
+    "current_from_desc": 1,
+    "form": "NONE",
+    "live_value": 1
+  },
+  {
+    "code": "0x501A",
+    "desc": {
+      "raw_len": 26,
+      "property_code": 20506,
+      "datatype": 4,
+      "datatype_name": "UINT16",
+      "getset": 1,
+      "factory_default": 0,
+      "current_value": 65535,
+      "form": "enum",
+      "allowed_values": [
+        65535,
+        5,
+        10,
+        15,
+        20,
+        30,
+        60
+      ]
+    },
+    "datatype": "0x0000",
+    "get_set": "RO",
+    "default": null,
+    "current_from_desc": 65535,
+    "form": "NONE",
+    "live_value": 65535
+  },
+  {
+    "code": "0xD603",
+    "desc": {
+      "raw_len": 22,
+      "property_code": 54787,
+      "datatype": 4,
+      "datatype_name": "UINT16",
+      "getset": 1,
+      "factory_default": 1,
+      "current_value": 1,
+      "form": "enum",
+      "allowed_values": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    "datatype": "0x0000",
+    "get_set": "RO",
+    "default": null,
+    "current_from_desc": 1,
+    "form": "NONE",
+    "live_value": 1
+  },
+  {
+    "code": "0xD604",
+    "desc": {
+      "raw_len": 34,
+      "property_code": 54788,
+      "datatype": 4,
+      "datatype_name": "UINT16",
+      "getset": 1,
+      "factory_default": 1,
+      "current_value": 1,
+      "form": "enum",
+      "allowed_values": [
+        1,
+        17,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ]
+    },
+    "datatype": "0x0000",
+    "get_set": "RO",
+    "default": null,
+    "current_from_desc": 1,
+    "form": "NONE",
+    "live_value": 1
+  },
+  {
+    "code": "0xD613",
+    "desc": {
+      "raw_len": 16,
+      "property_code": 54803,
+      "datatype": 4,
+      "datatype_name": "UINT16",
+      "getset": 0,
+      "factory_default": 258,
+      "current_value": 258,
+      "form": "range",
+      "min": 0,
+      "max": 65535,
+      "step": 1
+    },
+    "datatype": "0x0000",
+    "get_set": "RO",
+    "default": null,
+    "current_from_desc": 258,
+    "form": "NONE",
+    "live_value": 258
+  },
+  {
+    "code": "0x500D",
+    "desc": {
+      "raw_len": 26,
+      "property_code": 20493,
+      "datatype": 6,
+      "datatype_name": "UINT32",
+      "getset": 0,
+      "factory_default": 40,
+      "current_value": 10000,
+      "form": "range",
+      "min": 1,
+      "max": 65535,
+      "step": 10000
+    },
+    "datatype": "0x0000",
+    "get_set": "RO",
+    "default": null,
+    "current_from_desc": 10000,
+    "form": "NONE",
+    "live_value": 10000
+  },
+  {
+    "code": "0x5012",
+    "desc": {
+      "raw_len": 32,
+      "property_code": 20498,
+      "datatype": 6,
+      "datatype_name": "UINT32",
+      "getset": 1,
+      "factory_default": 0,
+      "current_value": 2000,
+      "form": "enum",
+      "allowed_values": [
+        0,
+        2000,
+        5000,
+        10000
+      ]
+    },
+    "datatype": "0x0000",
+    "get_set": "RO",
+    "default": null,
+    "current_from_desc": 2000,
+    "form": "NONE",
+    "live_value": 2000
+  },
+  {
+    "code": "0x501B",
+    "desc": {
+      "raw_len": 44,
+      "property_code": 20507,
+      "datatype": 6,
+      "datatype_name": "UINT32",
+      "getset": 1,
+      "factory_default": 0,
+      "current_value": 0,
+      "form": "enum",
+      "allowed_values": [
+        0,
+        1,
+        3,
+        5,
+        10,
+        30,
+        60
+      ]
+    },
+    "datatype": "0x0000",
+    "get_set": "RO",
+    "default": null,
+    "current_from_desc": 0,
+    "form": "NONE",
+    "live_value": 0
+  },
+  {
+    "code": "0xD610",
+    "desc": {
+      "raw_len": 26,
+      "property_code": 54800,
+      "datatype": 6,
+      "datatype_name": "UINT32",
+      "getset": 0,
+      "factory_default": 10373,
+      "current_value": 10373,
+      "form": "range",
+      "min": 1,
+      "max": 4294967295,
+      "step": 1
+    },
+    "datatype": "0x0000",
+    "get_set": "RO",
+    "default": null,
+    "current_from_desc": 10373,
+    "form": "NONE",
+    "live_value": 10373
+  },
+  {
+    "code": "0x501E",
+    "desc": {
+      "raw_len": 24,
+      "property_code": 20510,
+      "datatype": 65535,
+      "datatype_name": "STRING",
+      "getset": 0,
+      "factory_default": "V11",
+      "current_value": "V11",
+      "form": "unknown_form_flag_255"
+    },
+    "datatype": "0x0000",
+    "get_set": "RO",
+    "default": null,
+    "current_from_desc": "V11",
+    "form": "NONE",
+    "live_value": "V11"
+  },
+  {
+    "code": "0x501F",
+    "desc": {
+      "raw_len": 44,
+      "property_code": 20511,
+      "datatype": 65535,
+      "datatype_name": "STRING",
+      "getset": 0,
+      "factory_default": "20251206",
+      "current_value": "20251206",
+      "form": "unknown_form_flag_255"
+    },
+    "datatype": "0x0000",
+    "get_set": "RO",
+    "default": null,
+    "current_from_desc": "20251206",
+    "form": "NONE",
+    "live_value": "20251206"
+  },
+  {
+    "code": "0xD700",
+    "desc": {
+      "raw_len": 28,
+      "property_code": 55040,
+      "datatype": 6,
+      "datatype_name": "UINT32",
+      "getset": 0,
+      "factory_default": 3,
+      "current_value": 7,
+      "form": "enum",
+      "allowed_values": [
+        1,
+        3,
+        7
+      ]
+    },
+    "datatype": "0x0000",
+    "get_set": "RO",
+    "default": null,
+    "current_from_desc": 7,
+    "form": "NONE",
+    "live_value": 7
+  },
+  {
+    "code": "0xD704",
+    "desc": {
+      "raw_len": 24,
+      "property_code": 55044,
+      "datatype": 6,
+      "datatype_name": "UINT32",
+      "getset": 0,
+      "factory_default": 1,
+      "current_value": 1,
+      "form": "enum",
+      "allowed_values": [
+        1,
+        0
+      ]
+    },
+    "datatype": "0x0000",
+    "get_set": "RO",
+    "default": null,
+    "current_from_desc": 1,
+    "form": "NONE",
+    "live_value": 1
+  },
+  {
+    "code": "0xD720",
+    "desc": {
+      "raw_len": 32,
+      "property_code": 55072,
+      "datatype": 6,
+      "datatype_name": "UINT32",
+      "getset": 1,
+      "factory_default": 0,
+      "current_value": 0,
+      "form": "enum",
+      "allowed_values": [
+        0,
+        60,
+        180,
+        300
+      ]
+    },
+    "datatype": "0x0000",
+    "get_set": "RO",
+    "default": null,
+    "current_from_desc": 0,
+    "form": "NONE",
+    "live_value": 0
+  },
+  {
+    "code": "0xD723",
+    "desc": {
+      "raw_len": 36,
+      "property_code": 55075,
+      "datatype": 6,
+      "datatype_name": "UINT32",
+      "getset": 1,
+      "factory_default": 0,
+      "current_value": 0,
+      "form": "enum",
+      "allowed_values": [
+        2147483650,
+        2147483649,
+        0,
+        1,
+        2
+      ]
+    },
+    "datatype": "0x0000",
+    "get_set": "RO",
+    "default": null,
+    "current_from_desc": 0,
+    "form": "NONE",
+    "live_value": 0
+  },
+  {
+    "code": "0xD724",
+    "desc": {
+      "raw_len": 24,
+      "property_code": 55076,
+      "datatype": 6,
+      "datatype_name": "UINT32",
+      "getset": 1,
+      "factory_default": 0,
+      "current_value": 0,
+      "form": "enum",
+      "allowed_values": [
+        0,
+        1
+      ]
+    },
+    "datatype": "0x0000",
+    "get_set": "RO",
+    "default": null,
+    "current_from_desc": 0,
+    "form": "NONE",
+    "live_value": 0
+  },
+  {
+    "code": "0xD725",
+    "desc": {
+      "raw_len": 32,
+      "property_code": 55077,
+      "datatype": 6,
+      "datatype_name": "UINT32",
+      "getset": 1,
+      "factory_default": 0,
+      "current_value": 0,
+      "form": "enum",
+      "allowed_values": [
+        0,
+        60,
+        180,
+        300
+      ]
+    },
+    "datatype": "0x0000",
+    "get_set": "RO",
+    "default": null,
+    "current_from_desc": 0,
+    "form": "NONE",
+    "live_value": 0
+  },
+  {
+    "code": "0xD726",
+    "desc": {
+      "raw_len": 40,
+      "property_code": 55078,
+      "datatype": 6,
+      "datatype_name": "UINT32",
+      "getset": 1,
+      "factory_default": 0,
+      "current_value": 0,
+      "form": "enum",
+      "allowed_values": [
+        0,
+        2,
+        4,
+        6,
+        10,
+        15
+      ]
+    },
+    "datatype": "0x0000",
+    "get_set": "RO",
+    "default": null,
+    "current_from_desc": 0,
+    "form": "NONE",
+    "live_value": 0
+  },
+  {
+    "code": "0xD727",
+    "desc": {
+      "raw_len": 24,
+      "property_code": 55079,
+      "datatype": 6,
+      "datatype_name": "UINT32",
+      "getset": 1,
+      "factory_default": 0,
+      "current_value": 1,
+      "form": "enum",
+      "allowed_values": [
+        0,
+        1
+      ]
+    },
+    "datatype": "0x0000",
+    "get_set": "RO",
+    "default": null,
+    "current_from_desc": 1,
+    "form": "NONE",
+    "live_value": 1
+  },
+  {
+    "code": "0xD75F",
+    "desc": {
+      "raw_len": 24,
+      "property_code": 55135,
+      "datatype": 6,
+      "datatype_name": "UINT32",
+      "getset": 1,
+      "factory_default": 1,
+      "current_value": 1,
+      "form": "enum",
+      "allowed_values": [
+        0,
+        1
+      ]
+    },
+    "datatype": "0x0000",
+    "get_set": "RO",
+    "default": null,
+    "current_from_desc": 1,
+    "form": "NONE",
+    "live_value": 1
+  },
+  {
+    "code": "0xD7AB",
+    "desc": {
+      "raw_len": 52,
+      "property_code": 55211,
+      "datatype": 6,
+      "datatype_name": "UINT32",
+      "getset": 1,
+      "factory_default": 335636492,
+      "current_value": 335636492,
+      "form": "enum",
+      "allowed_values": [
+        335636492,
+        335636492,
+        335636492,
+        335636492,
+        335636492,
+        335636492,
+        335636492,
+        335636492,
+        335636492
+      ]
+    },
+    "datatype": "0x0000",
+    "get_set": "RO",
+    "default": null,
+    "current_from_desc": 335636492,
+    "form": "NONE",
+    "live_value": 335636492
+  },
+  {
+    "code": "0xD7AC",
+    "desc": {
+      "raw_len": 26,
+      "property_code": 55212,
+      "datatype": 6,
+      "datatype_name": "UINT32",
+      "getset": 1,
+      "factory_default": 1,
+      "current_value": 1,
+      "form": "range",
+      "min": 0,
+      "max": 335636492,
+      "step": 1
+    },
+    "datatype": "0x0000",
+    "get_set": "RO",
+    "default": null,
+    "current_from_desc": 1,
+    "form": "NONE",
+    "live_value": 1
+  },
+  {
+    "code": "0xD7AD",
+    "desc": {
+      "raw_len": 26,
+      "property_code": 55213,
+      "datatype": 6,
+      "datatype_name": "UINT32",
+      "getset": 1,
+      "factory_default": 1,
+      "current_value": 1,
+      "form": "range",
+      "min": 0,
+      "max": 335636492,
+      "step": 1
+    },
+    "datatype": "0x0000",
+    "get_set": "RO",
+    "default": null,
+    "current_from_desc": 1,
+    "form": "NONE",
+    "live_value": 1
+  },
+  {
+    "code": "0xD7AE",
+    "desc": {
+      "raw_len": 52,
+      "property_code": 55214,
+      "datatype": 6,
+      "datatype_name": "UINT32",
+      "getset": 1,
+      "factory_default": 30,
+      "current_value": 30,
+      "form": "enum",
+      "allowed_values": [
+        30,
+        30,
+        30,
+        30,
+        30,
+        30,
+        30,
+        30,
+        30
+      ]
+    },
+    "datatype": "0x0000",
+    "get_set": "RO",
+    "default": null,
+    "current_from_desc": 30,
+    "form": "NONE",
+    "live_value": 30
+  },
+  {
+    "code": "0xD7F0",
+    "desc": {
+      "raw_len": 24,
+      "property_code": 55280,
+      "datatype": 6,
+      "datatype_name": "UINT32",
+      "getset": 0,
+      "factory_default": 1,
+      "current_value": 1,
+      "form": "enum",
+      "allowed_values": [
+        1,
+        0
+      ]
+    },
+    "datatype": "0x0000",
+    "get_set": "RO",
+    "default": null,
+    "current_from_desc": 1,
+    "form": "NONE",
+    "live_value": 1
+  },
+  {
+    "code": "0xD7FC",
+    "desc": {
+      "raw_len": 24,
+      "property_code": 55292,
+      "datatype": 6,
+      "datatype_name": "UINT32",
+      "getset": 1,
+      "factory_default": 1,
+      "current_value": 1,
+      "form": "enum",
+      "allowed_values": [
+        0,
+        1
+      ]
+    },
+    "datatype": "0x0000",
+    "get_set": "RO",
+    "default": null,
+    "current_from_desc": 1,
+    "form": "NONE",
+    "live_value": 1
+  },
+  {
+    "code": "0xD7FD",
+    "desc": {
+      "raw_len": 26,
+      "property_code": 55293,
+      "datatype": 6,
+      "datatype_name": "UINT32",
+      "getset": 1,
+      "factory_default": 0,
+      "current_value": 0,
+      "form": "range",
+      "min": 0,
+      "max": 30,
+      "step": 4294967295
+    },
+    "datatype": "0x0000",
+    "get_set": "RO",
+    "default": null,
+    "current_from_desc": 0,
+    "form": "NONE",
+    "live_value": 0
+  },
+  {
+    "code": "0xD7FE",
+    "desc": {
+      "raw_len": 26,
+      "property_code": 55294,
+      "datatype": 6,
+      "datatype_name": "UINT32",
+      "getset": 0,
+      "factory_default": 100,
+      "current_value": 204,
+      "form": "range",
+      "min": 0,
+      "max": 600,
+      "step": 1
+    },
+    "datatype": "0x0000",
+    "get_set": "RO",
+    "default": null,
+    "current_from_desc": 204,
+    "form": "NONE",
+    "live_value": 204
+  },
+  {
+    "code": "0xD7FF",
+    "desc": {
+      "raw_len": 24,
+      "property_code": 55295,
+      "datatype": 6,
+      "datatype_name": "UINT32",
+      "getset": 1,
+      "factory_default": 1,
+      "current_value": 1,
+      "form": "enum",
+      "allowed_values": [
+        0,
+        1
+      ]
+    },
+    "datatype": "0x0000",
+    "get_set": "RO",
+    "default": null,
+    "current_from_desc": 1,
+    "form": "NONE",
+    "live_value": 1
+  },
+  {
+    "code": "0xD801",
+    "desc": {
+      "raw_len": 64,
+      "property_code": 55297,
+      "datatype": 65535,
+      "datatype_name": "STRING",
+      "getset": 0,
+      "factory_default": "G:\\SPHOST.BRN",
+      "current_value": "G:\\SPHOST.BRN",
+      "form": "unknown_form_flag_255"
+    },
+    "datatype": "0x0000",
+    "get_set": "RO",
+    "default": null,
+    "current_from_desc": "G:\\SPHOST.BRN",
+    "form": "NONE",
+    "live_value": "G:\\SPHOST.BRN"
+  },
+  {
+    "code": "0xD83E",
+    "desc": {
+      "raw_len": 64,
+      "property_code": 55358,
+      "datatype": 65535,
+      "datatype_name": "STRING",
+      "getset": 1,
+      "factory_default": "G:\\SPHOST.BRN",
+      "current_value": "G:\\SPHOST.BRN",
+      "form": "unknown_form_flag_255"
+    },
+    "datatype": "0x0000",
+    "get_set": "RO",
+    "default": null,
+    "current_from_desc": "G:\\SPHOST.BRN",
+    "form": "NONE",
+    "live_value": "G:\\SPHOST.BRN"
+  },
+  {
+    "code": "0xD83F",
+    "desc_rc": "0x2002",
+    "value_rc": "0x2002"
+  },
+  {
+    "code": "0xD303",
+    "desc": {
+      "raw_len": 8,
+      "property_code": 54019,
+      "datatype": 2,
+      "datatype_name": "UINT8",
+      "getset": 0,
+      "factory_default": 1,
+      "current_value": 1,
+      "form": "none"
+    },
+    "datatype": "0x0000",
+    "get_set": "RO",
+    "default": null,
+    "current_from_desc": 1,
+    "form": "NONE",
+    "live_value": 1
+  },
+  {
+    "code": "0xD220",
+    "desc": {
+      "raw_len": 26,
+      "property_code": 53792,
+      "datatype": 6,
+      "datatype_name": "UINT32",
+      "getset": 0,
+      "factory_default": 0,
+      "current_value": 0,
+      "form": "range",
+      "min": 0,
+      "max": 1,
+      "step": 0
+    },
+    "datatype": "0x0000",
+    "get_set": "RO",
+    "default": null,
+    "current_from_desc": 0,
+    "form": "NONE",
+    "live_value": 447008
+  },
+  {
+    "code": "0x5003",
+    "desc": {
+      "raw_len": 239,
+      "property_code": 20483,
+      "datatype": 65535,
+      "datatype_name": "STRING",
+      "getset": 1,
+      "factory_default": "9216x5184",
+      "current_value": "9216x5184",
+      "form": "enum",
+      "allowed_values": [
+        "9216x5184",
+        "6528x3672",
+        "6016x3384",
+        "5376x3024",
+        "4992x2808",
+        "4224x2376",
+        "3840x2160",
+        "3072x1728",
+        "1920x1080"
+      ]
+    },
+    "datatype": "0x0000",
+    "get_set": "RO",
+    "default": null,
+    "current_from_desc": "9216x5184",
+    "form": "NONE",
+    "live_value": "9216x5184"
+  },
+  {
+    "code": "0xD605",
+    "desc": {
+      "raw_len": 303,
+      "property_code": 54789,
+      "datatype": 65535,
+      "datatype_name": "STRING",
+      "getset": 1,
+      "factory_default": "5120x2880 30",
+      "current_value": "3840x2160 60",
+      "form": "enum",
+      "allowed_values": [
+        "5120x2880 30",
+        "3840x2160 60",
+        "3840x2160 30",
+        "2704x1520 60",
+        "2704x1520 30",
+        "1920x1080 60",
+        "1920x1080 30",
+        "1280x720 120",
+        "1280x720 60"
+      ]
+    },
+    "datatype": "0x0000",
+    "get_set": "RO",
+    "default": null,
+    "current_from_desc": "3840x2160 60",
+    "form": "NONE",
+    "live_value": "3840x2160 60"
+  },
+  {
+    "code": "0x5011",
+    "desc": {
+      "raw_len": 80,
+      "property_code": 20497,
+      "datatype": 65535,
+      "datatype_name": "STRING",
+      "getset": 1,
+      "factory_default": "20260517T101227.0",
+      "current_value": "20260517T101227.0",
+      "form": "none"
+    },
+    "datatype": "0x0000",
+    "get_set": "RO",
+    "default": null,
+    "current_from_desc": "20260517T101227.0",
+    "form": "NONE",
+    "live_value": "20260517T101227.0"
+  }
+]

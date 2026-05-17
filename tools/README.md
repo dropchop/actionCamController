@@ -9,6 +9,18 @@ extra `pip install`.
 | Script                  | What it does                                                       |
 | ----------------------- | ------------------------------------------------------------------ |
 | `ptpip_probe.py`        | One-shot PTP/IP smoke test — connects, opens a session, reads `DeviceInfo`, disconnects. Confirms protocol-level reachability. |
+| `rtsp_probe.py`         | Maps everything the camera's RTSP port (554) accepts — verbs, paths, query params, playback, concurrency. Crash-safe (per-request health check + `--resume`), because some DESCRIBE targets freeze the RTSP service and require a power-cycle. See `docs/rtsp.md`. |
+| `ptp_vendor_probe.py`   | Exhaustive sweep of the 8 PTP/IP vendor opcodes (`0x9601`-`0x9812`) across a parameter-shape matrix. Same crash-safe pattern as `rtsp_probe.py` because three of the ops wedge the PTP service. See `docs/ptp-vendor.md`. |
+| `prop_walk.py`          | Reads `properties_supported` and dumps each property's descriptor + live value. `--block d7` filters to the D7xx block. Used to enumerate the 56-property catalog and discover the 3 "fake-RW" locked booleans. |
+| `prop_write_probe.py`   | Tries write-and-revert on candidate properties to classify them as truly writable / silently-ignored / rejected. Output proved `0xD75F`, `0xD7FC`, `0xD7FF` are firmware-locked despite RW descriptors. |
+| `unlock_hunt.py`        | Attempts 13 different "primer" sequences (vendor-op calls, magic-string writes, sentinel-mode writes) trying to flip the firmware lock on the three fake-RW booleans. All negative as of 2026-05-17. |
+| `sendobject_unlock.py`  | Tests PTP `SendObjectInfo`+`SendObject` file upload. Proved the camera accepts arbitrary file uploads via PTP (bypasses FTP chroot). **Always deletes uploaded handles after testing** — esp. `SPHOST.BRN` which triggers the FW-update menu on next boot. |
+| `icatch_verify.py`      | Implements the iCatch `device_verify` handshake reversed from libcontrol.so (writes 16 zero bytes to property `0xD617` to unlock hidden surface). Doesn't apply to this firmware — `0xD617` isn't in the property list. Useful reference for other iCatch variants. |
+| `msdc_scsi_runner.py`   | Named SCSI command runner for the (stripped) iCatch MSC vendor catalog. Sends `0xC0`-class CDBs with named operations (CAM_VER_GET, CAM_SD_CARD_STATUS, etc.). Useful for testing other iCatch cameras; this firmware's dispatcher is stubbed. |
+| `msdc_scsi_diag.py`     | 7-axis SCSI dispatcher diagnostic — used to prove the iCatch vendor surface is stripped on this firmware. |
+| `msdc_scsi_wide.py`     | ~2100-probe wider SCSI sweep (vendor opcode sweep, INQUIRY VPD pages, READ_BUFFER, MODE_SENSE, RECEIVE_DIAGNOSTIC, LOG_SENSE) — confirms no factory hooks on the SCSI surface beyond the iCatch stub. |
+| `uvc_xu_probe.py`       | Probes the camera's UVC vendor extension unit (GUID `63610682-5070-49ab-b8cc-b3855e8d221d`, 32 control selectors) via kernel `UVCIOC_CTRL_QUERY` ioctls. Camera must be in USB UVC mode. |
+| `ptp_factory_probe.py`  | Earlier exhaustive boolean RW write-sweep + magic OpenSession probe. Found `0xD727` to be the only writable boolean at the time (later superseded by `prop_write_probe.py`). |
 | `decrypt_pcap.py`       | Decrypts a WPA2-PSK 802.11 monitor-mode pcap, given the SSID + PSK. Pure stdlib + `cryptography`. Handles the chained-present radiotap header + the `0xC78F` AAD mask quirk we documented. |
 | `monitor_capture.sh`    | Drops the USB WiFi dongle into monitor mode on the camera's channel, runs `tcpdump` to a timestamped pcap. Requires `sudo`. |
 | `monitor_restore.sh`    | Puts the dongle back into NetworkManager-managed mode. |

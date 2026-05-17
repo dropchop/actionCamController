@@ -1,0 +1,25 @@
+{
+  "header_hex": "9800000002000000",
+  "parser": "PropDesc-stream-v2",
+  "records": [
+    {
+      "_at": 8,
+      "_consumed": 14,
+      "code": 56321,
+      "dt": 6,
+      "gs": 1,
+      "factory": 33555712,
+      "current": 33554432,
+      "form": 220,
+      "enum": null,
+      "range_min": null,
+      "range_max": null,
+      "range_step": null
+    },
+    {
+      "_at": 22,
+      "_err": "parse_fail",
+      "_remaining_hex": "040001300200000041dc0a000200000000000000000000000000000002000000"
+    }
+  ]
+}

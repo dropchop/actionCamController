@@ -1,0 +1,233 @@
+{
+  "0xd700": {
+    "dt": "UINT32",
+    "gs": "R",
+    "factory": 3,
+    "current": 7,
+    "form": 2,
+    "enum": [
+      1,
+      3,
+      7
+    ]
+  },
+  "0xd704": {
+    "dt": "UINT32",
+    "gs": "R",
+    "factory": 1,
+    "current": 1,
+    "form": 2,
+    "enum": [
+      1,
+      0
+    ]
+  },
+  "0xd720": {
+    "dt": "UINT32",
+    "gs": "RW",
+    "factory": 0,
+    "current": 0,
+    "form": 2,
+    "enum": [
+      0,
+      60,
+      180,
+      300
+    ]
+  },
+  "0xd723": {
+    "dt": "UINT32",
+    "gs": "RW",
+    "factory": 0,
+    "current": 0,
+    "form": 2,
+    "enum": [
+      2147483650,
+      2147483649,
+      0,
+      1,
+      2
+    ]
+  },
+  "0xd724": {
+    "dt": "UINT32",
+    "gs": "RW",
+    "factory": 0,
+    "current": 0,
+    "form": 2,
+    "enum": [
+      0,
+      1
+    ]
+  },
+  "0xd725": {
+    "dt": "UINT32",
+    "gs": "RW",
+    "factory": 0,
+    "current": 0,
+    "form": 2,
+    "enum": [
+      0,
+      60,
+      180,
+      300
+    ]
+  },
+  "0xd726": {
+    "dt": "UINT32",
+    "gs": "RW",
+    "factory": 0,
+    "current": 0,
+    "form": 2,
+    "enum": [
+      0,
+      2,
+      4,
+      6,
+      10,
+      15
+    ]
+  },
+  "0xd727": {
+    "dt": "UINT32",
+    "gs": "RW",
+    "factory": 0,
+    "current": 1,
+    "form": 2,
+    "enum": [
+      0,
+      1
+    ]
+  },
+  "0xd75f": {
+    "dt": "UINT32",
+    "gs": "RW",
+    "factory": 1,
+    "current": 1,
+    "form": 2,
+    "enum": [
+      0,
+      1
+    ]
+  },
+  "0xd7ab": {
+    "dt": "UINT32",
+    "gs": "RW",
+    "factory": 335636492,
+    "current": 335636492,
+    "form": 2,
+    "enum": [
+      335636492,
+      335636492,
+      335636492,
+      335636492,
+      335636492,
+      335636492,
+      335636492,
+      335636492,
+      335636492
+    ]
+  },
+  "0xd7ac": {
+    "dt": "UINT32",
+    "gs": "RW",
+    "factory": 1,
+    "current": 1,
+    "form": 1,
+    "enum": null
+  },
+  "0xd7ad": {
+    "dt": "UINT32",
+    "gs": "RW",
+    "factory": 1,
+    "current": 1,
+    "form": 1,
+    "enum": null
+  },
+  "0xd7ae": {
+    "dt": "UINT32",
+    "gs": "RW",
+    "factory": 30,
+    "current": 30,
+    "form": 2,
+    "enum": [
+      30,
+      30,
+      30,
+      30,
+      30,
+      30,
+      30,
+      30,
+      30
+    ]
+  },
+  "0xd7f0": {
+    "dt": "UINT32",
+    "gs": "R",
+    "factory": 1,
+    "current": 1,
+    "form": 2,
+    "enum": [
+      1,
+      0
+    ]
+  },
+  "0xd7fc": {
+    "dt": "UINT32",
+    "gs": "RW",
+    "factory": 1,
+    "current": 1,
+    "form": 2,
+    "enum": [
+      0,
+      1
+    ]
+  },
+  "0xd7fd": {
+    "dt": "UINT32",
+    "gs": "RW",
+    "factory": 0,
+    "current": 0,
+    "form": 1,
+    "enum": null
+  },
+  "0xd7fe": {
+    "dt": "UINT32",
+    "gs": "R",
+    "factory": 100,
+    "current": 204,
+    "form": 1,
+    "enum": null
+  },
+  "0xd7ff": {
+    "dt": "UINT32",
+    "gs": "RW",
+    "factory": 1,
+    "current": 1,
+    "form": 2,
+    "enum": [
+      0,
+      1
+    ]
+  },
+  "0xd801": {
+    "dt": "STR",
+    "gs": "R",
+    "factory": null,
+    "current": null,
+    "form": null,
+    "enum": null
+  },
+  "0xd83e": {
+    "dt": "STR",
+    "gs": "RW",
+    "factory": null,
+    "current": null,
+    "form": null,
+    "enum": null
+  },
+  "0xd83f": {
+    "error": "rc=0x2002"
+  }
+}

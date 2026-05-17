@@ -1,0 +1,184 @@
+{
+  "vid": 10925,
+  "pid": 25459,
+  "interface": 0,
+  "unit": 3,
+  "guid": "63610682-5070-49ab-b8cc-b3855e8d221d",
+  "selectors": [
+    {
+      "selector": 1,
+      "len": 2,
+      "info": 3,
+      "info_caps": [
+        "GET",
+        "SET"
+      ],
+      "cur_hex": "0100",
+      "min": 0,
+      "max": 1,
+      "res": 1,
+      "def": 1
+    },
+    {
+      "selector": 2,
+      "len": 1,
+      "info": 3,
+      "info_caps": [
+        "GET",
+        "SET"
+      ],
+      "cur_hex": "08",
+      "min": 0,
+      "max": 255,
+      "res": 1,
+      "def": 8
+    },
+    {
+      "selector": 3,
+      "len": 4,
+      "info": 3,
+      "info_caps": [
+        "GET",
+        "SET"
+      ],
+      "cur_hex": "0005d002",
+      "min": 0,
+      "max": 4294967295,
+      "res": 4294901761,
+      "def": 70780800
+    },
+    {
+      "selector": 4,
+      "len": 1,
+      "info": 3,
+      "info_caps": [
+        "GET",
+        "SET"
+      ],
+      "cur_hex": "1e",
+      "min": 0,
+      "max": 255,
+      "res": 1,
+      "def": 30
+    },
+    {
+      "selector": 5,
+      "len_err": "errno 2 (No such file or directory)"
+    },
+    {
+      "selector": 6,
+      "len": 8,
+      "info": 3,
+      "info_caps": [
+        "GET",
+        "SET"
+      ],
+      "cur_hex": "0000000000000000",
+      "cur_ascii": ""
+    },
+    {
+      "selector": 7,
+      "len_err": "errno 2 (No such file or directory)"
+    },
+    {
+      "selector": 8,
+      "len_err": "errno 2 (No such file or directory)"
+    },
+    {
+      "selector": 9,
+      "len_err": "errno 2 (No such file or directory)"
+    },
+    {
+      "selector": 10,
+      "len_err": "errno 2 (No such file or directory)"
+    },
+    {
+      "selector": 11,
+      "len_err": "errno 2 (No such file or directory)"
+    },
+    {
+      "selector": 12,
+      "len_err": "errno 2 (No such file or directory)"
+    },
+    {
+      "selector": 13,
+      "len_err": "errno 2 (No such file or directory)"
+    },
+    {
+      "selector": 14,
+      "len_err": "errno 2 (No such file or directory)"
+    },
+    {
+      "selector": 15,
+      "len_err": "errno 2 (No such file or directory)"
+    },
+    {
+      "selector": 16,
+      "len_err": "errno 2 (No such file or directory)"
+    },
+    {
+      "selector": 17,
+      "len_err": "errno 2 (No such file or directory)"
+    },
+    {
+      "selector": 18,
+      "len_err": "errno 2 (No such file or directory)"
+    },
+    {
+      "selector": 19,
+      "len_err": "errno 2 (No such file or directory)"
+    },
+    {
+      "selector": 20,
+      "len_err": "errno 2 (No such file or directory)"
+    },
+    {
+      "selector": 21,
+      "len_err": "errno 2 (No such file or directory)"
+    },
+    {
+      "selector": 22,
+      "len_err": "errno 2 (No such file or directory)"
+    },
+    {
+      "selector": 23,
+      "len_err": "errno 2 (No such file or directory)"
+    },
+    {
+      "selector": 24,
+      "len_err": "errno 2 (No such file or directory)"
+    },
+    {
+      "selector": 25,
+      "len_err": "errno 2 (No such file or directory)"
+    },
+    {
+      "selector": 26,
+      "len_err": "errno 2 (No such file or directory)"
+    },
+    {
+      "selector": 27,
+      "len_err": "errno 2 (No such file or directory)"
+    },
+    {
+      "selector": 28,
+      "len_err": "errno 2 (No such file or directory)"
+    },
+    {
+      "selector": 29,
+      "len_err": "errno 2 (No such file or directory)"
+    },
+    {
+      "selector": 30,
+      "len_err": "errno 2 (No such file or directory)"
+    },
+    {
+      "selector": 31,
+      "len_err": "errno 2 (No such file or directory)"
+    },
+    {
+      "selector": 32,
+      "len_err": "errno 2 (No such file or directory)"
+    }
+  ]
+}

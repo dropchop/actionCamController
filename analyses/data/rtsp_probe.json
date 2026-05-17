@@ -1,0 +1,996 @@
+{
+  "host": "192.168.1.1",
+  "bind": "192.168.1.10",
+  "started_at": "2026-05-15T16:00:53",
+  "finished_at": "2026-05-16T20:01:45",
+  "aborted_at": null,
+  "aborted_reason": null,
+  "sections_run": [
+    "info",
+    "session",
+    "playback",
+    "media",
+    "concurrency",
+    "paths_options",
+    "verbs"
+  ],
+  "notes": [
+    "Session id from SETUP: 0D3DAC52",
+    "FTP auto-discover .MOV: failed",
+    "FTP auto-discover .MOV: 20260515_035416.MOV"
+  ],
+  "exchanges": [
+    {
+      "label": "info:options-mjpg",
+      "section": "info",
+      "request": "OPTIONS rtsp://192.168.1.1/MJPG RTSP/1.0\r\nCSeq: 1\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\n\r\n",
+      "status": 200,
+      "reason": "OK",
+      "headers": {
+        "CSeq": "1",
+        "Date": "2012/1/1",
+        "Public": "OPTIONS, DESCRIBE, SETUP, TEARDOWN, PLAY, PAUSE, GET_PARAMETER, SET_PARAMETER"
+      },
+      "body": "",
+      "elapsed_ms": 48.1,
+      "error": null
+    },
+    {
+      "label": "info:options-star",
+      "section": "info",
+      "request": "OPTIONS * RTSP/1.0\r\nCSeq: 2\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\n\r\n",
+      "status": 200,
+      "reason": "OK",
+      "headers": {
+        "CSeq": "2",
+        "Date": "2012/1/1",
+        "Public": "OPTIONS, DESCRIBE, SETUP, TEARDOWN, PLAY, PAUSE, GET_PARAMETER, SET_PARAMETER"
+      },
+      "body": "",
+      "elapsed_ms": 48.4,
+      "error": null
+    },
+    {
+      "label": "info:describe-mjpg",
+      "section": "info",
+      "request": "DESCRIBE rtsp://192.168.1.1/MJPG RTSP/1.0\r\nCSeq: 3\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\nAccept: application/sdp\r\n\r\n",
+      "status": 200,
+      "reason": "OK",
+      "headers": {
+        "CSeq": "3",
+        "Date": "2012/1/1",
+        "Content-Base": "rtsp://192.168.1.1/MJPG/",
+        "Content-Type": "application/sdp",
+        "Content-Length": "461"
+      },
+      "body": "v=0\r\no=- 274607610 1 IN IP4 192.168.1.1\r\ns=H.264 Video. Streamed by iCatchTek.\r\ni=H264\r\nt=0 0\r\na=tool:iCatchTek\r\na=type:broadcast\r\na=control:*\r\na=range:npt=0-\r\na=x-qt-text-nam:H.264 Video. Streamed by iCatchTek.\r\na=x-qt-text-inf:H264\r\nm=video 0 RTP/AVP 96\r\nc=IN IP4 0.0.0.0\r\nb=AS:98304\r\na=rtpmap:96 H264/90000\r\na=fmtp:96 packetization-mode=1;profile-level-id=640028;sprop-parameter-sets=Z2QAKKy0BQF/ywgAAH0AAB1MBCA=,aO44sA==\r\na=framerate:30.0\r\na=control:track1\r",
+      "elapsed_ms": 446.5,
+      "error": null
+    },
+    {
+      "label": "session:setup-track1",
+      "section": "session",
+      "request": "SETUP rtsp://192.168.1.1/MJPG/track1 RTSP/1.0\r\nCSeq: 4\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\nTransport: RTP/AVP/TCP;unicast;interleaved=0-1\r\n\r\n",
+      "status": 200,
+      "reason": "OK",
+      "headers": {
+        "CSeq": "4",
+        "Date": "2012/1/1",
+        "Transport": "RTP/AVP/TCP;unicast;destination=192.168.1.10;source=192.168.1.1;interleaved=0-1",
+        "Session": "0D3DAC52"
+      },
+      "body": "",
+      "elapsed_ms": 44.2,
+      "error": null
+    },
+    {
+      "label": "session:get-parameter-empty",
+      "section": "session",
+      "request": "GET_PARAMETER rtsp://192.168.1.1/MJPG RTSP/1.0\r\nCSeq: 5\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\nSession: 0D3DAC52\r\n\r\n",
+      "status": 200,
+      "reason": "OK",
+      "headers": {
+        "CSeq": "5",
+        "Date": "2012/1/1",
+        "Session": "0D3DAC52",
+        "Content-Length": "10"
+      },
+      "body": "2013.11.26",
+      "elapsed_ms": 37.0,
+      "error": null
+    },
+    {
+      "label": "session:get-parameter-named",
+      "section": "session",
+      "request": "GET_PARAMETER rtsp://192.168.1.1/MJPG RTSP/1.0\r\nCSeq: 6\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\nSession: 0D3DAC52\r\nContent-Type: text/parameters\r\nContent-Length: 31\r\n\r\nposition\nbandwidth\nscale\nclock\n",
+      "status": 200,
+      "reason": "OK",
+      "headers": {
+        "CSeq": "6",
+        "Date": "2012/1/1",
+        "Session": "0D3DAC52",
+        "Content-Length": "10"
+      },
+      "body": "2013.11.26",
+      "elapsed_ms": 36.5,
+      "error": null
+    },
+    {
+      "label": "session:set-parameter-bandwidth",
+      "section": "session",
+      "request": "SET_PARAMETER rtsp://192.168.1.1/MJPG RTSP/1.0\r\nCSeq: 7\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\nSession: 0D3DAC52\r\nContent-Type: text/parameters\r\nContent-Length: 20\r\n\r\nbandwidth: 5000000\r\n",
+      "status": 200,
+      "reason": "OK",
+      "headers": {
+        "CSeq": "7",
+        "Date": "2012/1/1",
+        "Session": "0D3DAC52"
+      },
+      "body": "",
+      "elapsed_ms": 34.9,
+      "error": null
+    },
+    {
+      "label": "session:teardown",
+      "section": "session",
+      "request": "TEARDOWN rtsp://192.168.1.1/MJPG RTSP/1.0\r\nCSeq: 8\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\nSession: 0D3DAC52\r\n\r\n",
+      "status": 200,
+      "reason": "OK",
+      "headers": {
+        "CSeq": "8",
+        "Date": "2012/1/1"
+      },
+      "body": "",
+      "elapsed_ms": 110.0,
+      "error": null
+    },
+    {
+      "label": "params:bare",
+      "section": "params",
+      "request": "DESCRIBE rtsp://192.168.1.1/MJPG RTSP/1.0\r\nCSeq: 9\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\nAccept: application/sdp\r\n\r\n",
+      "status": 200,
+      "reason": "OK",
+      "headers": {
+        "CSeq": "9",
+        "Date": "2012/1/1",
+        "Content-Base": "rtsp://192.168.1.1/MJPG/",
+        "Content-Type": "application/sdp",
+        "Content-Length": "461"
+      },
+      "body": "v=0\r\no=- 276874101 1 IN IP4 192.168.1.1\r\ns=H.264 Video. Streamed by iCatchTek.\r\ni=H264\r\nt=0 0\r\na=tool:iCatchTek\r\na=type:broadcast\r\na=control:*\r\na=range:npt=0-\r\na=x-qt-text-nam:H.264 Video. Streamed by iCatchTek.\r\na=x-qt-text-inf:H264\r\nm=video 0 RTP/AVP 96\r\nc=IN IP4 0.0.0.0\r\nb=AS:98304\r\na=rtpmap:96 H264/90000\r\na=fmtp:96 packetization-mode=1;profile-level-id=640028;sprop-parameter-sets=Z2QAKKy0BQF/ywgAAH0AAB1MBCA=,aO44sA==\r\na=framerate:30.0\r\na=control:track1\r",
+      "elapsed_ms": 454.2,
+      "error": null
+    },
+    {
+      "label": "params:W=320,H=240,Q=50,BR=500000",
+      "section": "params",
+      "request": "DESCRIBE rtsp://192.168.1.1/MJPG?W=320&H=240&Q=50&BR=500000 RTSP/1.0\r\nCSeq: 10\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\nAccept: application/sdp\r\n\r\n",
+      "status": null,
+      "reason": "",
+      "headers": {},
+      "body": "",
+      "elapsed_ms": 3006.0,
+      "error": null
+    },
+    {
+      "label": "params:W=720,H=400,Q=50,BR=5000000",
+      "section": "params",
+      "request": "DESCRIBE rtsp://192.168.1.1/MJPG?W=720&H=400&Q=50&BR=5000000 RTSP/1.0\r\nCSeq: 16\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\nAccept: application/sdp\r\n\r\n",
+      "status": 200,
+      "reason": "OK",
+      "headers": {
+        "CSeq": "16",
+        "Date": "2012/1/1",
+        "Content-Base": "rtsp://192.168.1.1/MJPG?W=720&H=400&Q=50&BR=5000000/",
+        "Content-Type": "application/sdp",
+        "Content-Length": "460"
+      },
+      "body": "v=0\r\no=- 37098021 1 IN IP4 192.168.1.1\r\ns=H.264 Video. Streamed by iCatchTek.\r\ni=H264\r\nt=0 0\r\na=tool:iCatchTek\r\na=type:broadcast\r\na=control:*\r\na=range:npt=0-\r\na=x-qt-text-nam:H.264 Video. Streamed by iCatchTek.\r\na=x-qt-text-inf:H264\r\nm=video 0 RTP/AVP 96\r\nc=IN IP4 0.0.0.0\r\nb=AS:98304\r\na=rtpmap:96 H264/90000\r\na=fmtp:96 packetization-mode=1;profile-level-id=640028;sprop-parameter-sets=Z2QAKKy0BQF/ywgAAH0AAB1MBCA=,aO44sA==\r\na=framerate:30.0\r\na=control:track1\r",
+      "elapsed_ms": 1449.9,
+      "error": null
+    },
+    {
+      "label": "params:W=720,H=400,Q=50,BR=5000000,FPS=30",
+      "section": "params",
+      "request": "DESCRIBE rtsp://192.168.1.1/MJPG?W=720&H=400&Q=50&BR=5000000&FPS=30 RTSP/1.0\r\nCSeq: 17\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\nAccept: application/sdp\r\n\r\n",
+      "status": null,
+      "reason": "",
+      "headers": {},
+      "body": "",
+      "elapsed_ms": 8009.8,
+      "error": null
+    },
+    {
+      "label": "concurrency:worker0",
+      "section": "concurrency",
+      "request": "DESCRIBE rtsp://192.168.1.1/MJPG RTSP/1.0\r\nCSeq: 100\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\nAccept: application/sdp\r\n\r\n",
+      "status": 200,
+      "reason": "OK",
+      "headers": {
+        "CSeq": "100",
+        "Date": "2012/1/1",
+        "Content-Base": "rtsp://192.168.1.1/MJPG/",
+        "Content-Type": "application/sdp",
+        "Content-Length": "460"
+      },
+      "body": "v=0\r\no=- 95926026 1 IN IP4 192.168.1.1\r\ns=H.264 Video. Streamed by iCatchTek.\r\ni=H264\r\nt=0 0\r\na=tool:iCatchTek\r\na=type:broadcast\r\na=control:*\r\na=range:npt=0-\r\na=x-qt-text-nam:H.264 Video. Streamed by iCatchTek.\r\na=x-qt-text-inf:H264\r\nm=video 0 RTP/AVP 96\r\nc=IN IP4 0.0.0.0\r\nb=AS:98304\r\na=rtpmap:96 H264/90000\r\na=fmtp:96 packetization-mode=1;profile-level-id=640028;sprop-parameter-sets=Z2QAKKy0BQF/ywgAAH0AAB1MBCA=,aO44sA==\r\na=framerate:30.0\r\na=control:track1\r",
+      "elapsed_ms": 510.0,
+      "error": null
+    },
+    {
+      "label": "concurrency:worker1",
+      "section": "concurrency",
+      "request": "DESCRIBE rtsp://192.168.1.1/MJPG RTSP/1.0\r\nCSeq: 101\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\nAccept: application/sdp\r\n\r\n",
+      "status": 200,
+      "reason": "OK",
+      "headers": {
+        "CSeq": "101",
+        "Date": "2012/1/1",
+        "Content-Base": "rtsp://192.168.1.1/MJPG/",
+        "Content-Type": "application/sdp",
+        "Content-Length": "460"
+      },
+      "body": "v=0\r\no=- 95926026 1 IN IP4 192.168.1.1\r\ns=H.264 Video. Streamed by iCatchTek.\r\ni=H264\r\nt=0 0\r\na=tool:iCatchTek\r\na=type:broadcast\r\na=control:*\r\na=range:npt=0-\r\na=x-qt-text-nam:H.264 Video. Streamed by iCatchTek.\r\na=x-qt-text-inf:H264\r\nm=video 0 RTP/AVP 96\r\nc=IN IP4 0.0.0.0\r\nb=AS:98304\r\na=rtpmap:96 H264/90000\r\na=fmtp:96 packetization-mode=1;profile-level-id=640028;sprop-parameter-sets=Z2QAKKy0BQF/ywgAAH0AAB1MBCA=,aO44sA==\r\na=framerate:30.0\r\na=control:track1\r",
+      "elapsed_ms": 2101.0,
+      "error": null
+    },
+    {
+      "label": "concurrency:worker2",
+      "section": "concurrency",
+      "request": "DESCRIBE rtsp://192.168.1.1/MJPG RTSP/1.0\r\nCSeq: 102\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\nAccept: application/sdp\r\n\r\n",
+      "status": 200,
+      "reason": "OK",
+      "headers": {
+        "CSeq": "102",
+        "Date": "2012/1/1",
+        "Content-Base": "rtsp://192.168.1.1/MJPG/",
+        "Content-Type": "application/sdp",
+        "Content-Length": "460"
+      },
+      "body": "v=0\r\no=- 95926026 1 IN IP4 192.168.1.1\r\ns=H.264 Video. Streamed by iCatchTek.\r\ni=H264\r\nt=0 0\r\na=tool:iCatchTek\r\na=type:broadcast\r\na=control:*\r\na=range:npt=0-\r\na=x-qt-text-nam:H.264 Video. Streamed by iCatchTek.\r\na=x-qt-text-inf:H264\r\nm=video 0 RTP/AVP 96\r\nc=IN IP4 0.0.0.0\r\nb=AS:98304\r\na=rtpmap:96 H264/90000\r\na=fmtp:96 packetization-mode=1;profile-level-id=640028;sprop-parameter-sets=Z2QAKKy0BQF/ywgAAH0AAB1MBCA=,aO44sA==\r\na=framerate:30.0\r\na=control:track1\r",
+      "elapsed_ms": 1075.7,
+      "error": null
+    },
+    {
+      "label": "concurrency:worker3",
+      "section": "concurrency",
+      "request": "DESCRIBE rtsp://192.168.1.1/MJPG RTSP/1.0\r\nCSeq: 103\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\nAccept: application/sdp\r\n\r\n",
+      "status": 200,
+      "reason": "OK",
+      "headers": {
+        "CSeq": "103",
+        "Date": "2012/1/1",
+        "Content-Base": "rtsp://192.168.1.1/MJPG/",
+        "Content-Type": "application/sdp",
+        "Content-Length": "460"
+      },
+      "body": "v=0\r\no=- 95926026 1 IN IP4 192.168.1.1\r\ns=H.264 Video. Streamed by iCatchTek.\r\ni=H264\r\nt=0 0\r\na=tool:iCatchTek\r\na=type:broadcast\r\na=control:*\r\na=range:npt=0-\r\na=x-qt-text-nam:H.264 Video. Streamed by iCatchTek.\r\na=x-qt-text-inf:H264\r\nm=video 0 RTP/AVP 96\r\nc=IN IP4 0.0.0.0\r\nb=AS:98304\r\na=rtpmap:96 H264/90000\r\na=fmtp:96 packetization-mode=1;profile-level-id=640028;sprop-parameter-sets=Z2QAKKy0BQF/ywgAAH0AAB1MBCA=,aO44sA==\r\na=framerate:30.0\r\na=control:track1\r",
+      "elapsed_ms": 1091.6,
+      "error": null
+    },
+    {
+      "label": "paths-options:/H264",
+      "section": "paths-options",
+      "request": "OPTIONS rtsp://192.168.1.1/H264 RTSP/1.0\r\nCSeq: 18\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\n\r\n",
+      "status": 200,
+      "reason": "OK",
+      "headers": {
+        "CSeq": "18",
+        "Date": "2012/1/1",
+        "Public": "OPTIONS, DESCRIBE, SETUP, TEARDOWN, PLAY, PAUSE, GET_PARAMETER, SET_PARAMETER"
+      },
+      "body": "",
+      "elapsed_ms": 57.3,
+      "error": null
+    },
+    {
+      "label": "paths-options:/H265",
+      "section": "paths-options",
+      "request": "OPTIONS rtsp://192.168.1.1/H265 RTSP/1.0\r\nCSeq: 19\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\n\r\n",
+      "status": 200,
+      "reason": "OK",
+      "headers": {
+        "CSeq": "19",
+        "Date": "2012/1/1",
+        "Public": "OPTIONS, DESCRIBE, SETUP, TEARDOWN, PLAY, PAUSE, GET_PARAMETER, SET_PARAMETER"
+      },
+      "body": "",
+      "elapsed_ms": 53.6,
+      "error": null
+    },
+    {
+      "label": "paths-options:/AVC",
+      "section": "paths-options",
+      "request": "OPTIONS rtsp://192.168.1.1/AVC RTSP/1.0\r\nCSeq: 20\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\n\r\n",
+      "status": 200,
+      "reason": "OK",
+      "headers": {
+        "CSeq": "20",
+        "Date": "2012/1/1",
+        "Public": "OPTIONS, DESCRIBE, SETUP, TEARDOWN, PLAY, PAUSE, GET_PARAMETER, SET_PARAMETER"
+      },
+      "body": "",
+      "elapsed_ms": 49.8,
+      "error": null
+    },
+    {
+      "label": "paths-options:/HEVC",
+      "section": "paths-options",
+      "request": "OPTIONS rtsp://192.168.1.1/HEVC RTSP/1.0\r\nCSeq: 21\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\n\r\n",
+      "status": 200,
+      "reason": "OK",
+      "headers": {
+        "CSeq": "21",
+        "Date": "2012/1/1",
+        "Public": "OPTIONS, DESCRIBE, SETUP, TEARDOWN, PLAY, PAUSE, GET_PARAMETER, SET_PARAMETER"
+      },
+      "body": "",
+      "elapsed_ms": 54.1,
+      "error": null
+    },
+    {
+      "label": "paths-options:/MAIN",
+      "section": "paths-options",
+      "request": "OPTIONS rtsp://192.168.1.1/MAIN RTSP/1.0\r\nCSeq: 22\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\n\r\n",
+      "status": 200,
+      "reason": "OK",
+      "headers": {
+        "CSeq": "22",
+        "Date": "2012/1/1",
+        "Public": "OPTIONS, DESCRIBE, SETUP, TEARDOWN, PLAY, PAUSE, GET_PARAMETER, SET_PARAMETER"
+      },
+      "body": "",
+      "elapsed_ms": 52.6,
+      "error": null
+    },
+    {
+      "label": "paths-options:/SUB",
+      "section": "paths-options",
+      "request": "OPTIONS rtsp://192.168.1.1/SUB RTSP/1.0\r\nCSeq: 23\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\n\r\n",
+      "status": 200,
+      "reason": "OK",
+      "headers": {
+        "CSeq": "23",
+        "Date": "2012/1/1",
+        "Public": "OPTIONS, DESCRIBE, SETUP, TEARDOWN, PLAY, PAUSE, GET_PARAMETER, SET_PARAMETER"
+      },
+      "body": "",
+      "elapsed_ms": 50.6,
+      "error": null
+    },
+    {
+      "label": "paths-options:/MAIN0",
+      "section": "paths-options",
+      "request": "OPTIONS rtsp://192.168.1.1/MAIN0 RTSP/1.0\r\nCSeq: 24\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\n\r\n",
+      "status": 200,
+      "reason": "OK",
+      "headers": {
+        "CSeq": "24",
+        "Date": "2012/1/1",
+        "Public": "OPTIONS, DESCRIBE, SETUP, TEARDOWN, PLAY, PAUSE, GET_PARAMETER, SET_PARAMETER"
+      },
+      "body": "",
+      "elapsed_ms": 52.4,
+      "error": null
+    },
+    {
+      "label": "paths-options:/SUB0",
+      "section": "paths-options",
+      "request": "OPTIONS rtsp://192.168.1.1/SUB0 RTSP/1.0\r\nCSeq: 25\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\n\r\n",
+      "status": 200,
+      "reason": "OK",
+      "headers": {
+        "CSeq": "25",
+        "Date": "2012/1/1",
+        "Public": "OPTIONS, DESCRIBE, SETUP, TEARDOWN, PLAY, PAUSE, GET_PARAMETER, SET_PARAMETER"
+      },
+      "body": "",
+      "elapsed_ms": 53.4,
+      "error": null
+    },
+    {
+      "label": "paths-options:/PREVIEW",
+      "section": "paths-options",
+      "request": "OPTIONS rtsp://192.168.1.1/PREVIEW RTSP/1.0\r\nCSeq: 26\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\n\r\n",
+      "status": 200,
+      "reason": "OK",
+      "headers": {
+        "CSeq": "26",
+        "Date": "2012/1/1",
+        "Public": "OPTIONS, DESCRIBE, SETUP, TEARDOWN, PLAY, PAUSE, GET_PARAMETER, SET_PARAMETER"
+      },
+      "body": "",
+      "elapsed_ms": 52.1,
+      "error": null
+    },
+    {
+      "label": "paths-options:/LIVE",
+      "section": "paths-options",
+      "request": "OPTIONS rtsp://192.168.1.1/LIVE RTSP/1.0\r\nCSeq: 27\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\n\r\n",
+      "status": 200,
+      "reason": "OK",
+      "headers": {
+        "CSeq": "27",
+        "Date": "2012/1/1",
+        "Public": "OPTIONS, DESCRIBE, SETUP, TEARDOWN, PLAY, PAUSE, GET_PARAMETER, SET_PARAMETER"
+      },
+      "body": "",
+      "elapsed_ms": 53.3,
+      "error": null
+    },
+    {
+      "label": "paths-options:/STREAM",
+      "section": "paths-options",
+      "request": "OPTIONS rtsp://192.168.1.1/STREAM RTSP/1.0\r\nCSeq: 28\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\n\r\n",
+      "status": 200,
+      "reason": "OK",
+      "headers": {
+        "CSeq": "28",
+        "Date": "2012/1/1",
+        "Public": "OPTIONS, DESCRIBE, SETUP, TEARDOWN, PLAY, PAUSE, GET_PARAMETER, SET_PARAMETER"
+      },
+      "body": "",
+      "elapsed_ms": 50.6,
+      "error": null
+    },
+    {
+      "label": "paths-options:/STREAM1",
+      "section": "paths-options",
+      "request": "OPTIONS rtsp://192.168.1.1/STREAM1 RTSP/1.0\r\nCSeq: 29\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\n\r\n",
+      "status": 200,
+      "reason": "OK",
+      "headers": {
+        "CSeq": "29",
+        "Date": "2012/1/1",
+        "Public": "OPTIONS, DESCRIBE, SETUP, TEARDOWN, PLAY, PAUSE, GET_PARAMETER, SET_PARAMETER"
+      },
+      "body": "",
+      "elapsed_ms": 53.8,
+      "error": null
+    },
+    {
+      "label": "paths-options:/VIDEO",
+      "section": "paths-options",
+      "request": "OPTIONS rtsp://192.168.1.1/VIDEO RTSP/1.0\r\nCSeq: 30\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\n\r\n",
+      "status": 200,
+      "reason": "OK",
+      "headers": {
+        "CSeq": "30",
+        "Date": "2012/1/1",
+        "Public": "OPTIONS, DESCRIBE, SETUP, TEARDOWN, PLAY, PAUSE, GET_PARAMETER, SET_PARAMETER"
+      },
+      "body": "",
+      "elapsed_ms": 52.6,
+      "error": null
+    },
+    {
+      "label": "paths-options:/AUDIO",
+      "section": "paths-options",
+      "request": "OPTIONS rtsp://192.168.1.1/AUDIO RTSP/1.0\r\nCSeq: 31\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\n\r\n",
+      "status": 200,
+      "reason": "OK",
+      "headers": {
+        "CSeq": "31",
+        "Date": "2012/1/1",
+        "Public": "OPTIONS, DESCRIBE, SETUP, TEARDOWN, PLAY, PAUSE, GET_PARAMETER, SET_PARAMETER"
+      },
+      "body": "",
+      "elapsed_ms": 49.5,
+      "error": null
+    },
+    {
+      "label": "paths-options:/0",
+      "section": "paths-options",
+      "request": "OPTIONS rtsp://192.168.1.1/0 RTSP/1.0\r\nCSeq: 32\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\n\r\n",
+      "status": 200,
+      "reason": "OK",
+      "headers": {
+        "CSeq": "32",
+        "Date": "2012/1/1",
+        "Public": "OPTIONS, DESCRIBE, SETUP, TEARDOWN, PLAY, PAUSE, GET_PARAMETER, SET_PARAMETER"
+      },
+      "body": "",
+      "elapsed_ms": 51.9,
+      "error": null
+    },
+    {
+      "label": "paths-options:/1",
+      "section": "paths-options",
+      "request": "OPTIONS rtsp://192.168.1.1/1 RTSP/1.0\r\nCSeq: 33\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\n\r\n",
+      "status": 200,
+      "reason": "OK",
+      "headers": {
+        "CSeq": "33",
+        "Date": "2012/1/1",
+        "Public": "OPTIONS, DESCRIBE, SETUP, TEARDOWN, PLAY, PAUSE, GET_PARAMETER, SET_PARAMETER"
+      },
+      "body": "",
+      "elapsed_ms": 53.3,
+      "error": null
+    },
+    {
+      "label": "paths-options:/ch0",
+      "section": "paths-options",
+      "request": "OPTIONS rtsp://192.168.1.1/ch0 RTSP/1.0\r\nCSeq: 34\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\n\r\n",
+      "status": 200,
+      "reason": "OK",
+      "headers": {
+        "CSeq": "34",
+        "Date": "2012/1/1",
+        "Public": "OPTIONS, DESCRIBE, SETUP, TEARDOWN, PLAY, PAUSE, GET_PARAMETER, SET_PARAMETER"
+      },
+      "body": "",
+      "elapsed_ms": 54.8,
+      "error": null
+    },
+    {
+      "label": "paths-options:/ch1",
+      "section": "paths-options",
+      "request": "OPTIONS rtsp://192.168.1.1/ch1 RTSP/1.0\r\nCSeq: 35\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\n\r\n",
+      "status": 200,
+      "reason": "OK",
+      "headers": {
+        "CSeq": "35",
+        "Date": "2012/1/1",
+        "Public": "OPTIONS, DESCRIBE, SETUP, TEARDOWN, PLAY, PAUSE, GET_PARAMETER, SET_PARAMETER"
+      },
+      "body": "",
+      "elapsed_ms": 51.7,
+      "error": null
+    },
+    {
+      "label": "paths-options:/ICATCH",
+      "section": "paths-options",
+      "request": "OPTIONS rtsp://192.168.1.1/ICATCH RTSP/1.0\r\nCSeq: 36\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\n\r\n",
+      "status": 200,
+      "reason": "OK",
+      "headers": {
+        "CSeq": "36",
+        "Date": "2012/1/1",
+        "Public": "OPTIONS, DESCRIBE, SETUP, TEARDOWN, PLAY, PAUSE, GET_PARAMETER, SET_PARAMETER"
+      },
+      "body": "",
+      "elapsed_ms": 51.0,
+      "error": null
+    },
+    {
+      "label": "paths-options:/CAM",
+      "section": "paths-options",
+      "request": "OPTIONS rtsp://192.168.1.1/CAM RTSP/1.0\r\nCSeq: 37\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\n\r\n",
+      "status": 200,
+      "reason": "OK",
+      "headers": {
+        "CSeq": "37",
+        "Date": "2012/1/1",
+        "Public": "OPTIONS, DESCRIBE, SETUP, TEARDOWN, PLAY, PAUSE, GET_PARAMETER, SET_PARAMETER"
+      },
+      "body": "",
+      "elapsed_ms": 53.8,
+      "error": null
+    },
+    {
+      "label": "paths-options:/CAM0",
+      "section": "paths-options",
+      "request": "OPTIONS rtsp://192.168.1.1/CAM0 RTSP/1.0\r\nCSeq: 38\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\n\r\n",
+      "status": 200,
+      "reason": "OK",
+      "headers": {
+        "CSeq": "38",
+        "Date": "2012/1/1",
+        "Public": "OPTIONS, DESCRIBE, SETUP, TEARDOWN, PLAY, PAUSE, GET_PARAMETER, SET_PARAMETER"
+      },
+      "body": "",
+      "elapsed_ms": 52.9,
+      "error": null
+    },
+    {
+      "label": "paths-options:/MJPEG",
+      "section": "paths-options",
+      "request": "OPTIONS rtsp://192.168.1.1/MJPEG RTSP/1.0\r\nCSeq: 39\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\n\r\n",
+      "status": 200,
+      "reason": "OK",
+      "headers": {
+        "CSeq": "39",
+        "Date": "2012/1/1",
+        "Public": "OPTIONS, DESCRIBE, SETUP, TEARDOWN, PLAY, PAUSE, GET_PARAMETER, SET_PARAMETER"
+      },
+      "body": "",
+      "elapsed_ms": 50.5,
+      "error": null
+    },
+    {
+      "label": "paths-options:/JPG",
+      "section": "paths-options",
+      "request": "OPTIONS rtsp://192.168.1.1/JPG RTSP/1.0\r\nCSeq: 40\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\n\r\n",
+      "status": 200,
+      "reason": "OK",
+      "headers": {
+        "CSeq": "40",
+        "Date": "2012/1/1",
+        "Public": "OPTIONS, DESCRIBE, SETUP, TEARDOWN, PLAY, PAUSE, GET_PARAMETER, SET_PARAMETER"
+      },
+      "body": "",
+      "elapsed_ms": 53.1,
+      "error": null
+    },
+    {
+      "label": "paths-options:/nonexistent_dummy_path",
+      "section": "paths-options",
+      "request": "OPTIONS rtsp://192.168.1.1/nonexistent_dummy_path RTSP/1.0\r\nCSeq: 41\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\n\r\n",
+      "status": 200,
+      "reason": "OK",
+      "headers": {
+        "CSeq": "41",
+        "Date": "2012/1/1",
+        "Public": "OPTIONS, DESCRIBE, SETUP, TEARDOWN, PLAY, PAUSE, GET_PARAMETER, SET_PARAMETER"
+      },
+      "body": "",
+      "elapsed_ms": 52.6,
+      "error": null
+    },
+    {
+      "label": "playback:20260515_035416.MOV",
+      "section": "playback",
+      "request": "DESCRIBE rtsp://192.168.1.1/VIDEO/20260515_035416.MOV RTSP/1.0\r\nCSeq: 104\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\nAccept: application/sdp\r\n\r\n",
+      "status": 200,
+      "reason": "OK",
+      "headers": {
+        "CSeq": "104",
+        "Date": "2012/1/1",
+        "Content-Base": "rtsp://192.168.1.1/VIDEO/20260515_035416.MOV/",
+        "Content-Type": "application/sdp",
+        "Content-Length": "418"
+      },
+      "body": "v=0\r\no=- 125592520 1 IN IP4 192.168.1.1\r\ns=Motion JPEG. Streamed by iCatchTek.\r\ni=MJPG\r\nt=0 0\r\na=tool:iCatchTek\r\na=type:broadcast\r\na=control:*\r\na=range:npt=0-2.25\r\na=x-qt-text-nam:Motion JPEG. Streamed by iCatchTek.\r\na=x-qt-text-inf:MJPG\r\nm=video 0 RTP/AVP 26\r\nc=IN IP4 0.0.0.0\r\nb=AS:12288\r\na=frmerate:30.0\r\na=control:track1\rm=audio 0 RTP/AVP 97\r\nc=IN IP4 0.0.0.0\r\nb=AS:1500\r\na=rtpmap:97 L16/48000/2\r\na=control:track2\r",
+      "elapsed_ms": 288.9,
+      "error": null
+    },
+    {
+      "label": "verbs:OPTIONS",
+      "section": "verbs",
+      "request": "OPTIONS rtsp://192.168.1.1/MJPG RTSP/1.0\r\nCSeq: 105\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\nAccept: application/sdp\r\n\r\n",
+      "status": 200,
+      "reason": "OK",
+      "headers": {
+        "CSeq": "105",
+        "Date": "2012/1/1",
+        "Public": "OPTIONS, DESCRIBE, SETUP, TEARDOWN, PLAY, PAUSE, GET_PARAMETER, SET_PARAMETER"
+      },
+      "body": "",
+      "elapsed_ms": 60.3,
+      "error": null
+    },
+    {
+      "label": "verbs:DESCRIBE",
+      "section": "verbs",
+      "request": "DESCRIBE rtsp://192.168.1.1/MJPG RTSP/1.0\r\nCSeq: 106\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\nAccept: application/sdp\r\n\r\n",
+      "status": 200,
+      "reason": "OK",
+      "headers": {
+        "CSeq": "106",
+        "Date": "2012/1/1",
+        "Content-Base": "rtsp://192.168.1.1/MJPG/",
+        "Content-Type": "application/sdp",
+        "Content-Length": "460"
+      },
+      "body": "v=0\r\no=- 95926026 1 IN IP4 192.168.1.1\r\ns=H.264 Video. Streamed by iCatchTek.\r\ni=H264\r\nt=0 0\r\na=tool:iCatchTek\r\na=type:broadcast\r\na=control:*\r\na=range:npt=0-\r\na=x-qt-text-nam:H.264 Video. Streamed by iCatchTek.\r\na=x-qt-text-inf:H264\r\nm=video 0 RTP/AVP 96\r\nc=IN IP4 0.0.0.0\r\nb=AS:98304\r\na=rtpmap:96 H264/90000\r\na=fmtp:96 packetization-mode=1;profile-level-id=640028;sprop-parameter-sets=Z2QAKKy0BQF/ywgAAH0AAB1MBCA=,aO44sA==\r\na=framerate:30.0\r\na=control:track1\r",
+      "elapsed_ms": 64.9,
+      "error": null
+    },
+    {
+      "label": "verbs:SETUP",
+      "section": "verbs",
+      "request": "SETUP rtsp://192.168.1.1/MJPG RTSP/1.0\r\nCSeq: 107\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\nAccept: application/sdp\r\n\r\n",
+      "status": 200,
+      "reason": "OK",
+      "headers": {
+        "CSeq": "107",
+        "Date": "2012/1/1",
+        "Transport": "RTP/AVP;unicast;destination=192.168.1.10;source=192.168.1.1;client_port=0-1;server_port=6972-6973",
+        "Session": "0AE349ED"
+      },
+      "body": "",
+      "elapsed_ms": 79.5,
+      "error": null
+    },
+    {
+      "label": "verbs:PLAY",
+      "section": "verbs",
+      "request": "PLAY rtsp://192.168.1.1/MJPG RTSP/1.0\r\nCSeq: 108\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\nAccept: application/sdp\r\n\r\n",
+      "status": 454,
+      "reason": "Session Not Found",
+      "headers": {
+        "CSeq": "108",
+        "Date": "2012/1/1"
+      },
+      "body": "",
+      "elapsed_ms": 47.5,
+      "error": null
+    },
+    {
+      "label": "verbs:PAUSE",
+      "section": "verbs",
+      "request": "PAUSE rtsp://192.168.1.1/MJPG RTSP/1.0\r\nCSeq: 109\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\nAccept: application/sdp\r\n\r\n",
+      "status": 454,
+      "reason": "Session Not Found",
+      "headers": {
+        "CSeq": "109",
+        "Date": "2012/1/1"
+      },
+      "body": "",
+      "elapsed_ms": 47.5,
+      "error": null
+    },
+    {
+      "label": "verbs:TEARDOWN",
+      "section": "verbs",
+      "request": "TEARDOWN rtsp://192.168.1.1/MJPG RTSP/1.0\r\nCSeq: 110\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\nAccept: application/sdp\r\n\r\n",
+      "status": 454,
+      "reason": "Session Not Found",
+      "headers": {
+        "CSeq": "110",
+        "Date": "2012/1/1"
+      },
+      "body": "",
+      "elapsed_ms": 56.1,
+      "error": null
+    },
+    {
+      "label": "verbs:GET_PARAMETER",
+      "section": "verbs",
+      "request": "GET_PARAMETER rtsp://192.168.1.1/MJPG RTSP/1.0\r\nCSeq: 111\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\nAccept: application/sdp\r\n\r\n",
+      "status": 454,
+      "reason": "Session Not Found",
+      "headers": {
+        "CSeq": "111",
+        "Date": "2012/1/1"
+      },
+      "body": "",
+      "elapsed_ms": 57.8,
+      "error": null
+    },
+    {
+      "label": "verbs:SET_PARAMETER",
+      "section": "verbs",
+      "request": "SET_PARAMETER rtsp://192.168.1.1/MJPG RTSP/1.0\r\nCSeq: 112\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\nAccept: application/sdp\r\n\r\n",
+      "status": 454,
+      "reason": "Session Not Found",
+      "headers": {
+        "CSeq": "112",
+        "Date": "2012/1/1"
+      },
+      "body": "",
+      "elapsed_ms": 55.7,
+      "error": null
+    },
+    {
+      "label": "verbs:ANNOUNCE",
+      "section": "verbs",
+      "request": "ANNOUNCE rtsp://192.168.1.1/MJPG RTSP/1.0\r\nCSeq: 113\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\nAccept: application/sdp\r\n\r\n",
+      "status": 405,
+      "reason": "Method Not Allowed",
+      "headers": {
+        "CSeq": "113",
+        "Date": "2012/1/1",
+        "Allow": "OPTIONS, DESCRIBE, SETUP, TEARDOWN, PLAY, PAUSE, GET_PARAMETER, SET_PARAMETER"
+      },
+      "body": "",
+      "elapsed_ms": 58.3,
+      "error": null
+    },
+    {
+      "label": "verbs:RECORD",
+      "section": "verbs",
+      "request": "RECORD rtsp://192.168.1.1/MJPG RTSP/1.0\r\nCSeq: 114\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\nAccept: application/sdp\r\n\r\n",
+      "status": 405,
+      "reason": "Method Not Allowed",
+      "headers": {
+        "CSeq": "114",
+        "Date": "2012/1/1",
+        "Allow": "OPTIONS, DESCRIBE, SETUP, TEARDOWN, PLAY, PAUSE, GET_PARAMETER, SET_PARAMETER"
+      },
+      "body": "",
+      "elapsed_ms": 60.5,
+      "error": null
+    },
+    {
+      "label": "verbs:REDIRECT",
+      "section": "verbs",
+      "request": "REDIRECT rtsp://192.168.1.1/MJPG RTSP/1.0\r\nCSeq: 115\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\nAccept: application/sdp\r\n\r\n",
+      "status": 405,
+      "reason": "Method Not Allowed",
+      "headers": {
+        "CSeq": "115",
+        "Date": "2012/1/1",
+        "Allow": "OPTIONS, DESCRIBE, SETUP, TEARDOWN, PLAY, PAUSE, GET_PARAMETER, SET_PARAMETER"
+      },
+      "body": "",
+      "elapsed_ms": 58.1,
+      "error": null
+    },
+    {
+      "label": "verbs:REGISTER",
+      "section": "verbs",
+      "request": "REGISTER rtsp://192.168.1.1/MJPG RTSP/1.0\r\nCSeq: 116\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\nAccept: application/sdp\r\n\r\n",
+      "status": 405,
+      "reason": "Method Not Allowed",
+      "headers": {
+        "CSeq": "116",
+        "Date": "2012/1/1",
+        "Allow": "OPTIONS, DESCRIBE, SETUP, TEARDOWN, PLAY, PAUSE, GET_PARAMETER, SET_PARAMETER"
+      },
+      "body": "",
+      "elapsed_ms": 56.8,
+      "error": null
+    },
+    {
+      "label": "verbs:garbage-method",
+      "section": "verbs",
+      "request": "INVALID_METHOD rtsp://192.168.1.1/MJPG RTSP/1.0\r\nCSeq: 117\r\n\r\n",
+      "status": 405,
+      "reason": "Method Not Allowed",
+      "headers": {
+        "CSeq": "117",
+        "Date": "2012/1/1",
+        "Allow": "OPTIONS, DESCRIBE, SETUP, TEARDOWN, PLAY, PAUSE, GET_PARAMETER, SET_PARAMETER"
+      },
+      "body": "",
+      "elapsed_ms": 62.9,
+      "error": null
+    },
+    {
+      "label": "verbs:garbage-version",
+      "section": "verbs",
+      "request": "OPTIONS rtsp://192.168.1.1/ RTSP/9.9\r\nCSeq: 118\r\n\r\n",
+      "status": 200,
+      "reason": "OK",
+      "headers": {
+        "CSeq": "118",
+        "Date": "2012/1/1",
+        "Public": "OPTIONS, DESCRIBE, SETUP, TEARDOWN, PLAY, PAUSE, GET_PARAMETER, SET_PARAMETER"
+      },
+      "body": "",
+      "elapsed_ms": 56.8,
+      "error": null
+    }
+  ],
+  "media_probe": {
+    "available": true,
+    "transport": "tcp",
+    "returncode": 0,
+    "stderr": "",
+    "streams": {
+      "streams": [
+        {
+          "index": 0,
+          "codec_name": "h264",
+          "codec_long_name": "H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10",
+          "profile": "High",
+          "codec_type": "video",
+          "codec_tag_string": "[0][0][0][0]",
+          "codec_tag": "0x0000",
+          "width": 640,
+          "height": 360,
+          "coded_width": 640,
+          "coded_height": 360,
+          "closed_captions": 0,
+          "has_b_frames": 0,
+          "pix_fmt": "yuv420p",
+          "level": 40,
+          "chroma_location": "left",
+          "field_order": "progressive",
+          "refs": 1,
+          "is_avc": "false",
+          "nal_length_size": "0",
+          "r_frame_rate": "30/1",
+          "avg_frame_rate": "30/1",
+          "time_base": "1/90000",
+          "start_pts": 18960,
+          "start_time": "0.210667",
+          "bits_per_raw_sample": "8",
+          "disposition": {
+            "default": 0,
+            "dub": 0,
+            "original": 0,
+            "comment": 0,
+            "lyrics": 0,
+            "karaoke": 0,
+            "forced": 0,
+            "hearing_impaired": 0,
+            "visual_impaired": 0,
+            "clean_effects": 0,
+            "attached_pic": 0,
+            "timed_thumbnails": 0
+          }
+        }
+      ],
+      "format": {
+        "filename": "rtsp://192.168.1.1/MJPG",
+        "nb_streams": 1,
+        "nb_programs": 0,
+        "format_name": "rtsp",
+        "format_long_name": "RTSP input",
+        "start_time": "0.210667",
+        "probe_score": 100,
+        "tags": {
+          "title": "H.264 Video. Streamed by iCatchTek.",
+          "comment": "H264"
+        }
+      }
+    }
+  },
+  "concurrency_probe": {
+    "workers": 4,
+    "wall_ms": 2101.7,
+    "results": [
+      {
+        "label": "concurrency:worker0",
+        "section": "concurrency",
+        "request": "DESCRIBE rtsp://192.168.1.1/MJPG RTSP/1.0\r\nCSeq: 100\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\nAccept: application/sdp\r\n\r\n",
+        "status": 200,
+        "reason": "OK",
+        "headers": {
+          "CSeq": "100",
+          "Date": "2012/1/1",
+          "Content-Base": "rtsp://192.168.1.1/MJPG/",
+          "Content-Type": "application/sdp",
+          "Content-Length": "460"
+        },
+        "body": "v=0\r\no=- 95926026 1 IN IP4 192.168.1.1\r\ns=H.264 Video. Streamed by iCatchTek.\r\ni=H264\r\nt=0 0\r\na=tool:iCatchTek\r\na=type:broadcast\r\na=control:*\r\na=range:npt=0-\r\na=x-qt-text-nam:H.264 Video. Streamed by iCatchTek.\r\na=x-qt-text-inf:H264\r\nm=video 0 RTP/AVP 96\r\nc=IN IP4 0.0.0.0\r\nb=AS:98304\r\na=rtpmap:96 H264/90000\r\na=fmtp:96 packetization-mode=1;profile-level-id=640028;sprop-parameter-sets=Z2QAKKy0BQF/ywgAAH0AAB1MBCA=,aO44sA==\r\na=framerate:30.0\r\na=control:track1\r",
+        "elapsed_ms": 510.0,
+        "error": null
+      },
+      {
+        "label": "concurrency:worker1",
+        "section": "concurrency",
+        "request": "DESCRIBE rtsp://192.168.1.1/MJPG RTSP/1.0\r\nCSeq: 101\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\nAccept: application/sdp\r\n\r\n",
+        "status": 200,
+        "reason": "OK",
+        "headers": {
+          "CSeq": "101",
+          "Date": "2012/1/1",
+          "Content-Base": "rtsp://192.168.1.1/MJPG/",
+          "Content-Type": "application/sdp",
+          "Content-Length": "460"
+        },
+        "body": "v=0\r\no=- 95926026 1 IN IP4 192.168.1.1\r\ns=H.264 Video. Streamed by iCatchTek.\r\ni=H264\r\nt=0 0\r\na=tool:iCatchTek\r\na=type:broadcast\r\na=control:*\r\na=range:npt=0-\r\na=x-qt-text-nam:H.264 Video. Streamed by iCatchTek.\r\na=x-qt-text-inf:H264\r\nm=video 0 RTP/AVP 96\r\nc=IN IP4 0.0.0.0\r\nb=AS:98304\r\na=rtpmap:96 H264/90000\r\na=fmtp:96 packetization-mode=1;profile-level-id=640028;sprop-parameter-sets=Z2QAKKy0BQF/ywgAAH0AAB1MBCA=,aO44sA==\r\na=framerate:30.0\r\na=control:track1\r",
+        "elapsed_ms": 2101.0,
+        "error": null
+      },
+      {
+        "label": "concurrency:worker2",
+        "section": "concurrency",
+        "request": "DESCRIBE rtsp://192.168.1.1/MJPG RTSP/1.0\r\nCSeq: 102\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\nAccept: application/sdp\r\n\r\n",
+        "status": 200,
+        "reason": "OK",
+        "headers": {
+          "CSeq": "102",
+          "Date": "2012/1/1",
+          "Content-Base": "rtsp://192.168.1.1/MJPG/",
+          "Content-Type": "application/sdp",
+          "Content-Length": "460"
+        },
+        "body": "v=0\r\no=- 95926026 1 IN IP4 192.168.1.1\r\ns=H.264 Video. Streamed by iCatchTek.\r\ni=H264\r\nt=0 0\r\na=tool:iCatchTek\r\na=type:broadcast\r\na=control:*\r\na=range:npt=0-\r\na=x-qt-text-nam:H.264 Video. Streamed by iCatchTek.\r\na=x-qt-text-inf:H264\r\nm=video 0 RTP/AVP 96\r\nc=IN IP4 0.0.0.0\r\nb=AS:98304\r\na=rtpmap:96 H264/90000\r\na=fmtp:96 packetization-mode=1;profile-level-id=640028;sprop-parameter-sets=Z2QAKKy0BQF/ywgAAH0AAB1MBCA=,aO44sA==\r\na=framerate:30.0\r\na=control:track1\r",
+        "elapsed_ms": 1075.7,
+        "error": null
+      },
+      {
+        "label": "concurrency:worker3",
+        "section": "concurrency",
+        "request": "DESCRIBE rtsp://192.168.1.1/MJPG RTSP/1.0\r\nCSeq: 103\r\nUser-Agent: larkfly-rtsp-probe/1.1\r\nAccept: application/sdp\r\n\r\n",
+        "status": 200,
+        "reason": "OK",
+        "headers": {
+          "CSeq": "103",
+          "Date": "2012/1/1",
+          "Content-Base": "rtsp://192.168.1.1/MJPG/",
+          "Content-Type": "application/sdp",
+          "Content-Length": "460"
+        },
+        "body": "v=0\r\no=- 95926026 1 IN IP4 192.168.1.1\r\ns=H.264 Video. Streamed by iCatchTek.\r\ni=H264\r\nt=0 0\r\na=tool:iCatchTek\r\na=type:broadcast\r\na=control:*\r\na=range:npt=0-\r\na=x-qt-text-nam:H.264 Video. Streamed by iCatchTek.\r\na=x-qt-text-inf:H264\r\nm=video 0 RTP/AVP 96\r\nc=IN IP4 0.0.0.0\r\nb=AS:98304\r\na=rtpmap:96 H264/90000\r\na=fmtp:96 packetization-mode=1;profile-level-id=640028;sprop-parameter-sets=Z2QAKKy0BQF/ywgAAH0AAB1MBCA=,aO44sA==\r\na=framerate:30.0\r\na=control:track1\r",
+        "elapsed_ms": 1091.6,
+        "error": null
+      }
+    ]
+  }
+}

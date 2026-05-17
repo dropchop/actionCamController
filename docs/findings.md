@@ -63,7 +63,39 @@ The camera advertises (`GetDeviceInfo`):
   (MP4 video).
 
 The full enumerated catalog (with descriptors, allowed values, current
-values) is in `analyses/data/properties.json`.
+values) is in `analyses/data/properties.json`; live-value walk in
+`analyses/data/all_walk.json`.
+
+**Write behaviour** (from `tools/prop_write_probe.py`):
+
+- **35 properties are genuinely RW.** Examples: `0x500F` ISO speed,
+  `0x5010` EV compensation (`-2000..+2000`), `0x5003` still resolution,
+  `0xD605` video mode, `0xD723` mode-with-sentinels, `0x501A` sleep timer.
+- **3 properties are "fake-RW":** `0xD75F`, `0xD7FC`, `0xD7FF` — the
+  descriptor says writable boolean (`enum [0,1]`, currently `=1`) but
+  `SetDevicePropValue` returns `rc=0x2001 OK` while the value silently
+  doesn't change. Verified at raw PTP level. Look like
+  factory/debug/service toggles gated behind an unknown unlock; 13
+  primer attempts (vendor opcodes, magic strings in `0xD406`, sentinel
+  modes in `0xD723`, SendObject of 8 magic filenames) all failed to
+  unlock them. See `docs/dev-console-hunt.md`.
+- **3 properties error on query**: `0x500A`, `0x500C`, `0xD83F` return
+  `rc=0x2002 General_Error` despite being in `properties_supported`.
+- **Verify handshake doesn't apply**: `0xD617` (the EncData hidden
+  property reversed from libcontrol.so) is **not in this firmware's
+  supported list**. Larkfly stripped it.
+- **`larkfly` parser caveat**: PropDesc.current_value parsing has a
+  bleed bug for STRING-type properties — the actual value via
+  `GetDevicePropValue` is authoritative.
+
+### PTP file-upload channel (`SendObject`) confirmed
+
+`SendObjectInfo (0x100C)` + `SendObject (0x100D)` accept arbitrary file
+uploads via PTP/IP and persist them to the SD card root with
+sequential handles. This bypasses the FTP chroot. **Caution:**
+uploading a file named `SPHOST.BRN` triggers the bootloader's
+firmware-update menu on next boot; always `DeleteObject` after testing.
+Tool: `tools/sendobject_unlock.py`.
 
 ### Vendor opcodes — what each is for
 
@@ -71,8 +103,13 @@ values) is in `analyses/data/properties.json`.
 | --- | --- | --- |
 | `0x9601` | **Polling / heartbeat** | iSmart DV2 calls it ~1×/sec with identical params `(0xD001, 0xFFFFFFFF, 0)` — 223/224 calls in the captured session. |
 | `0x9614` | **Bulk PropDesc reader** | Returns 12 prop descriptors in one round-trip, plus a stub for `0x500A FocusMode`. See `analyses/decode_9614.py`. |
-| `0x9805` | "Global query" | Called once with all-`0xFFFFFFFF` params. |
-| `0x9602`, `0x9801`, `0x9802`, `0x9803`, `0x9812` | Unknown | Not called by iSmart DV2 in any captured session; would need RE or hardware experimentation. |
+| `0x9805` | **Bulk current-values dump** | Returns 1388 B of compact "property snapshot" records (different format from `0x9614`). Partially decoded; raw data at `analyses/data/op_9805_response.bin`. |
+| `0x9602` | Object-handle lookup, returns nothing useful in this firmware. **Wedges the PTP service when called with first param = 0.** | `tools/ptp_vendor_probe.py` matrix. |
+| `0x9801` | SDK stub. Returns `0xA802` for every input. | Same. |
+| `0x9802`, `0x9812` | SDK stubs with **delayed-crash bug** — respond cleanly then take the PTP service down ~ms later. Power-cycle required. | Same. |
+| `0x9803` | Dual-mode lookup (property code if input ≤ 0x10000, else object handle). Returns proper error codes but no live data in this firmware. | Same. |
+
+The full sweep is documented in `docs/ptp-vendor.md`.
 
 ## Recording / capture paradigm
 
@@ -101,10 +138,11 @@ This produces a real `.MOV` file in `/VIDEO/` on the SD card.
 **Photo capture via PTP is unresolved.** `InitiateCapture` (`0x100C`)
 returns OK and a new object handle, but **no JPG file ever appears on the
 SD card** regardless of mode (tried 2, 3, 5, 6, 9, 10). The physical
-shutter button works fine. The remaining theory is that one of the
-five unused vendor opcodes (`0x9602` / `0x9801-3` / `0x9812`) is the
-real photo trigger, but blind probing crashed the camera once and we
-backed off without confirming.
+shutter button works fine. The "maybe one of the vendor opcodes is the
+real photo trigger" theory has now been **closed**: the exhaustive
+sweep in `docs/ptp-vendor.md` shows none of the five previously-unknown
+ops accept a capture-like parameter — three are SDK stubs, two are
+empty lookups. Photo capture via the network is currently a dead end.
 
 ## Multi-camera / STATION-mode situation
 
