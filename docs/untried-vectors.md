@@ -419,6 +419,31 @@ Documented for future researchers — none of these have been tried:
 
 ---
 
+## What we ruled out in the follow-up session (2026-05-17 PM, post quirk-#4 fix)
+
+- **SendObject magic-filename battery** — re-ran with the patched
+  encoder so filenames land intact. 24 candidates (`sta.conf`,
+  `wifi.conf`, `WIFI.CFG`, `AP.CFG`, `STA.CFG`, `_BACKDOOR.CONF`,
+  `autoexec.sh`/`.ash`, `bootcmd.sh`, `XCServer`, `script.ini`,
+  `custom_setting.ini`, `rcS`, `hostapd.conf`, `wpa_supplicant.conf`,
+  `SERVICE.CFG`, `DEBUG.CFG`, `FACTORY.CFG`, `DEBUG.RUN`, `MFG.OVR`,
+  `ENV.bin`, `upg.bin`, `update.bin`, `factory.bin`). All uploaded
+  with exact names — zero recognition, zero file consumption, no
+  property change, no SSID change. Closes both **S6** (SD-card
+  filename battery, partial — `SPHOST.BRN` still untested) and
+  **A2-adjacent** WiFi-config-on-SD theory. Tool:
+  `tools/sendobject_magic_v2.py`.
+- **A1 Bluetooth** — 3-min continuous scan across 2 controllers
+  spanning 2 power-cycles, 1320 BT events captured. No iCatchBT, no
+  camera OUI, no advertisement at any phase. **Closed.**
+- **Factory test files on SD** — three escalating experiments
+  (rename `FACTORY.RUN`, flip 6 flag values from `1`→`0`, delete all
+  13 inert files + modify MAC/SERIAL to non-placeholders). All
+  negative across 3 reboots. The 16 factory files Larkfly shipped
+  with are decorative — firmware doesn't read them. The MAC.CFG flip
+  in particular proved the camera's WiFi BSSID is NOT sourced from
+  the file. See `docs/dev-console-hunt.md` for full results.
+
 ## What we ruled out this round (don't re-walk)
 
 - All 10 USBCam SDK Wi-Fi properties (`0xD834`/D835/D831/D832/D83C/D83D/

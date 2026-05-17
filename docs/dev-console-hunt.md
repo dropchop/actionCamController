@@ -4,6 +4,81 @@ Living document tracking the exploration described in plan
 `/home/micah/.claude/plans/jiggly-jingling-adleman.md`. Updated after
 each step.
 
+## 2026-05-17 PM (later) — Three more vectors ruled out: factory-mode flip, magic-filename re-test, Bluetooth
+
+After PTP quirk #4 was found and patched, three follow-up experiments
+ran cleanly to close out the remaining cheap vectors:
+
+### Factory-mode flip (V2 L1 / L2 / L3 — all negative)
+
+The camera ships with 16 leftover factory-QC files on SD root
+(`FACTORY.RUN=1`, `MFG.CFG=enable=1`, `CALIB.CFG=run=1`,
+`BURN.CFG=burn=1`, `MAC.CFG=00:11:22:33:44:55` placeholder,
+`SERIAL.CFG=TEST0001` placeholder, plus AGCTSCAN/BAT_CURV/CIPA_LOG/
+LSCDEBUG/BPRAW/etc.). Three escalating tests:
+
+- **L1**: rename `FACTORY.RUN` → `FACTORY.OFF`. After reboot: no change
+  to AP, properties, locked booleans. (Side effect: the renamed file
+  was DELETED by something during boot — same fate as `FACTORY.OFF`
+  later. Suggests the filesystem layer or boot scripts do some
+  housekeeping on filenames matching `FACTORY.*`.)
+- **L2**: flip 6 file values from `1` → `0` (MFG.CFG, CALIB.CFG,
+  BURN.CFG, PROD.CFG, MP_MODE.CFG, AE_RUN.TXT). After reboot: values
+  persisted but again no observable effect.
+- **L3**: delete-by-rename all 13 inert factory files + modify
+  `MAC.CFG` → `AA:BB:CC:DD:EE:FF` and `SERIAL.CFG` → `LARK0042`.
+  After reboot: camera BSSID stayed `00:E0:4C:1A:80:DF` (MAC.CFG is
+  NOT read for the WiFi MAC), no property reflected the new serial,
+  3 locked booleans still silent-reject, 8 stripped WiFi properties
+  still rc=0x200A.
+
+**Conclusion:** the factory test files are inert QC artifacts Larkfly
+forgot to remove before shipping. Firmware doesn't consult any of
+them. Camera restored to baseline via FTP STOR from backups.
+
+### Magic-filename SendObject re-test with quirk-#4 fix (negative)
+
+The earlier `sendobject_unlock.py` magic-filename test was invalidated
+by the quirk #4 truncation bug (e.g. uploaded `SPHOST.BRN` was
+actually stored as `OST.BRN`). Re-ran with the patched
+`larkfly.protocol.encode_ptp_string_icatch_objinfo` via
+`tools/sendobject_magic_v2.py`:
+
+24 candidates uploaded with EXACT filenames + sentinel SSIDs +
+multi-format payloads. After reboot: zero files consumed, zero
+renamed, zero new files generated, AP unchanged, properties
+unchanged, locked booleans still locked. Filenames tested:
+`sta.conf`, `wifi.conf`, `WIFI.CFG`, `AP.CFG`, `STA.CFG`,
+`_BACKDOOR.CONF`, `autoexec.sh`, `autoexec.ash`, `bootcmd.sh`,
+`XCServer`, `script.ini`, `custom_setting.ini`, `rcS`,
+`hostapd.conf`, `wpa_supplicant.conf`, `SERVICE.CFG`, `DEBUG.CFG`,
+`FACTORY.CFG`, `DEBUG.RUN`, `MFG.OVR`, `ENV.bin`, `upg.bin`,
+`update.bin`, `factory.bin`.
+
+**Conclusion:** the firmware does NOT scan the SD card root for any
+standard SDK-family autorun / config / backdoor filename other than
+`SPHOST.BRN` (already documented as the bootloader trigger).
+
+### Bluetooth scan (negative)
+
+3 minutes of continuous BT scan across 2 controllers (built-in
++ USB CSR dongle), spanning 2 camera power-cycles, captured 1320 BT
+events. Filter for `iCatch|Action|cam|larkfly|sport|OUI 00:E0:4C`
+matched zero events. Conclusion: camera doesn't advertise BT —
+either no hardware or firmware-disabled. The APK's
+`com/icatchtek/bluetooth/*` code never gets initialized on this
+device. Same outcome for us; A1 closed.
+
+### Bonus: anomalous-state characterization
+
+During the experiments the GUI froze on the camera once while network
+services remained alive. Captured `0x9805` returned 2908 bytes (vs
+1388 baseline) — analysis showed the extra records are ObjectInfo
+snapshots for video files (camera was mid-media-reindex). Strict
+access control kicked in: RW properties returned `0x200F AccessDenied`
+during the lock. **Not a security state** — just an internal scan-
+in-progress lock. Saved at `analyses/data/op_9805_anomalous_state.bin`.
+
 ## 2026-05-17 PM — Property surface fully mapped; SendObject works; three "fake-RW" properties identified
 
 Walked all **56 advertised PTP properties** with live values
