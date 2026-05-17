@@ -36,24 +36,23 @@ Minimum reproducer:
 - **Persistent until power-cycle** — the camera's primary control
   surface (PTP/IP on port 15740) is unreachable for any legitimate
   client (incl. the official iSmart DV2 app) once triggered.
-**Confirmed DoS triggers** (`tools/ptp_container_fuzz.py` Phase 3 +
-`tools/ptp_p3_isolate.py`):
-- `ptype=0` (1/1, deterministic)
+**Confirmed DoS triggers** — tested individually on fresh power-cycles
+via `tools/ptp_p3_full_isolate.py` (checkpoint at `/tmp/ptp_p3_checkpoint.json`):
+- `ptype=0` (1/1, deterministic) — known from initial discovery
+- `ptype=1` (InitCmdReq) — send=recv-timeout, post_health=DOWN(InitFailError) ✓
+- `ptype=2` (InitCmdAck) — send=recv-timeout, post_health=DOWN(InitFailError) ✓
 
-**Untested in isolation** (all of these were tested in the v1 fuzz
-sequence AFTER ptype=0, so the results are contaminated by the
-already-broken camera and cannot be trusted): ptypes 1, 2, 5, 8, 9,
-10, 11, 12, 13, 14, 99, 0xFFFFFFFF. Each individual ptype test costs
-one power-cycle to fully isolate. A previous claim in this doc that
-"`ptype=1` is also a DoS trigger" was incorrect — the test was run
-without a power-cycle after the ptype=0 trigger, so the camera was
-already in the bad state. Retracted.
+**Untested in isolation** (each needs its own power-cycle):
+ptypes 3, 4, 5, 8, 9, 10, 11, 12, 13, 14, 15, 99, 255, 0x10000, 0xFFFFFFFF.
 
-The "alternating recv-timeout / closed-by-peer" pattern observed in
-the v1 fuzz across multiple ptypes was likewise an artifact of the
-already-broken camera responding inconsistently to further inputs,
-not a real signal about the parser branching on `ptype & 1`.
-Retracted.
+**Active tool:** `tools/ptp_p3_full_isolate.py` — checkpoint-based,
+resumes across power-cycles. Next session: `python3 -u tools/ptp_p3_full_isolate.py`
+after power-cycle. Script will pick up at ptype=3 (InitEvtReq).
+
+The earlier retraction of ptype=1 was itself wrong — the retraction was
+based on a test where the camera hadn't been rebooted between sends. Once
+properly re-tested with a fresh boot, ptype=1 confirmed BROKEN exactly
+like ptype=0. Same for ptype=2.
 
 **Theory:** the post-init op-dispatcher in the camera's PTP service
 has a switch statement on the incoming packet's ptype. The default
@@ -70,9 +69,9 @@ error code.
 **Tools:**
 - `tools/ptp_container_fuzz.py` — full PTP container/packet-type
   fuzz (4 phases). Phase 3 is the DoS trigger.
-- `tools/ptp_p3_isolate.py` — one-ptype-per-session isolation
-  framework. Each DoS-triggering ptype requires a power-cycle to
-  recover.
+- `tools/ptp_p3_isolate.py` — first isolation framework (superseded).
+- `tools/ptp_p3_full_isolate.py` — checkpoint-based, resumes across
+  power-cycles. Active tool for the remaining 15 ptypes.
 
 **Worth follow-up:**
 1. Confirm the remaining 11 untested ptypes also trigger (each is
@@ -83,8 +82,8 @@ error code.
 3. Disclose to Larkfly (likely no PSIRT; iCatch SDK upstream?) — the
    bug almost certainly affects all V11-family cameras using the
    stock iCatch PTP service, possibly other iCatch chips.
-4. The race condition on `ptype=1` is interesting per se — could be
-   a TOCTOU between two threads of the PTP service.
+4. The race-condition hypothesis for `ptype=1` is now moot — confirmed
+   deterministic DoS on fresh camera, same as ptype=0 and ptype=2.
 
 ## 2026-05-17 evening — Parking lot: DateTime parser irregularities to circle back to
 
