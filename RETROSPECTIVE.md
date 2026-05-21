@@ -282,9 +282,13 @@ verification — see "Camera identity" below, which the first pass missed.
 
 ## Recommended immediate actions
 
-1. **Fix `larkfly/types.py:49,54,55`** to `0x100E`, `0x101C`, `0x1018`;
+1. ~~**Fix `larkfly/types.py:49,54,55`** to `0x100E`, `0x101C`, `0x1018`;
    delete the false comment at `:56-60`. Add a test asserting each
-   opcode constant against its spec value.
+   opcode constant against its spec value.~~ **Done 2026-05-21:** the
+   three constants are corrected and the false comment removed;
+   `tests/test_protocol.py::TestOpcodeConstants` now asserts all 19
+   standard opcode constants against PIMA 15740, checks for value
+   collisions, and pins `OP_INITIATE_CAPTURE != 0x100C`. 26 tests pass.
 2. ~~Live-test the real photo trigger.~~ **Done 2026-05-20 — did not
    close the bug.** `InitiateCapture(0x100E,[0,0])` returns `rc=OK` but
    captures nothing (modes 3-6, ± RTSP preview). Photo capture over PTP
