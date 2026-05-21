@@ -10,7 +10,8 @@ exhaustion (cumulative).
 """
 from __future__ import annotations
 import os, socket, struct, sys, time
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# this script lives in tools/archive/ — repo root is three levels up
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 from larkfly import Camera
 from larkfly import types as t
 from larkfly import protocol as p

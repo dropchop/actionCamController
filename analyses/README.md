@@ -8,7 +8,7 @@ changed.
 | Script | What it did | Output | Status |
 | --- | --- | --- | --- |
 | `enumerate_props.py` | Calls `GetDevicePropDesc` + `GetDevicePropValue` on every supported property; writes a JSON catalog. | `data/properties.json` (all 56 properties) | Re-runnable on demand. |
-| `mine_pcap.py` | Walks a decrypted PTP/IP pcap, reassembles every transaction, summarizes opcode usage frequency + first-occurrence param signatures. | `data/transactions.json` (574 transactions from the iSmart DV2 session) | Needs an input pcap. |
+| `mine_pcap.py` | Walks a decrypted PTP/IP pcap, reassembles every transaction, summarizes opcode usage frequency + first-occurrence param signatures. | `data/transactions.json` (574 transactions from the iSmart DV2 session) — **request-side only**: response codes/data were reassembled for just ~7 of the 574, so it shows which ops the app *sent*, not their outcomes. Not authoritative for "the app did/didn't do X". | Needs an input pcap. |
 | `decode_9614.py` | Parses the 233-byte response from vendor opcode `0x9614` (a bulk PropDesc dump) into individual records. Cross-references against the catalog from `enumerate_props.py`. | Console output; saves raw response bytes to `data/op_9614_response.bin`. | Runnable offline against the saved bytes; also `--live` against the camera. |
 
 ## Reproducing

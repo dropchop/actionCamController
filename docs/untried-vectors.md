@@ -1,4 +1,4 @@
-# Untried attack vectors — Larkfly A6+ (iCatch V11, FW 20251206)
+# Untried attack vectors — Larkfly A6+ (iCatch V39A-family SoC; ODM model code V11, FW build 20251206)
 
 Living document. After exhausting the obvious PTP, MSC-SCSI and standard
 network surfaces (see `docs/dev-console-hunt.md`, `docs/findings.md`,
@@ -289,9 +289,13 @@ Source: APK at `apk-analysis/jadx-output/sources/com/icatchtek/bluetooth/`
 ```
 21 7E 1A 16 28 DE D2 A7 AB E7 85 88 09 CA 40 3C
 ```
-Found in `ICatchCameraAssistImpl.java:40`. This is the AES-128-CBC key
+Found in `ICatchCameraAssistImpl.java:40`. This is the AES-128 key
 used by SimpleConfig to push WiFi credentials to a camera in
-"listening" mode.
+"listening" mode. [Confirmed 2026-05-20 against the decompiled APK:
+it is the `__default_key` field, passed into `simpleConfig_Jni()` by
+the default-key `simpleConfig(...)` overload — a genuine default key,
+not test data. `docs/findings.md`'s earlier `echo1234echo1234` was a
+mislabel of the `encrypt_lenbase` encoding table, now corrected.]
 
 The catch: the camera has to be in SimpleConfig listen mode for this to
 land. The trigger is property `0xD7A1 CAMERA_CONNECT_CHANGE` — which
@@ -365,15 +369,23 @@ How to test: try writing 0xD700 via every advertised set-style op
 SetObjectProtection per some specs, but in iCatch it might be a
 property-write variant).
 
-### A6. PTP op `0x101B InitiateOpenCapture` — implemented, params unknown
+### ~~A6. PTP op `0x101B InitiateOpenCapture`~~ — **MISIDENTIFIED, vector void**
+
+`0x101B` is **`GetPartialObject`**, not `InitiateOpenCapture`. The
+camera advertises neither `InitiateOpenCapture` (`0x101C`) nor
+`TerminateOpenCapture` (`0x1018`) — there is no open-capture op to
+probe at all. The `0x2006 PNS` result recorded below was
+`GetPartialObject` rejecting non-file parameter shapes (expected for a
+file-read op), not a hidden capture path. Video recording is the
+`0xD604` mode-toggle. Original notes kept below for the record:
 
 `0x1012` turned out to be standard `SetObjectProtection` (verified —
 see rule-out section).
 
-`0x101B InitiateOpenCapture` is implemented (returns `0x2006 PNS` not
-`0x2005 ONS`) but rejects every standard param shape we tried
-(`[storage_id]`, `[storage_id, format_code]` with formats 0x3000,
-0x3801, 0xB982, plus zeros and 0xFFFFFFFF sentinels).
+`0x101B` (GetPartialObject, mislabelled here as InitiateOpenCapture)
+returns `0x2006 PNS` not `0x2005 ONS` but rejects every standard param
+shape we tried (`[storage_id]`, `[storage_id, format_code]` with
+formats 0x3000, 0x3801, 0xB982, plus zeros and 0xFFFFFFFF sentinels).
 
 How to test further:
 - Enumerate the camera's `capture_formats_supported` field from
@@ -461,11 +473,12 @@ Documented for future researchers — none of these have been tried:
   protects, subsequent DeleteObject returns `0x200D Access_Denied`;
   `[handle, 0]` unprotects). Standard PTP op that wasn't advertised
   in DeviceInfo. Not useful for shell-access.
-- **PTP `0x101B InitiateOpenCapture` is implemented but returns
-  `0x2006 Parameter_Not_Supported`** for every param shape we tried
-  (`[storage_id]`, `[storage_id, format_code]`, `[0,0]`, `[0xFFFFFFFF, ...]`).
-  Possibly needs a specific format code we haven't enumerated; could
-  hide a streaming-start code path we haven't reached.
+- **PTP `0x101B` is `GetPartialObject`, not `InitiateOpenCapture`** —
+  the earlier label was wrong. It returns `0x2006 Parameter_Not_Supported`
+  for the capture-shaped params tried, which is expected: it is a
+  file-read op. The camera advertises no `InitiateOpenCapture`
+  (`0x101C`) or `TerminateOpenCapture` (`0x1018`); there is no
+  open-capture op on this firmware.
 
 ## Cross-reference
 

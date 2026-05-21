@@ -110,16 +110,17 @@ overflow. **But three behaviours stand out as worth a follow-up:**
    Not security but reveals parser internals — useful if we later
    need to reason about what the firmware is doing under the hood.
 
-3. **Surrogate-pair high-Unicode codepoints are the ONLY input
-   rejected.** All 40 payloads accepted except
-   `'\U00020000\U00020000\U00020000'` (U+20000 needs UTF-16 surrogate
-   pair encoding) → `rc=0x200A DeviceProp_Not_Supported`. **Unique
-   error code at a unique boundary.** Some layer (likely the UTF-16LE
-   decoder, possibly in `larkfly` actually — need to disambiguate)
-   bails on surrogate pairs. Worth probing: do other STRING property
-   writes also reject surrogate pairs? If the rejection is firmware-
-   side, it suggests a tightly-coded UTF-16 parser; if client-side,
-   we should patch it out so we can test with the full UTF-16 range.
+3. **Surrogate-pair rejection — RESOLVED 2026-05-20: it was a
+   client-side `larkfly` bug, now fixed.** Writing
+   `'\U00020000\U00020000\U00020000'` to `0x5011` got `rc=0x200A`.
+   Root cause: `larkfly.protocol.encode_ptp_string` derived the PTP
+   `NumChars` count from Python code points (`len(s)+1`) instead of
+   UTF-16 code units — a non-BMP char is one code point but two UTF-16
+   units, so the count under-ran and the wire string was malformed,
+   which the camera rejected. Not a firmware UTF-16 quirk. Fixed in
+   `larkfly/protocol.py` (`encode_ptp_string` /
+   `encode_ptp_string_icatch_objinfo` now count UTF-16 units). No
+   further action.
 
 Raw output saved at `/tmp/datetime_fuzz.log` (host-local; not committed).
 
@@ -214,13 +215,19 @@ Walked all **56 advertised PTP properties** with live values
   a client bug: write succeeds with OK, read-back is unchanged. These
   look like **factory-debug / service-mode toggles** that require an
   unlock mechanism we don't have.
-- **18 properties errored / unimplemented** in the D7xx block
-  (advertised but `GetDevicePropDesc` returns `0x2002 General_Error`).
-  Three confirmed: `0x500A` (FocusMode), `0x500C`, `0xD83F`.
-- Plus a `larkfly` parser bug surfaced: `0xD83E`'s PropDesc.current_value
-  bleeds the prior property's string into the parse. The actual
-  `0xD83E` value via `GetDevicePropValue` is a 5-byte struct, not the
-  `'G:\\SPHOST.BRN'` path. The path lives only at `0xD801` (RO).
+- **3 properties error on `GetDevicePropDesc`** (`rc=0x2002
+  General_Error`): `0x500A` (FocusMode), `0x500C`, `0xD83F`.
+  [Corrected 2026-05-20: an earlier draft of this line said "18 ... in
+  the D7xx block" — wrong. `analyses/data/prop_walk_all.json` shows
+  exactly 3 of the 56 properties error, and none is in the 0xD7xx
+  range. The "18" was the entry count of the `prop_walk_d7.json` walk,
+  all of which parse fine.]
+- [Corrected 2026-05-20: an earlier draft reported a `larkfly` PropDesc
+  "bleed bug" for `0xD83E`. Not real — `0xD83E`'s descriptor genuinely
+  encodes `current = 'G:\\SPHOST.BRN'` (STRING), and
+  `GetDevicePropValue(0xD83E)` returns the same string, not a 5-byte
+  struct. Verified by decoding all 56 captured descriptors with
+  `larkfly.protocol.parse_prop_desc`; every one is correct.]
 
 ### Unlock-hunt: 13 primer attempts, all negative
 
@@ -635,9 +642,6 @@ proceed, or whether the data buffer carries the firmware bytes.
 | 1.5c  | binwalk a reference iCatch .BRN (Eken H9R, V37 chipset)  | done    | **HUGE** — found telnetd + NDK shell + AES verify in firmware, decoded the .BRN container format |
 | 1.1c  | SD-card config-fuzz (rounds 1 + 2, 16 candidate files)   | done    | **Cleanly negative** — camera ignores all SD-root config patterns; SPHOST.BRN is the *only* SD trigger |
 | 1.3   | iSmart DV2 firmware-update wire capture (next priority)  | pending | Still needed — only path to a V11-specific .BRN we can patch |
-| 1.1c  | Sweep `set` operations on safe boolean RW flags          | pending | — |
-| 1.4   | PTP `SendObject` write-access test                       | pending | — |
-| 1.3   | iSmart DV2 firmware-update wire capture (needs phone)    | pending | — |
 | 2.1   | USB enumeration (needs camera plugged in)                | pending | — |
 | 2.2   | UVC XU decode (needs camera plugged in)                  | pending | — |
 | 2.3   | Camera on-screen menu walk (needs user at camera)        | pending | — |
@@ -1110,11 +1114,14 @@ Implications:
   namespace with directories as parallel objects; FTP organises by
   filesystem.
 - The single advertised storage is `0x50001`. `StorageInfo` reports
-  ~261 MB total / ~260 MB free — small enough that this is likely
-  the **internal SP-host partition** (`G:` in the firmware's path
-  strings), not the user's SD card. Confirms `G:\SPHOST.BRN` lives
-  here. The MOVs we see may be on a separate FAT volume that the
-  camera mounts on demand and exposes via the same handle space.
+  **62.5 GB total / 62.2 GB free** (live-verified 2026-05-20:
+  `max_capacity=67092086784`, `free_space_bytes=66817359872`). This
+  is the SD card — `storage_type=4` (removable RAM) confirms it.
+  [Corrected 2026-05-20: an earlier entry here said "~261 MB total
+  ... likely the internal SP-host partition (`G:`)." That was wrong.
+  The probe that produced 261 MB almost certainly ran while the SD
+  card was absent or not yet mounted. The MOVs land on this same
+  `0x50001` storage handle, which is the SD card root.]
 
 ### Step 1.5b — `SPHOST.BRN` drop-test (planned, not executed)
 

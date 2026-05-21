@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-"""Minimal demo of the larkfly client. Connects to a camera, takes a
-photo, downloads its thumbnail (after a short wait), then disconnects.
+"""Minimal demo of the larkfly client. Connects to a camera, prints its
+DeviceInfo / storage / object list, then exercises the photo path (a
+no-op on this firmware — see the note below), and disconnects.
 
 Usage:
     python3 examples/quickstart.py [HOST] [--bind LOCAL_IP]
@@ -87,7 +88,10 @@ def main():
         if args.no_photo:
             return
 
-        print("=== Taking a photo ===")
+        # NOTE: photo capture over PTP does not work on this firmware —
+        # InitiateCapture (0x100E) returns rc=OK but produces no JPG, event
+        # or object (see docs/findings.md). take_photo() will return None.
+        print("=== Taking a photo (known no-op on this firmware) ===")
         new_handle = cam.take_photo()
         if new_handle:
             print(f"  Photo handle: {new_handle}")
