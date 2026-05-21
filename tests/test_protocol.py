@@ -246,5 +246,59 @@ class TestDeviceInfoParsing(unittest.TestCase):
         self.assertIn(0xC601, info['events_supported'])
 
 
+class TestOpcodeConstants(unittest.TestCase):
+    """Guard the standard PTP operation-code constants against their
+    PIMA 15740-2000 §10 (Operations) spec values.
+
+    Regression cover for the bug RETROSPECTIVE.md documents: three
+    constants in larkfly/types.py held the wrong opcode —
+    OP_INITIATE_CAPTURE was 0x100C (SendObjectInfo), OP_INITIATE_OPEN_CAPTURE
+    was 0x100D (SendObject), OP_TERMINATE_OPEN_CAPTURE was 0x101B
+    (GetPartialObject). The library decoded the camera's DeviceInfo
+    correctly but filled its own constants in wrong, so take_photo()
+    silently created empty object stubs. Asserting every constant against
+    the spec catches that whole class of mistake on the next edit."""
+
+    # opcode constant name -> (expected value, PIMA 15740 operation name)
+    SPEC = {
+        'OP_GET_DEVICE_INFO':       (0x1001, 'GetDeviceInfo'),
+        'OP_OPEN_SESSION':          (0x1002, 'OpenSession'),
+        'OP_CLOSE_SESSION':         (0x1003, 'CloseSession'),
+        'OP_GET_STORAGE_IDS':       (0x1004, 'GetStorageIDs'),
+        'OP_GET_STORAGE_INFO':      (0x1005, 'GetStorageInfo'),
+        'OP_GET_NUM_OBJECTS':       (0x1006, 'GetNumObjects'),
+        'OP_GET_OBJECT_HANDLES':    (0x1007, 'GetObjectHandles'),
+        'OP_GET_OBJECT_INFO':       (0x1008, 'GetObjectInfo'),
+        'OP_GET_OBJECT':            (0x1009, 'GetObject'),
+        'OP_GET_THUMB':             (0x100A, 'GetThumb'),
+        'OP_DELETE_OBJECT':         (0x100B, 'DeleteObject'),
+        'OP_INITIATE_CAPTURE':      (0x100E, 'InitiateCapture'),
+        'OP_FORMAT_STORE':          (0x100F, 'FormatStore'),
+        'OP_GET_DEVICE_PROP_DESC':  (0x1014, 'GetDevicePropDesc'),
+        'OP_GET_DEVICE_PROP_VALUE': (0x1015, 'GetDevicePropValue'),
+        'OP_SET_DEVICE_PROP_VALUE': (0x1016, 'SetDevicePropValue'),
+        'OP_TERMINATE_OPEN_CAPTURE': (0x1018, 'TerminateOpenCapture'),
+        'OP_GET_PARTIAL_OBJECT':    (0x101B, 'GetPartialObject'),
+        'OP_INITIATE_OPEN_CAPTURE': (0x101C, 'InitiateOpenCapture'),
+    }
+
+    def test_opcode_constants_match_spec(self):
+        for name, (value, op_name) in self.SPEC.items():
+            self.assertEqual(
+                getattr(t, name), value,
+                f"{name} should be 0x{value:04X} ({op_name} per PIMA 15740)")
+
+    def test_no_opcode_collisions(self):
+        """No two operation-code constants may share a value — the
+        original bug aliased InitiateCapture onto SendObjectInfo's code."""
+        values = [getattr(t, name) for name in self.SPEC]
+        self.assertEqual(len(values), len(set(values)),
+                         "duplicate opcode value among OP_* constants")
+
+    def test_initiate_capture_is_not_sendobjectinfo(self):
+        """Explicit regression pin: 0x100C is SendObjectInfo, not capture."""
+        self.assertNotEqual(t.OP_INITIATE_CAPTURE, 0x100C)
+
+
 if __name__ == '__main__':
     unittest.main()
