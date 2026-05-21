@@ -46,19 +46,17 @@ OP_GET_OBJECT_INFO          = 0x1008
 OP_GET_OBJECT               = 0x1009
 OP_GET_THUMB                = 0x100A
 OP_DELETE_OBJECT            = 0x100B
-OP_INITIATE_CAPTURE         = 0x100C  # take a photo
+OP_INITIATE_CAPTURE         = 0x100E  # take a photo (StorageID, ObjectFormatCode)
 OP_FORMAT_STORE             = 0x100F  # DANGEROUS — wipes SD card
 OP_GET_DEVICE_PROP_DESC     = 0x1014
 OP_GET_DEVICE_PROP_VALUE    = 0x1015
 OP_SET_DEVICE_PROP_VALUE    = 0x1016
-OP_INITIATE_OPEN_CAPTURE    = 0x100D  # start video recording
-OP_TERMINATE_OPEN_CAPTURE   = 0x101B  # stop video recording
-OP_GET_PARTIAL_OBJECT       = 0x101B  # ALSO 0x101B in PTP; same opcode reused.
-                                       # In PTP-IP context, 0x101B is
-                                       # GetPartialObject; in iCatch context
-                                       # the camera advertises it as
-                                       # supported and uses it for both.
-OP_GET_PARTIAL_OBJECT_64    = 0x101B  # (alias)
+OP_GET_PARTIAL_OBJECT       = 0x101B
+# 0x1018 TerminateOpenCapture and 0x101C InitiateOpenCapture are standard PTP
+# ops, but this camera does NOT advertise either. Video recording is the
+# 0xD604 mode-toggle (see camera.py), not these ops.
+OP_TERMINATE_OPEN_CAPTURE   = 0x1018
+OP_INITIATE_OPEN_CAPTURE    = 0x101C
 
 # Vendor opcodes the Larkfly A6+ advertises (0x9000-0x97FF range)
 OP_ICATCH_POLL              = 0x9601  # heartbeat / event-poll (iSmart DV2

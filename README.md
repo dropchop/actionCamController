@@ -1,13 +1,17 @@
 # actionCamController
 
-A Linux controller for **Larkfly A6+** action cameras (internal iCatch
-product code `V11`, firmware 20251206), reverse-engineered from the
-iSmart DV2 Android app and a real device. Replaces the official app for
-single-camera control and (eventually, see caveats below) coordinates
-several cameras at once.
+A Linux controller for **Larkfly A6+** action cameras (ODM model code
+`V11`, iCatch V39A-family SoC, firmware build 20251206), reverse-engineered
+from the iSmart DV2 Android app and a real device. Replaces the official
+app for single-camera control and (eventually, see caveats below)
+coordinates several cameras at once.
+
+`V11` is the white-label model code the camera reports in its
+`ProductName` property — the same hardware also sells as VIRAN V11 /
+CERASTES V11. It is not an iCatch designation.
 
 Born from the realization that the camera speaks an off-spec dialect of
-PTP/IP with three undocumented quirks. The library encapsulates those
+PTP/IP with four undocumented quirks. The library encapsulates those
 so a normal Python client can drive it.
 
 ## Status
@@ -28,8 +32,11 @@ What works:
   to SD in UVC mode, so this is host-streaming only
 
 What's stuck:
-- Photo capture via PTP — `InitiateCapture` returns OK but doesn't
-  produce a JPG. Workaround: the camera's physical shutter button.
+- Photo capture via PTP — unsolved. A library bug (wrong opcode:
+  `0x100C` SendObjectInfo instead of `0x100E` InitiateCapture) is now
+  fixed, but live testing shows the correct `InitiateCapture(0x100E)`
+  returns OK yet still captures no photo. Workaround: the camera's
+  physical shutter button.
 - Putting multiple cameras on one shared WiFi (STATION mode) — the
   camera-side protocol is Realtek SmartConfig (UDP-broadcast, AES-
   encrypted). We have the default AES key + multicast target but the

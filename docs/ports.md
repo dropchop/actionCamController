@@ -19,12 +19,11 @@ exhaustive sweep + UDP service probes + FTP chroot walk that the
   directories — `/VIDEO` and `/JPG`. No `/etc`, `/tmp`, `/var`, `/sys`,
   `/proc`, `/dev`, or any other system path is reachable. `HELP` and
   `STAT` are not implemented. There is no escape hatch.
-- **The only "dev console-shaped" surface left on the network is PTP/IP
-  vendor opcodes** (0x9xxx range). One has been decoded
-  (`analyses/decode_9614.py`); the rest are unexplored and could in
-  principle expose logging or shell-style functionality. Not pursued
-  yet because vendor-op probing has historically hung the camera's PTP
-  service (see "Things that hang the PTP service" in `findings.md`).
+- **The one "dev console-shaped" network surface was the PTP/IP vendor
+  opcodes** (0x9xxx range). There are **8** of them, and all 8 have
+  since been swept — see `docs/ptp-vendor.md`. None exposes logging or
+  shell-style functionality; three of them wedge the PTP service when
+  probed.
 
 If there really is a serial / UART console it's on the PCB, not on
 the radio. That would mean opening the case.
@@ -119,13 +118,11 @@ the SD card mount, with no read/write access outside it.
 ## What's left if you want a dev console
 
 1. **PTP vendor opcodes (0x9xxx range)** — `DeviceInfo.operations_supported`
-   enumerates 23 vendor codes; we have decoded one
-   (`0x9614`, decompressed via `analyses/decode_9614.py`). The other
-   22 are unexplored and *could* expose firmware state, logs, or
-   debug commands. Risky: vendor-op probing has wedged the PTP
-   service in earlier sessions; recovery may need a power-cycle. If
-   pursued, do it the way `tools/rtsp_probe.py` does — one op per
-   request, health-check between, resume from JSON.
+   enumerates **8** vendor codes (`0x9601`, `0x9602`, `0x9614`,
+   `0x9801`, `0x9802`, `0x9803`, `0x9805`, `0x9812`). All 8 have since
+   been swept — see `docs/ptp-vendor.md`. None exposes firmware state,
+   logs, or debug commands; three of them wedge the PTP service when
+   probed. This surface is now closed, not pending.
 2. **A physical serial / UART header on the PCB**. Requires opening
    the case. Out of scope for the network-facing project.
 

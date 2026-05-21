@@ -289,14 +289,17 @@ class Camera:
     # ---------- capture --------------------------------------------
     # Important: this firmware uses a MODE-TOGGLE paradigm for video.
     # Setting property 0xD604 to 17 (VIDEO_ON) starts recording; setting
-    # it back to 1 (VIDEO_OFF) stops. The PTP InitiateOpenCapture op
-    # (0x100D) is advertised as supported but isn't what actually
-    # triggers a recording.
+    # it back to 1 (VIDEO_OFF) stops. The camera does NOT advertise the
+    # standard PTP InitiateOpenCapture (0x101C) / TerminateOpenCapture
+    # (0x1018) ops at all — 0xD604 is the only recording control.
     #
-    # For photos, PTP InitiateCapture (0x100C) returns a new handle but
-    # no JPG appears on the SD card via FTP. The photo trigger over PTP
-    # is not yet figured out. Pressing the camera's physical shutter
-    # button does produce real JPGs.
+    # For photos, InitiateCapture (0x100E) is the op — earlier builds
+    # wrongly defined OP_INITIATE_CAPTURE as 0x100C (SendObjectInfo), so
+    # take_photo() created empty object stubs. That opcode bug is fixed,
+    # but photo capture is STILL unsolved: live test 2026-05-20 shows
+    # InitiateCapture(0x100E, [0,0]) returns rc=OK yet captures nothing
+    # (no JPG / event / object; modes 3-6, with/without RTSP preview).
+    # The physical shutter button works.
     def get_mode(self) -> int:
         """Read the current operating mode (property 0xD604)."""
         return self.get_prop_value(t.PROP_MODE)
@@ -306,12 +309,17 @@ class Camera:
         self.set_prop_value(t.PROP_MODE, mode, datatype=t.DT_UINT16)
 
     def take_photo(self, storage_id: int = 0, format_code: int = 0) -> Optional[int]:
-        """Send PTP InitiateCapture. Returns the new object handle if the
-        camera reports it in resp_params[2], else None.
+        """Send PTP InitiateCapture (0x100E). Returns resp_params[2] if
+        the camera supplies a handle, else None.
 
-        NOTE: This op succeeds at the protocol level but doesn't appear to
-        produce a JPG file on the SD card. Use the physical shutter button
-        to take photos until we figure out the right trigger mechanism."""
+        STATUS: photo capture over PTP does not work on this firmware.
+        Live test 2026-05-20 — InitiateCapture(0x100E) returns rc=OK for
+        every input (any params, including none; modes 1/3/4/5/6/9/10;
+        with/without RTSP preview) yet never produces a JPG, event or
+        object. It behaves as an unwired SDK stub. Earlier builds also
+        sent the wrong opcode entirely (0x100C = SendObjectInfo); that is
+        fixed, but capture still does not work. Use the physical
+        shutter button."""
         # Switch to CAMERA mode so InitiateCapture is at least valid
         try:
             current = self.get_mode()
