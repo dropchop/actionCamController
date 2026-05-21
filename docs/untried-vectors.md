@@ -44,52 +44,35 @@ haven't reached yet from the host side.
 
 ## Shell-access vectors — UNTRIED, in priority order
 
-### S1. USB endpoint-0 vendor control transfer `0xC0 / 0xB0 / wIndex=0xAA55`
+### ~~S1. USB endpoint-0 vendor control transfer `0xC0 / 0xB0 / wIndex=0xAA55`~~ — **DEAD END (verified)**
 
-**The single highest-leverage cheap thing left to try.** Documented on
-the iCatch V37M (Lenovo ThinkSmart Cam) and used by iCatch's FRM.exe
-flasher to enter ISP / bootloader mode. The exact request:
+**Fully closed.** Two parallel probes confirmed this:
 
-```
-bmRequestType = 0xC0   (device-to-host, vendor, device-targeted)
-bRequest      = 0xB0
-wValue        = 0x0000
-wIndex        = 0xAA55
-wLength       = 12
-```
+1. **`bRequest=0xB0 / wIndex=0xAA55` (FRM.exe ISP-mode trigger)** —
+   `tools/usb_ep0_vendor_probe.py` sent this in UVC mode (PID 2aad:6373).
+   Result: `ETIMEDOUT`, not `EPIPE` (stall). This means the request was
+   *recognised* by the firmware but the camera is not in a state that
+   allows ISP-mode entry. No re-enumeration, no new USB class.
 
-FRM.exe sends this **three times during enumeration**, after which the
-device drops into ISP mode and enumerates as `"Icatch(X) KX Series Bulk
-Camera Device"` — at which point the SP-Boot bootloader command shell
-(`r/w/dump/nandrd/uartld/usbld/...`) is reachable over USB.
+2. **SPCA_FWUpdate `InitialCamera` sequence captured via usbmon** —
+   `InitialCamera` does NOT attempt ISP-mode entry at all. It performs
+   **pure ISP register read/write** via `bRequest=0x05` (not `0xB0`):
+   reads chip ID at register `0x0d04` → returns `0x0d7c90b1` (little-
+   endian). This value matches none of the IDs libspca.so recognises
+   (SPCA_2080=10, 2081, 2082, 2085, 2088) — libspca prints "device
+   unknown" and exits immediately, well before any flash-write or mode-
+   change attempt. The SPCA firmware-update protocol is ISP *register*
+   access (image-sensor tuning), not ISP-mode (bootloader) entry. Even
+   if adapted, it controls image-processing registers, not WiFi.
 
-How to test:
-```bash
-# In MSC mode (PID 2aad:6371):
-sudo python3 - <<'PY'
-import ctypes, ctypes.util, os
-# pyusb-free probe via /dev/bus/usb ioctl USBDEVFS_CONTROL
-# OR use pyusb if available
-import usb.core
-dev = usb.core.find(idVendor=0x2aad, idProduct=0x6371)
-if dev is None: dev = usb.core.find(idVendor=0x2aad, idProduct=0x6373)
-# Three repeats of the FRM.exe ISP-mode trigger
-for _ in range(3):
-    try:
-        data = dev.ctrl_transfer(0xC0, 0xB0, 0x0000, 0xAA55, 12, 2000)
-        print("got:", bytes(data).hex())
-    except Exception as e:
-        print("err:", e)
-PY
-# Then check whether the camera re-enumerates with a new PID / class
-lsusb | grep -i icatch
-```
+   Background ISP register protocol confirmed working on V39A:
+   - `bmRequestType=0x40` (OUT), `bRequest=0x05`, `wValue=<reg addr>`,
+     `wIndex=0x0000`, 4-byte data = write register
+   - `bmRequestType=0xC0` (IN), same shape = read register
+   - Heartbeat at register `0x004c` (returns `0x20`/`0x28` alternating
+     at ~1 Hz from the UVC driver) confirms the interface is live.
 
-Then sweep ALL `bRequest` values 0x00..0xFF at all 4 `bmRequestType`
-combos (`0x40, 0xC0, 0x41, 0xC1`) — that's 1024 probes, ~10 minutes,
-zero risk.
-
-Source: https://blog.kitor.eu/lenovo-thinksmart-cam-unbricking-after-a-failed-firmare-upda
+Source: kitor.eu V37M post; captured usbmon traffic 2026-05-20
 
 ### S2. Shutter+power USB enter-debug button combo
 
@@ -471,7 +454,7 @@ Documented for future researchers — none of these have been tried:
 
 | Vector | Type   | Cheap? | Risk     | First-stop reference |
 | ------ | ------ | ------ | -------- | -------------------- |
-| S1     | shell  | ★★★    | none     | kitor.eu V37M post |
+| ~~S1~~ | ~~shell~~ | -   | -        | **dead end** (ETIMEDOUT; ISP reg ≠ ISP mode; chip ID 0xb17c0d0d unknown) |
 | S2     | shell  | ★★★    | none     | Linouth V50 repo |
 | ~~S3~~ | ~~shell~~ | -   | -        | **dead end** (FTP stripped) |
 | S4     | shell  | ★★     | none     | libusb_transport.so strings |
@@ -491,14 +474,11 @@ Documented for future researchers — none of these have been tried:
 **Recommended order of attack** (assuming user remains case-closed),
 post-verification:
 
-1. **A1** — Bluetooth scan. If `iCatchBT*` advertises, this is the
-   factory-installed AP-control channel and it's plaintext JSON. ~5 min
-   to confirm.
-2. **S1** — USB endpoint-0 vendor control transfer sweep
-   (`bmRequestType` × `bRequest` matrix, plus the known `0xC0/0xB0/AA55`
-   FRM.exe ISP-mode trigger). The single highest-leverage probe.
-3. **S2** — Shutter-held USB enter to see if a different USB device
-   class appears (`udevadm monitor` during plug-in).
+1. **S2** — Shutter-held USB enter to see if a different USB device
+   class appears (`udevadm monitor` during plug-in). Camera OFF → hold
+   shutter → plug USB. Closes in under a minute.
+2. **S10** — Audio interfaces on UVC device (`lsusb -v -d 2aad:6373`
+   + `amixer`). Zero risk, 5 minutes.
 4. **S10** — Audio interfaces on UVC device (`lsusb -v` + `amixer`).
 5. **S4** — UVC bulk-XU enumeration (different alt-setting from the
    ISO XU we probed).

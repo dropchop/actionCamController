@@ -187,6 +187,31 @@ The camera's own default WiFi password `1234567890` appears as a
 substring of these same constants — strongly suggests iCatch hardcoded
 one string for both uses (WiFi PSK default AND SmartConfig AES default).
 
+## USB EP0 vendor register interface (bRequest=0x05)
+
+The camera exposes a direct ISP register read/write protocol on EP0 in both
+UVC (PID 2aad:6373) and MSC (PID 2aad:6371) modes:
+
+```
+READ:  bmRequestType=0xC0, bRequest=0x05, wValue=<reg16>, wIndex=0, wLength=4
+WRITE: bmRequestType=0x40, bRequest=0x05, wValue=<reg16>, wIndex=0, wLength=4, data=<u32 LE>
+```
+
+This is the same protocol used by SPCA_FWUpdate / libspca.so for iCatch ISP
+cameras (SunplusIT family). It provides **image-sensor register access**, not
+bootloader/ISP-mode entry. Key register discovered:
+
+| Register | Value (raw LE) | Meaning |
+| --- | --- | --- |
+| `0x0d04` | `0d7c90b1` = `0xb1907c0d` | Chip ID — not in libspca's table (SPCA_2080/82/85/88) → V39A = `DEVICE_UNKNOWN` |
+| `0x004c` | alternates `0x20`/`0x28` at ~1 Hz | ISP heartbeat register (polled by uvcvideo driver) |
+
+**This interface does NOT trigger ISP boot mode.** `bRequest=0xB0 / wIndex=0xAA55`
+(the FRM.exe ISP-mode sequence documented for V37M) returns `ETIMEDOUT` on V39A
+in UVC mode — the command is parsed but the state machine won't enter ISP mode
+from a live-running firmware context. ISP/bootloader mode requires either: a
+hardware button combo at power-on, or SP-Boot UART commands (H1).
+
 ## USB UVC mode
 
 The camera presents as a standard UVC class device when plugged in via
