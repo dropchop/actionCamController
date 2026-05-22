@@ -74,16 +74,12 @@ haven't reached yet from the host side.
 
 Source: kitor.eu V37M post; captured usbmon traffic 2026-05-20
 
-### S2. Shutter+power USB enter-debug button combo
+### ~~S2. Shutter+power USB enter-debug button combo~~ — **DEAD END (verified)**
 
-Documented on Akaso M50 Pro SE (iCatch V50, sibling family): holding
-shutter while plugging USB enters a debug-mode device class. Our button-
-combo hunt (negative) was done with WiFi mode, not USB. **This combo
-specifically requires the camera to be powered on via a different button
-sequence with USB plugged in.**
-
-How to test: with camera OFF, hold shutter, then plug USB. Watch
-`udevadm monitor` for any non-MSC/non-UVC class enumeration.
+Tried 2026-05-22. Both variants (camera OFF → hold shutter → plug USB;
+camera OFF → hold power → plug USB) enumerate as `2aad:6371` MSC with
+one interface — identical to normal MSC mode. No new PID, no bulk-camera
+class, no ISP-mode re-enumeration. The V50 combo does not apply to V11.
 
 Source: https://github.com/Linouth/iCatch-V50-Playground
 
@@ -455,7 +451,7 @@ Documented for future researchers — none of these have been tried:
 | Vector | Type   | Cheap? | Risk     | First-stop reference |
 | ------ | ------ | ------ | -------- | -------------------- |
 | ~~S1~~ | ~~shell~~ | -   | -        | **dead end** (ETIMEDOUT; ISP reg ≠ ISP mode; chip ID 0xb17c0d0d unknown) |
-| S2     | shell  | ★★★    | none     | Linouth V50 repo |
+| ~~S2~~ | ~~shell~~ | -   | -        | **dead end** (shutter+USB and power+USB both enumerate as 2aad:6371 MSC) |
 | ~~S3~~ | ~~shell~~ | -   | -        | **dead end** (FTP stripped) |
 | S4     | shell  | ★★     | none     | libusb_transport.so strings |
 | S5     | shell  | ★      | brick    | unified-btc-reverse carve_BTC_BRN.py |
@@ -474,11 +470,9 @@ Documented for future researchers — none of these have been tried:
 **Recommended order of attack** (assuming user remains case-closed),
 post-verification:
 
-1. **S2** — Shutter-held USB enter to see if a different USB device
-   class appears (`udevadm monitor` during plug-in). Camera OFF → hold
-   shutter → plug USB. Closes in under a minute.
-2. **S10** — Audio interfaces on UVC device (`lsusb -v -d 2aad:6373`
-   + `amixer`). Zero risk, 5 minutes.
+1. **S10** — Audio interfaces on UVC device (`lsusb -v -d 2aad:6373`
+   + `amixer -c <card>`). Zero risk, 5 minutes.
+2. **S4** — UVC bulk alt-setting XU controls (separate from ISO XU probed).
 4. **S10** — Audio interfaces on UVC device (`lsusb -v` + `amixer`).
 5. **S4** — UVC bulk-XU enumeration (different alt-setting from the
    ISO XU we probed).
