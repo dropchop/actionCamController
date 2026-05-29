@@ -238,6 +238,13 @@ class Orchestrator:
     # ---- scan + select ----
     def scan(self) -> list[Camera]:
         print(f"[*] Scanning for ActionCam_* APs on {self.iface} ...")
+        # Disconnect first so the radio isn't pinned to one AP's channel.
+        # While associated, many drivers return only the current BSSID (or a
+        # stale cache), which is why a still-connected dongle "sees" only the
+        # camera it's already on. Disconnecting frees it to sweep all channels.
+        # No-op / harmless error if already down (we don't check rc).
+        self._run_sudo(['nmcli', 'device', 'disconnect', self.iface],
+                       capture=True)
         self._run_sudo(['nmcli', 'device', 'wifi', 'rescan', 'ifname',
                         self.iface], check=False)
         time.sleep(self.args.rescan_wait)
