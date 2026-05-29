@@ -130,6 +130,19 @@ class TestBuildArgv(unittest.TestCase):
         self.assertEqual(argv[argv.index('--ptp-bind') + 1], '192.168.1.10')
         self.assertIn('-v', argv)
 
+    def test_pull_argv_list_mode(self):
+        argv = rc.build_pull_argv(
+            'py', '/r/ftp_pull.py', '192.168.1.1', '192.168.1.10',
+            '/d', '/d/manifest.json', sleep=0.5, retries=5, backoff=2.0,
+            reconnect_every=50, preview=False, ptp_verify=False,
+            verbose=False, list_mode=True)
+        self.assertIn('--list', argv)
+        # list mode is read-only: no download flags / dest / manifest
+        for flag in ('--dry-run', '-o', '--manifest', '--retries',
+                     '--verify-ptp'):
+            self.assertNotIn(flag, argv)
+        self.assertEqual(argv[argv.index('--bind') + 1], '192.168.1.10')
+
 
 class TestMapPullRc(unittest.TestCase):
     def test_map(self):

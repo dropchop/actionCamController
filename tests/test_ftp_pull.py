@@ -186,5 +186,42 @@ class TestCrossCheck(unittest.TestCase):
         self.assertEqual(rep['empty_list_hidden'], ['e.MOV'])
 
 
+class TestBuildInventory(unittest.TestCase):
+    def test_merge_three_sources(self):
+        ftp_dirs = ['/', '/VIDEO', '/JPG']          # root must be dropped
+        ftp_files = [
+            fp.RemoteEntry('/VIDEO/a.MOV', 'a.MOV', False, 100),
+            fp.RemoteEntry('/FACTORY.RUN', 'FACTORY.RUN', False, 512),
+        ]
+        size_hits = {'/SPHOST.BRN': 0, '/FACTORY.RUN': 512}  # SPHOST is hidden
+        ptp_inv = {'a.MOV': 100, 'b.MOV': 200}              # b.MOV is PTP-only
+        items = {it.path: it for it in
+                 fp.build_inventory(ftp_files, ftp_dirs, size_hits, ptp_inv)}
+
+        self.assertNotIn('/', items)                        # root excluded
+        self.assertTrue(items['/JPG'].is_dir)
+        self.assertEqual(items['/JPG'].sources, ['list'])
+
+        # read-only/hidden: only SIZE-probe found it
+        sphost = items['/SPHOST.BRN']
+        self.assertEqual(sphost.sources, ['size'])
+        self.assertEqual(sphost.size, 0)
+        self.assertIn('read-only', fp._inv_note(sphost))
+
+        # listed AND size-probed
+        self.assertEqual(sorted(items['/FACTORY.RUN'].sources),
+                         ['list', 'size'])
+
+        # listed AND in PTP
+        self.assertEqual(sorted(items['/VIDEO/a.MOV'].sources),
+                         ['list', 'ptp'])
+
+        # PTP-only media the FTP view missed
+        b = items['/b.MOV']
+        self.assertEqual(b.sources, ['ptp'])
+        self.assertEqual(b.size, 200)
+        self.assertIn('PTP-only', fp._inv_note(b))
+
+
 if __name__ == '__main__':
     unittest.main()

@@ -10,6 +10,9 @@ This tool recursively mirrors the FTP-visible filesystem to a local
 directory: robust, resumable, and DOWNLOAD-ONLY.
 
   Usage:
+    # View ALL files (incl. read-only/hidden system files), download nothing:
+    python3 tools/ftp_pull.py 192.168.1.1 --bind 192.168.1.10 --list
+
     # Plan only — touches nothing, downloads nothing:
     python3 tools/ftp_pull.py 192.168.1.1 --bind 192.168.1.10 --dry-run -v
 
@@ -59,6 +62,23 @@ HOST_DEFAULT = '192.168.1.1'
 USER = 'wificam'
 PASS = 'wificam'
 FTP_PORT = 21
+
+# Known iCatch factory / system filenames that live at the SD-card root. FTP
+# LIST hides 0-byte files, but SIZE still reports them — so in --list mode we
+# SIZE-probe these (a bounded, documented set, NOT speculative fuzzing) to
+# surface read-only/hidden system files that the normal listing misses.
+# SIZE is a harmless read-only query; the firmware-update landmine is
+# *uploading* SPHOST.BRN via SendObjectInfo, never querying its size.
+KNOWN_SYSTEM_FILES = [
+    'FACTORY.RUN', 'FACTORY.CFG', 'FACTORY.BIN', 'DEBUG.RUN', 'DEBUG.CFG',
+    'DEBUG.BIN', 'MFG.CFG', 'MP_MODE.CFG', 'PROD.CFG', 'BURN.CFG', 'CALIB.CFG',
+    'MAC.CFG', 'SERIAL.CFG', 'CUSTOMER_ID.CFG', 'AP.CFG', 'APMODE.CFG',
+    'HAPD0.CFG', 'ICATCH.CFG', 'SERVICE.CFG', 'SERVICE.BIN', 'SETTING.DAT',
+    'BOOTCFG.TXT', 'ATSCRIPT.TXT', 'CPSCRIPT.TXT', 'SCRIPT.TXT', 'ESCAPE.TXT',
+    'AE_RUN.TXT', 'AGCTSCAN.TXT', 'BAT_CURV.TXT', 'INVIDEO.TXT', 'KEYLOG.TXT',
+    'CIPA_LOG.TXT', 'MTKLOG.TXT', 'ADF.BIN', 'MV.BIN', 'MERGEFW.BIN',
+    'ICATCH.BRN', 'SPHOST.BRN', 'OST.BRN',
+]
 
 
 # --------------------------------------------------------------------------
@@ -304,9 +324,11 @@ class FtpPuller:
             return out
 
         try:
-            entries = _do_list(path)
-            if entries or path == '/':
-                return entries
+            # An empty result is a valid answer (empty directory) — take it at
+            # face value. Only an actual error means LIST <path> is unsupported
+            # and warrants the CWD fallback. (Treating "empty" as "unsupported"
+            # would re-list via bare LIST and, against some servers, recurse.)
+            return _do_list(path)
         except ftplib.all_errors as e:
             self._log(f"    LIST {path} failed ({type(e).__name__}); "
                       f"trying CWD fallback")
@@ -358,6 +380,45 @@ class FtpPuller:
                     yield e
             self._log(f"  [dir] {d}: {n_dirs} subdir(s), {n_files} file(s)")
             self._pace()
+
+    # ---- listing / inventory (read-only) ----
+    def collect_tree(self, root: str) -> tuple[list[RemoteEntry], list[str]]:
+        """Walk the tree collecting both files AND directories (for --list).
+        Same loop-guarded DFS as walk(), but returns dirs too."""
+        files: list[RemoteEntry] = []
+        dirs: list[str] = []
+        stack = [normalize_remote(root)]
+        visited: set[str] = set()
+        while stack:
+            d = normalize_remote(stack.pop())
+            if d in visited:
+                continue
+            visited.add(d)
+            dirs.append(d)
+            for e in self._list_dir(d):
+                if e.is_dir:
+                    stack.append(e.path)
+                else:
+                    files.append(e)
+            self._pace()
+        return files, dirs
+
+    def size_probe(self, names: list[str]) -> dict[str, int]:
+        """SIZE-probe a bounded list of known root filenames. Returns
+        {/path: size} for each that exists (incl. 0-byte LIST-hidden ones)."""
+        hits: dict[str, int] = {}
+        ftp = self._ensure_conn()
+        try:
+            ftp.voidcmd('TYPE I')   # some servers reject SIZE in ASCII mode
+        except ftplib.all_errors:
+            pass
+        for name in names:
+            path = '/' + name
+            sz = self._remote_size(path)
+            if sz is not None:
+                hits[path] = sz
+            self._pace()
+        return hits
 
     # ---- downloading ----
     def _matches_scope(self, name: str) -> bool:
@@ -516,6 +577,106 @@ def cross_check(results: list[FileResult], ptp_inv: dict[str, int]) -> dict:
 
 
 # --------------------------------------------------------------------------
+# Inventory (--list): merge FTP listing + SIZE-probe + PTP index
+# --------------------------------------------------------------------------
+@dataclass
+class InvItem:
+    path: str
+    is_dir: bool
+    size: Optional[int]
+    sources: list[str]      # any of: 'list' (FTP LIST), 'size' (SIZE-probe),
+    #                         'ptp' (PTP object index)
+
+
+def build_inventory(ftp_files: list[RemoteEntry], ftp_dirs: list[str],
+                    size_hits: dict[str, int],
+                    ptp_inv: dict[str, int]) -> list[InvItem]:
+    """Merge the three views of the filesystem into one sorted inventory.
+
+    - FTP LIST gives dirs + visible files.
+    - SIZE-probe gives known root files (incl. 0-byte LIST-hidden ones).
+    - PTP index gives media files by name.
+    Items found ONLY via SIZE are LIST-hidden (read-only/system); items found
+    ONLY via PTP are media the FTP view didn't surface.
+    """
+    items: dict[str, InvItem] = {}
+    for d in ftp_dirs:
+        if d == '/':
+            continue
+        items[d] = InvItem(d, True, None, ['list'])
+    for e in ftp_files:
+        items[e.path] = InvItem(e.path, False, e.size, ['list'])
+    for path, sz in size_hits.items():
+        it = items.get(path)
+        if it is not None:
+            if 'size' not in it.sources:
+                it.sources.append('size')
+            if it.size is None:
+                it.size = sz
+        else:
+            items[path] = InvItem(path, False, sz, ['size'])
+    by_base: dict[str, InvItem] = {}
+    for it in items.values():
+        by_base.setdefault(os.path.basename(it.path), it)
+    for name, sz in ptp_inv.items():
+        it = by_base.get(name)
+        if it is not None:
+            if 'ptp' not in it.sources:
+                it.sources.append('ptp')
+            if it.size is None:
+                it.size = sz
+        else:
+            np = '/' + name
+            ni = InvItem(np, False, sz, ['ptp'])
+            items[np] = ni
+            by_base[name] = ni
+    return sorted(items.values(), key=lambda i: i.path)
+
+
+def _inv_note(it: InvItem) -> str:
+    if it.is_dir:
+        return ''
+    if it.sources == ['size']:
+        return '  (read-only/hidden — LIST-hidden, SIZE-confirmed)'
+    if it.sources == ['ptp']:
+        return '  (PTP-only)'
+    if 'size' in it.sources and 'list' not in it.sources:
+        return '  (hidden)'
+    return ''
+
+
+def print_inventory(items: list[InvItem], host: str, root: str,
+                    ptp_ok: bool) -> None:
+    bar = '=' * 72
+    print('\n' + bar)
+    print(f"CAMERA FILE INVENTORY  {host}  root={root}")
+    print(bar)
+    n_files = n_dirs = n_hidden = 0
+    total = 0
+    for it in items:
+        if it.is_dir:
+            n_dirs += 1
+            kind = 'DIR '
+        else:
+            n_files += 1
+            if it.size:
+                total += it.size
+            if it.sources == ['size'] or ('size' in it.sources
+                                          and 'list' not in it.sources):
+                n_hidden += 1
+            kind = 'file'
+        src = '+'.join(it.sources)
+        print(f"  {kind} {human(it.size):>10}  {it.path}  [{src}]"
+              f"{_inv_note(it)}")
+    print('-' * 72)
+    print(f"  {n_dirs} dir(s), {n_files} file(s), {n_hidden} read-only/hidden;"
+          f" {human(total)} total")
+    if not ptp_ok:
+        print("  (PTP index unavailable — listing is FTP-only)")
+    print(bar)
+
+
+# --------------------------------------------------------------------------
 # Output
 # --------------------------------------------------------------------------
 def summarize(results: list[FileResult]) -> dict:
@@ -604,6 +765,45 @@ def print_summary(host: str, dest: str, manifest: str,
 
 
 # --------------------------------------------------------------------------
+# --list mode (read-only inventory; downloads nothing)
+# --------------------------------------------------------------------------
+def _run_list_mode(args) -> int:
+    print(f"[*] Listing files on {args.host}:{FTP_PORT} "
+          f"(bind={args.bind or 'default routing'}) root={args.remote_root}")
+    puller = FtpPuller(
+        host=args.host, bind=args.bind, timeout=args.timeout,
+        retries=args.retries, backoff=args.backoff, sleep=args.sleep,
+        reconnect_every=0, dest='.', includes=[], excludes=[],
+        resume=False, dry_run=True, verbose=args.verbose)
+    try:
+        files, dirs = puller.collect_tree(args.remote_root)
+        # The known-system-file probe only makes sense at the SD-card root.
+        size_hits = (puller.size_probe(KNOWN_SYSTEM_FILES)
+                     if normalize_remote(args.remote_root) == '/' else {})
+    except ftplib.all_errors as e:
+        print(f"FAIL: cannot reach / log in to FTP at {args.host}:{FTP_PORT} "
+              f"— {type(e).__name__}: {e}", file=sys.stderr)
+        return 1
+    finally:
+        puller.close()
+
+    # PTP index merge — best-effort, failure-isolated.
+    ptp_inv: dict[str, int] = {}
+    ptp_ok = False
+    try:
+        ptp_inv = ptp_inventory(args.host, args.ptp_bind or args.bind,
+                                args.timeout)
+        ptp_ok = True
+    except Exception as e:  # noqa: BLE001
+        print(f"[*] PTP index unavailable ({type(e).__name__}: {e})",
+              file=sys.stderr)
+
+    items = build_inventory(files, dirs, size_hits, ptp_inv)
+    print_inventory(items, args.host, args.remote_root, ptp_ok)
+    return 0
+
+
+# --------------------------------------------------------------------------
 # CLI
 # --------------------------------------------------------------------------
 def main() -> int:
@@ -650,12 +850,19 @@ def main() -> int:
                     help='bind IP for the PTP cross-check (default: --bind)')
     ap.add_argument('--manifest', default=None,
                     help='JSON manifest path (default: <dest>/manifest.json)')
+    ap.add_argument('--list', action='store_true',
+                    help='list ALL files the camera exposes — FTP listing + '
+                         'SIZE-probe of known system filenames (read-only/'
+                         'hidden) + PTP index — and exit. Downloads nothing.')
     args = ap.parse_args()
 
     if not args.bind:
         print("WARNING: no --bind given. On a multi-NIC host the data "
               "socket may route via the wrong interface and silently fail "
               "or hit the wrong host. See CLAUDE.md.", file=sys.stderr)
+
+    if args.list:
+        return _run_list_mode(args)
 
     manifest_path = args.manifest or os.path.join(args.dest, 'manifest.json')
 

@@ -160,8 +160,17 @@ def build_connect_argv(target: str, psk: str, iface: str) -> list[str]:
 def build_pull_argv(python: str, ftp_pull: str, host: str, bind: str,
                     dest: str, manifest: str, *, sleep: float, retries: int,
                     backoff: float, reconnect_every: int, preview: bool,
-                    ptp_verify: bool, verbose: bool) -> list[str]:
-    """argv to invoke tools/ftp_pull.py for a preview (--dry-run) or real pull."""
+                    ptp_verify: bool, verbose: bool,
+                    list_mode: bool = False) -> list[str]:
+    """argv to invoke tools/ftp_pull.py for a list/preview/real run."""
+    if list_mode:
+        # Read-only inventory: no dest/manifest needed. --sleep paces the
+        # SIZE-probe; ftp_pull --list does its own PTP merge.
+        argv = [python, ftp_pull, host, '--bind', bind, '--list',
+                '--sleep', str(sleep)]
+        if verbose:
+            argv.append('-v')
+        return argv
     argv = [python, ftp_pull, host, '--bind', bind, '-o', dest,
             '--sleep', str(sleep), '--retries', str(retries),
             '--backoff', str(backoff), '--reconnect-every', str(reconnect_every),
@@ -334,7 +343,8 @@ class Orchestrator:
                   file=sys.stderr)
             return False
 
-    def run_pull(self, bind: str, dest: str, preview: bool) -> int:
+    def run_pull(self, bind: str, dest: str, preview: bool = False,
+                 list_mode: bool = False) -> int:
         manifest = os.path.join(dest, 'manifest.json')
         argv = build_pull_argv(
             sys.executable, FTP_PULL, self.host, bind, dest, manifest,
@@ -342,7 +352,7 @@ class Orchestrator:
             backoff=self.args.backoff,
             reconnect_every=self.args.reconnect_every,
             preview=preview, ptp_verify=self.args.ptp_verify,
-            verbose=self.args.verbose)
+            verbose=self.args.verbose, list_mode=list_mode)
         if self.dry:
             print(f"    [dry-run] {' '.join(argv)}")
             return 0
@@ -359,8 +369,25 @@ class Orchestrator:
             return True
         return prompt_yes_no(f"Disconnect from {ssid}? [Y/n]", default=True)
 
+    def _confirm_download(self, bind: str, dest: str) -> bool:
+        """Ask whether to download. Offers an inline 'list all files' view."""
+        if self.args.yes:
+            return True
+        if not sys.stdin.isatty():
+            return False
+        while True:
+            ans = input(f"Download to {dest}?  "
+                        f"[y]es / [l]ist all files / [N]o: ").strip().lower()
+            if ans in ('l', 'list'):
+                self.run_pull(bind, dest, list_mode=True)
+                continue
+            if ans.startswith('y'):
+                return True
+            return False
+
     def recover_one(self, cam: Camera) -> int:
         print(f"\n=== {cam.ssid} ===")
+        dest = derive_dest(self.base, cam.ssid)
         if self.dry:
             # Orchestration dry-run: show the commands, touch nothing.
             self._run_sudo(build_connect_argv(cam.ssid, self.psk, self.iface))
@@ -368,9 +395,11 @@ class Orchestrator:
                             '+ipv4.routes', ROUTE_SPEC])
             self._run_sudo(['nmcli', 'connection', 'up', cam.ssid,
                             'ifname', self.iface])
-            dest = derive_dest(self.base, cam.ssid)
-            self.run_pull('192.168.1.10', dest, preview=True)
-            self.run_pull('192.168.1.10', dest, preview=False)
+            if self.args.list:
+                self.run_pull('192.168.1.10', dest, list_mode=True)
+            else:
+                self.run_pull('192.168.1.10', dest, preview=True)
+                self.run_pull('192.168.1.10', dest, preview=False)
             self._run_sudo(['nmcli', 'connection', 'down', cam.ssid])
             return 0
 
@@ -385,7 +414,11 @@ class Orchestrator:
             if not self.reachable(bind):
                 return 1
 
-            dest = derive_dest(self.base, cam.ssid)
+            # View-only mode: list everything and stop (no download).
+            if self.args.list:
+                print(f"[5/5] Listing all files on {cam.ssid} ...")
+                return 0 if self.run_pull(bind, dest, list_mode=True) == 0 else 1
+
             print(f"[5/8] Previewing {cam.ssid} -> {dest}")
             prc = self.run_pull(bind, dest, preview=True)
             if prc == 1:
@@ -393,8 +426,7 @@ class Orchestrator:
                 return 1
 
             print("[6/8] Confirm")
-            if not (self.args.yes or
-                    prompt_yes_no(f"Download to {dest}? [y/N]", default=False)):
+            if not self._confirm_download(bind, dest):
                 print("    skipped by user.")
                 return 0
 
@@ -464,6 +496,10 @@ def main() -> int:
                     help='ftp_pull proactive reconnect cadence (default: 50)')
     ap.add_argument('--yes', '-y', action='store_true',
                     help='auto-confirm the download (no prompt)')
+    ap.add_argument('--list', action='store_true',
+                    help='view mode: after connecting, list ALL files the '
+                         'camera exposes (incl. read-only/hidden system files) '
+                         'and stop — download nothing')
     ap.add_argument('--ptp-verify', action='store_true',
                     help='cross-check completeness against the PTP index')
     ap.add_argument('-n', '--dry-run', action='store_true',
