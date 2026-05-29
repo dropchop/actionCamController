@@ -249,6 +249,10 @@ class Orchestrator:
         self.base = os.path.abspath(os.path.expanduser(args.base_dir))
         self.dry = args.dry_run
         self.active_profile: Optional[str] = None  # for Ctrl-C cleanup
+        # scan() issues `nmcli device disconnect`, which blocks the dongle
+        # from auto-activating until something reactivates it. Track that so
+        # restore_dongle() can undo it on exit if we never connected.
+        self.scan_disconnected = False
 
     # ---- command runners ----
     def _run_sudo(self, argv: list[str], *, capture: bool = False,
@@ -273,8 +277,11 @@ class Orchestrator:
         # stale cache), which is why a still-connected dongle "sees" only the
         # camera it's already on. Disconnecting frees it to sweep all channels.
         # No-op / harmless error if already down (we don't check rc).
+        # `device disconnect` also BLOCKS the dongle from auto-activating
+        # until manual intervention — restore_dongle() undoes that on exit.
         self._run_sudo(['nmcli', 'device', 'disconnect', self.iface],
                        capture=True)
+        self.scan_disconnected = True
         self._run_sudo(['nmcli', 'device', 'wifi', 'rescan', 'ifname',
                         self.iface], check=False)
         spin_wait(self.args.rescan_wait)
@@ -399,6 +406,22 @@ class Orchestrator:
         self._run_sudo(['nmcli', 'connection', 'down', profile], capture=True)
         self.active_profile = None
 
+    def restore_dongle(self) -> None:
+        """Reactivate the dongle if scan() left it blocked from autoconnect.
+
+        scan()'s `nmcli device disconnect` prevents the device from
+        auto-activating until manual intervention. connect() is that
+        intervention on a normal run, but if the user just scans and quits
+        the dongle is left stuck `disconnected` and never re-associates to the
+        camera AP. `device connect` clears the block and lets NM auto-activate
+        a suitable profile again. Skipped when we're intentionally holding a
+        camera session (active_profile set, e.g. --keep-connected)."""
+        if not self.scan_disconnected or self.active_profile:
+            return
+        self._run_sudo(['nmcli', 'device', 'connect', self.iface],
+                       capture=True)
+        self.scan_disconnected = False
+
     def _decide_disconnect(self, ssid: str) -> bool:
         if self.args.keep_connected:
             return False
@@ -480,17 +503,21 @@ class Orchestrator:
 
     def run(self) -> int:
         worst = 0
-        while True:
-            cam = self.select()
-            if cam is None:
-                break
-            worst = max(worst, self.recover_one(cam))
-            if self.args.no_loop or self.args.ssid:
-                break
-            if not prompt_yes_no("\nRecover another camera? [y/N]",
-                                 default=False):
-                break
-        return worst
+        try:
+            while True:
+                cam = self.select()
+                if cam is None:
+                    break
+                worst = max(worst, self.recover_one(cam))
+                if self.args.no_loop or self.args.ssid:
+                    break
+                if not prompt_yes_no("\nRecover another camera? [y/N]",
+                                     default=False):
+                    break
+            return worst
+        finally:
+            # Undo scan()'s device disconnect so the dongle isn't left stuck.
+            self.restore_dongle()
 
 
 # ==========================================================================
