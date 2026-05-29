@@ -10,6 +10,7 @@ extra `pip install`.
 | ----------------------- | ------------------------------------------------------------------ |
 | `ptpip_probe.py`        | One-shot PTP/IP smoke test — connects, opens a session, reads `DeviceInfo`, disconnects. Confirms protocol-level reachability. |
 | `ftp_pull.py`           | Recover files off the SD card remotely over FTP — recursively mirrors the FTP-visible tree (`/VIDEO`, `/JPG`, root) to a local dir. **Download-only** (only ever sends `RETR`; never `DELE`/`STOR`/`RMD`). Resumable (SIZE-matched files skip on re-run), single sequential connection with pacing + retry/reconnect/backoff to respect the FTP-catatonia landmine. `--bind` pins both control + data sockets. Optional `--verify-ptp` cross-checks completeness against the PTP object index. For when a card is physically stuck in the camera. |
+| `recover_camera.py`     | Interactive multi-camera recovery orchestrator (wraps `ftp_pull.py`). Scans for `ActionCam_*` APs on the dongle, shows a numbered menu (or takes `--ssid`/`--bssid`), then per camera: `sudo nmcli` connect (BSSID fallback on a stale scan cache) → idempotent `192.168.1.1/32` route into the NM profile → detect+validate the DHCP dongle IP → FTP reachability check → dry-run preview → confirm → drives `ftp_pull.py` as the **non-root user** (files stay user-owned) into `~/larkfly-recovered/<SSID>/`. Loops to the next camera. Runs as your normal user and `sudo`s only the individual nmcli commands (prompts on the TTY); refuses to run as root. Ctrl-C-safe (disconnects the dongle; resume on re-run). `-n` prints the exact commands without touching anything. |
 | `rtsp_probe.py`         | Maps everything the camera's RTSP port (554) accepts — verbs, paths, query params, playback, concurrency. Crash-safe (per-request health check + `--resume`), because some DESCRIBE targets freeze the RTSP service and require a power-cycle. See `docs/rtsp.md`. |
 | `ptp_vendor_probe.py`   | Exhaustive sweep of the 8 PTP/IP vendor opcodes (`0x9601`-`0x9812`) across a parameter-shape matrix. Same crash-safe pattern as `rtsp_probe.py` because three of the ops wedge the PTP service. See `docs/ptp-vendor.md`. |
 | `prop_walk.py`          | Reads `properties_supported` and dumps each property's descriptor + live value. `--block d7` filters to the D7xx block. Used to enumerate the 56-property catalog and discover the 3 "fake-RW" locked booleans. |
@@ -48,6 +49,32 @@ If it fails: see `docs/findings.md` "How the protocol works" — the
 iCatch wire-format quirks (no-length-prefix initiator name; `"localhost"`
 whitelist; packet type 12 = EndData) are documented there and handled
 in `larkfly/protocol.py`.
+
+## Recovering footage from a stuck SD card
+
+When a card is physically stuck in a camera, pull the files over WiFi/FTP
+instead. `recover_camera.py` automates the whole loop — pick the camera's
+AP, connect, route, download:
+
+```bash
+# Interactive: scan for ActionCam_* APs, pick one, recover, repeat.
+# Run as your NORMAL user (it sudoes the nmcli steps itself; you'll be
+# prompted for your password). Files land in ~/larkfly-recovered/<SSID>/.
+python3 tools/recover_camera.py
+
+# Non-interactive single camera:
+python3 tools/recover_camera.py --ssid ActionCam_C762D5 --yes
+
+# Preview the exact nmcli + ftp_pull commands without touching anything:
+python3 tools/recover_camera.py -n --ssid ActionCam_C762D5
+```
+
+Override the dongle interface with `--iface` (or `$IFACE`). The `/32`
+route is required because the host's home WiFi can share `192.168.1.0/24`
+with the camera AP. Re-running resumes (SIZE-matched files are skipped).
+
+For a single, already-connected camera you can also call the downloader
+directly: `python3 tools/ftp_pull.py 192.168.1.1 --bind <dongle-ip>`.
 
 ## Capturing WiFi traffic for analysis
 
