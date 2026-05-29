@@ -207,6 +207,36 @@ def prompt_yes_no(question: str, default: bool) -> bool:
     return ans.startswith('y')
 
 
+SPINNER_FRAMES = '-\\|/'
+
+
+def spin_wait(seconds: float, message: str = 'scanning', *,
+              stream=None, interval: float = 0.12) -> None:
+    """Block for `seconds`, animating a `-\\|/` spinner in place on a TTY.
+
+    Replaces a bare `time.sleep()` so the rescan pause feels alive. When the
+    stream isn't a TTY (piped output, logs, dry-run capture) it degrades to a
+    plain sleep so we don't spray `\\r` frames into a logfile. The line is
+    always cleared on exit, including on Ctrl-C, so nothing is left dangling.
+    """
+    stream = stream or sys.stdout
+    if not stream.isatty():
+        time.sleep(seconds)
+        return
+    deadline = time.monotonic() + seconds
+    i = 0
+    try:
+        while time.monotonic() < deadline:
+            frame = SPINNER_FRAMES[i % len(SPINNER_FRAMES)]
+            stream.write(f'\r    {message} {frame} ')
+            stream.flush()
+            i += 1
+            time.sleep(interval)
+    finally:
+        stream.write('\r' + ' ' * (len(message) + 8) + '\r')
+        stream.flush()
+
+
 # ==========================================================================
 # Orchestrator (impure: subprocess / sockets / sudo)
 # ==========================================================================
@@ -237,7 +267,7 @@ class Orchestrator:
 
     # ---- scan + select ----
     def scan(self) -> list[Camera]:
-        print(f"[*] Scanning for ActionCam_* APs on {self.iface} ...")
+        print(f"[*] Scanning for ActionCam_* APs on {self.iface}")
         # Disconnect first so the radio isn't pinned to one AP's channel.
         # While associated, many drivers return only the current BSSID (or a
         # stale cache), which is why a still-connected dongle "sees" only the
@@ -247,7 +277,7 @@ class Orchestrator:
                        capture=True)
         self._run_sudo(['nmcli', 'device', 'wifi', 'rescan', 'ifname',
                         self.iface], check=False)
-        time.sleep(self.args.rescan_wait)
+        spin_wait(self.args.rescan_wait)
         cp = self._run_read(['nmcli', '-t', '-f', 'SSID,BSSID,SIGNAL,SECURITY',
                              'device', 'wifi', 'list', 'ifname', self.iface])
         return parse_wifi_list(cp.stdout)
