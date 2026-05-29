@@ -9,11 +9,12 @@ the dead ends — is preserved in `archive/investigation-log.md`.
 | Field | Value |
 | --- | --- |
 | Marketing name | Larkfly A6+ |
-| iCatch internal product code | **`V11`** (from `ProductName` property 0x501E) |
-| Firmware version | **`20251206`** (from `FwVersion` property 0x501F) |
+| ODM model code | **`V11`** (from `ProductName` property 0x501E) — a white-label model code, **not** an iCatch designation; the same hardware also sells as VIRAN V11 / CERASTES V11 |
+| SoC | iCatch V37/V39 family — the sibling V11 hardware is specified as **iCatch V39A**; iCatch's catalogue has no "V11" part |
+| Firmware build | **`20251206`** (from `FwVersion` property 0x501F) — a `YYYYMMDD` build-date stamp, not a semantic version |
 | WiFi default | SSID `ActionCam_<MAC-suffix>`, WPA2-PSK `1234567890` |
 | Default camera IP (AP mode) | `192.168.1.1` |
-| Sensor / capabilities | 9216×5184 (~48 MP) photo; 3840×2160@60 video; 62.5 GB SD |
+| Sensor / capabilities | 9216×5184 (~48 MP) photo; 3840×2160@60 video; 62.5 GB SD (PTP `StorageInfo` live-verified 2026-05-20: `max_capacity=67092086784`; `storage_type=4` removable RAM = SD card; single storage handle `0x50001`) |
 
 ## Network surface
 
@@ -95,9 +96,16 @@ values) is in `analyses/data/properties.json`; live-value walk in
 - **Verify handshake doesn't apply**: `0xD617` (the EncData hidden
   property reversed from libcontrol.so) is **not in this firmware's
   supported list**. Larkfly stripped it.
-- **`larkfly` parser caveat**: PropDesc.current_value parsing has a
-  bleed bug for STRING-type properties — the actual value via
-  `GetDevicePropValue` is authoritative.
+- **`larkfly` codec note**: the previously-reported
+  "PropDesc.current_value bleed bug for STRING properties" is **not
+  real** — verified 2026-05-20 by running `parse_prop_desc` against all
+  56 captured descriptors; every STRING property (including `0xD83E`)
+  decodes correctly and matches `GetDevicePropValue`. A genuine codec
+  bug *was* found and fixed: `encode_ptp_string` derived the PTP
+  `NumChars` count from Python code points (`len(s)+1`) instead of
+  UTF-16 code units, so any non-BMP character produced a malformed wire
+  string (the `rc=0x200A` seen when fuzzing surrogate-pair input into
+  `0x5011`). Fixed in `larkfly/protocol.py`.
 
 ### PTP file-upload channel (`SendObject`) confirmed
 
@@ -124,9 +132,11 @@ The full sweep is documented in `docs/ptp-vendor.md`.
 
 ## Recording / capture paradigm
 
-The camera does NOT use the standard PTP `InitiateOpenCapture` / `TerminateOpenCapture`
-operations for video, even though they're in the supported list.
-Instead, **video recording is gated by writing property `0xD604`** (the
+The camera does NOT advertise the standard PTP `InitiateOpenCapture`
+(`0x101C`) / `TerminateOpenCapture` (`0x1018`) operations at all — they
+are absent from `operations_supported`. (`0x101B`, which *is*
+advertised, is `GetPartialObject`, not a capture op.) Instead,
+**video recording is gated by writing property `0xD604`** (the
 camera operating-mode register).
 
 | `D604` value | Meaning | Behavior |
@@ -146,14 +156,36 @@ cam.set_prop_value(0xD604, 1, datatype=DT_UINT16)   # stop
 
 This produces a real `.MOV` file in `/VIDEO/` on the SD card.
 
-**Photo capture via PTP is unresolved.** `InitiateCapture` (`0x100C`)
-returns OK and a new object handle, but **no JPG file ever appears on the
-SD card** regardless of mode (tried 2, 3, 5, 6, 9, 10). The physical
-shutter button works fine. The "maybe one of the vendor opcodes is the
-real photo trigger" theory has now been **closed**: the exhaustive
-sweep in `docs/ptp-vendor.md` shows none of the five previously-unknown
-ops accept a capture-like parameter — three are SDK stubs, two are
-empty lookups. Photo capture via the network is currently a dead end.
+**Photo capture via PTP — still unsolved; an opcode bug was found
+along the way.** Earlier work declared photo capture a dead end because
+`take_photo()` "returned OK and a new object handle but produced no
+JPG." Root cause of *that* symptom: the `larkfly` constant
+`OP_INITIATE_CAPTURE` was defined as `0x100C` = **SendObjectInfo**, so
+the calls created empty object stubs (the "new handle, no file" the log
+saw). The real `InitiateCapture` op is `0x100E`; the constant is now
+corrected.
+
+But fixing the opcode does **not** make photo capture work. Live test
+2026-05-20 (`tools/photo_capture_test.py`): `InitiateCapture(0x100E)`
+returns `rc=0x2001 OK` for **every** input tried — params `[0,0]`,
+`[storage,0]`, `[0,0x3801]`, `[storage,0x3801]`, and even a call with
+**no parameters at all**; D604 modes 1/3/4/5/6/9/10; with and without a
+live RTSP preview — and in every case produces **no JPG, no
+`ObjectAdded` event, no new PTP object**. Acknowledging a no-parameter
+call with OK is the signature of an **unwired SDK-stub handler**: the
+firmware accepts `InitiateCapture` but it is not connected to the photo
+pipeline. So the project's original "photo capture via PTP is a dead
+end" verdict holds — but the original reasoning was unsound (it tested
+`0x100C` SendObjectInfo, not the real op); the corrected test reaches
+the same verdict properly.
+
+The captured iSmart DV2 session shows the app *sending*
+`InitiateCapture(0, 0)` (`transactions.json` txid 352), but that
+capture is request-side only (responses were reassembled for just 7 of
+574 transactions, none past txid 12), so it never confirmed the app's
+photo worked either. The physical shutter button remains the only
+confirmed still-capture path. The vendor-opcode photo-trigger theory
+stays closed (`docs/ptp-vendor.md`).
 
 ## Multi-camera / STATION-mode situation
 
@@ -174,18 +206,19 @@ What we extracted from `libcontrol.so`:
 
 | Constant | Value |
 | --- | --- |
-| **Default AES-128 key** | `b"echo1234echo1234"` (first 16 bytes of `encrypt_lenbase` / `encrypt_textbase` tables) |
+| **Default AES-128 key** | `21 7E 1A 16 28 DE D2 A7 AB E7 85 88 09 CA 40 3C` — the `__default_key` byte array at `ICatchCameraAssistImpl.java:40`, passed straight into `simpleConfig_Jni()` by the `simpleConfig(...)` default-key overload. Confirmed 2026-05-20 from the decompiled APK. |
 | **Multicast destination** | `234.168.168.168` |
 | **UDP port** | `10000` (likely) |
-| Encoding tables | `encrypt_lenbase` / `encrypt_textbase` — both 121 bytes of `"echo1234"`-repeated content, used to map encrypted-credential bytes to packet attributes |
+| Encoding tables | `encrypt_lenbase` / `encrypt_textbase` in `libcontrol.so` — both 121 bytes of `"echo1234"`-repeated content. These are the SmartConfig **encoding lookup tables** (encrypted-credential byte → UDP packet length/content), **not** the AES key. An earlier draft mislabelled their first 16 bytes (`echo1234echo1234`) as "the AES key" — that was wrong. |
 
 What's still missing for a working SimpleConfig pusher: the exact
 mapping from credential bytes to UDP packet length+content. That needs
 either more binary RE or a Realtek SDK reference port.
 
-The camera's own default WiFi password `1234567890` appears as a
-substring of these same constants — strongly suggests iCatch hardcoded
-one string for both uses (WiFi PSK default AND SmartConfig AES default).
+(The earlier theory that the camera's WiFi PSK `1234567890` and the
+SmartConfig AES key are "one hardcoded string" is **retracted** — it
+rested on the `echo1234` mislabel. The real AES key, `21 7E 1A 16…`,
+is unrelated to the PSK.)
 
 ## USB UVC mode
 

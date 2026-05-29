@@ -92,9 +92,13 @@ def encode_ptp_string(s: str) -> bytes:
     if not s:
         return b'\x00'
     encoded = s.encode('utf-16-le') + b'\x00\x00'
-    char_count = len(s) + 1
+    # PTP NumChars counts UTF-16 code UNITS including the null terminator,
+    # not Python code points. A non-BMP char (e.g. U+20000) is one code
+    # point but two UTF-16 units — len(s)+1 undercounts it and produces a
+    # malformed wire string the camera rejects with rc=0x200A.
+    char_count = len(encoded) // 2
     if char_count > 255:
-        raise ValueError("PTP string too long (>254 chars)")
+        raise ValueError("PTP string too long (>254 UTF-16 code units)")
     return bytes([char_count]) + encoded
 
 
@@ -111,9 +115,10 @@ def encode_ptp_string_icatch_objinfo(s: str) -> bytes:
     if not s:
         return b'\x00' + b'\x00' * 4
     encoded = s.encode('utf-16-le') + b'\x00\x00'
-    char_count = len(s) + 1
+    # NumChars = UTF-16 code units incl. null (see encode_ptp_string).
+    char_count = len(encoded) // 2
     if char_count > 255:
-        raise ValueError("PTP string too long (>254 chars)")
+        raise ValueError("PTP string too long (>254 UTF-16 code units)")
     return bytes([char_count]) + b'\x00' * 4 + encoded
 
 

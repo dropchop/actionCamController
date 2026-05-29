@@ -1,6 +1,7 @@
 # RTSP — full TCP-554 surface map
 
-What the Larkfly A6+ (iCatch V11, firmware 20251206) exposes on its
+What the Larkfly A6+ (iCatch V39A-family SoC; `V11` is the ODM model
+code, firmware build 20251206) exposes on its
 RTSP port. Mapped exhaustively in May 2026 via `tools/rtsp_probe.py`
 against a real device; 55 request/response pairs captured at
 `analyses/data/rtsp_probe.json`, with an auto-generated table at

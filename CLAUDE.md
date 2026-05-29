@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this repo actually is
 
-A reverse-engineering project against the **Larkfly A6+** action camera (iCatch SoC, internal product code `V11`, firmware `20251206`). The `larkfly/` Python package is the production output; everything else (`tools/`, `analyses/`, `apk-analysis/`) is investigation infrastructure that produced it. Treat investigation tools as one-shot artifacts — the conclusions they reach get folded into `docs/findings.md` and the `larkfly` code, and the tools live on as reproducible references rather than as code to be polished.
+A reverse-engineering project against the **Larkfly A6+** action camera (iCatch V39A-family SoC; `V11` is the ODM/white-label model code the firmware reports in `ProductName`, **not** an iCatch designation — the same hardware also sells as VIRAN/CERASTES V11; firmware build `20251206`). The `larkfly/` Python package is the production output; everything else (`tools/`, `analyses/`, `apk-analysis/`) is investigation infrastructure that produced it. Treat investigation tools as one-shot artifacts — the conclusions they reach get folded into `docs/findings.md` and the `larkfly` code, and the tools live on as reproducible references rather than as code to be polished.
 
 **Read `docs/findings.md` before changing anything in `larkfly/`.** The protocol-level behavior is non-obvious, off-spec, and has cost us multiple wasted experiments to characterize. The README has a high-level summary; `findings.md` has the wire details.
 
@@ -45,9 +45,9 @@ The camera persists PTP session state across TCP disconnects. Opening a fresh so
 
 ### Recording paradigm — NOT what PTP suggests
 
-The camera advertises `InitiateOpenCapture (0x101B)` but doesn't use it for video. **Video recording is controlled by toggling property `0xD604`**: write `17` to start, `1` to stop. `Camera.start_recording()` / `stop_recording()` wrap this. The advertised standard ops are red herrings.
+The camera does NOT advertise `InitiateOpenCapture` (`0x101C`) or `TerminateOpenCapture` (`0x1018`) at all — `0x101B` in the supported list is `GetPartialObject`. **Video recording is controlled by toggling property `0xD604`**: write `17` to start, `1` to stop. `Camera.start_recording()` / `stop_recording()` wrap this.
 
-Photo capture via `InitiateCapture (0x100E)` returns OK but produces no JPG on the SD card — unsolved. Use the physical shutter button as a workaround.
+Photo capture over PTP does not work on this firmware. The library's `OP_INITIATE_CAPTURE` was wrongly `0x100C` (SendObjectInfo), so `take_photo()` created empty object stubs — that opcode bug is fixed (now `0x100E`). But live test 2026-05-20 (`tools/photo_capture_test.py`) shows `InitiateCapture (0x100E)` returns `rc=OK` for any params (including none) and any mode, yet never produces a JPG / event / object — an unwired SDK stub. Use the physical shutter button.
 
 ### Why `bind=192.168.1.10` shows up everywhere
 
