@@ -314,8 +314,8 @@ class Orchestrator:
             print("    Invalid selection.")
 
     # ---- per-camera steps ----
-    def connect(self, cam: Camera) -> bool:
-        print(f"[1/8] Connecting to {cam.ssid} ...")
+    def connect(self, cam: Camera, *, label: str = "[1/8] ") -> bool:
+        print(f"{label}Connecting to {cam.ssid} ...")
         cp = self._run_sudo(build_connect_argv(cam.ssid, self.psk, self.iface),
                             capture=True)
         if cp.returncode == 0:
@@ -339,8 +339,9 @@ class Orchestrator:
                   file=sys.stderr)
         return False
 
-    def ensure_route_and_up(self, profile: str) -> bool:
-        print("[2/8] Pinning camera route to the dongle ...")
+    def ensure_route_and_up(self, profile: str, *,
+                            label: str = "[2/8] ") -> bool:
+        print(f"{label}Pinning camera route to the dongle ...")
         cp = self._run_read(['nmcli', '-g', 'ipv4.routes', 'connection',
                              'show', profile])
         if route_present(cp.stdout):
@@ -360,8 +361,8 @@ class Orchestrator:
             return False
         return True
 
-    def detect_ip(self) -> Optional[str]:
-        print("[3/8] Detecting dongle IP ...")
+    def detect_ip(self, *, label: str = "[3/8] ") -> Optional[str]:
+        print(f"{label}Detecting dongle IP ...")
         for attempt in range(6):
             cp = self._run_read(['nmcli', '-g', 'IP4.ADDRESS', 'device',
                                 'show', self.iface])
@@ -374,8 +375,8 @@ class Orchestrator:
               f"(got {ip!r})", file=sys.stderr)
         return None
 
-    def reachable(self, bind: str) -> bool:
-        print(f"[4/8] Checking FTP reachability {self.host}:21 ...")
+    def reachable(self, bind: str, *, label: str = "[4/8] ") -> bool:
+        print(f"{label}Checking FTP reachability {self.host}:21 ...")
         try:
             s = socket.create_connection((self.host, 21), timeout=5,
                                          source_address=(bind, 0))

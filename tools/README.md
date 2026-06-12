@@ -41,6 +41,7 @@ one exception is `decrypt_pcap.py`, which needs `cryptography`.
 | Script | What it does |
 | --- | --- |
 | `recover_camera.py` | Interactive multi-camera recovery orchestrator (wraps `ftp_pull.py`). Scans for `ActionCam_*` APs on the dongle, shows a numbered menu (or takes `--ssid`/`--bssid`), then per camera: `sudo nmcli` connect (BSSID fallback on a stale scan cache) → idempotent `192.168.1.1/32` route into the NM profile → detect+validate the DHCP dongle IP → FTP reachability check → dry-run preview → confirm → drives `ftp_pull.py` as the **non-root user** (files stay user-owned) into `~/larkfly-recovered/<SSID>/`. Loops to the next camera. Runs as your normal user and `sudo`s only the individual nmcli commands (prompts on the TTY); refuses to run as root. Ctrl-C-safe (disconnects the dongle; resume on re-run). `-n` prints the exact commands without touching anything. `--list` is a view-only mode (connect, then list every file incl. read-only/hidden ones, no download); during a normal run you can also press `l` at the confirm prompt to view the full file list before deciding. |
+| `recover_batch.py` | Batch ("secondary") version of `recover_camera.py` for sweeping a **fleet** of cameras in one run. Built on the same primitives. Flow: scan for `ActionCam_*` APs → multi-select the ones you know (`1,3,4` / `all`, or skip the scan with repeated `--ssid`) → **scan pass** visits each camera in turn (connect → list its files in the same inventory format → disconnect, printing "Connecting to … / Scanning … / Disconnecting from … / Moving on to …") → **one keypress** (`y`, or `--yes`) confirms the whole batch → **download pass** auto-cycles through every camera, mirroring each into its own `~/larkfly-recovered/<SSID>/`. `--scan-only` stops after the inventory pass; `-n` previews the commands. Same root-refusal + dongle-restore-on-exit + Ctrl-C safety as `recover_camera.py`. Exit code is the worst seen across the fleet. |
 | `sync_recovered.py` | **Run on the receiving machine (e.g. WSL2).** Connects to the Capture PC over SSH (auth once via multiplexing), compares a local inbound folder against the remote, and prints a color+glyph-coded diff: `✓` green = synced on both sides, `·` neutral = local only, `↓` red = on Capture PC only (new). Prompts once then rsync-pulls the new files; re-diffs afterward so red rows flip to green. No IP is hardcoded — first run triggers a setup wizard that saves host/user/paths to `~/.config/larkfly-sync/config.json`. Precedence: `--flag` > `$CAPTURE_PC`/`$CAPTURE_USER` > saved config > built-in defaults. `--configure` re-runs the wizard; `--save` persists a one-off `--host` as the new default; `--all -y` syncs everything non-interactively; `-n` previews without transferring. |
 | `ftp_pull.py` | Recover files off the SD card remotely over FTP — recursively mirrors the FTP-visible tree (`/VIDEO`, `/JPG`, root) to a local dir. **Download-only** (only ever sends `RETR`; never `DELE`/`STOR`/`RMD`). Resumable (SIZE-matched files skip on re-run), single sequential connection with pacing + retry/reconnect/backoff to respect the FTP-catatonia landmine. `--bind` pins both control + data sockets. Optional `--verify-ptp` cross-checks completeness against the PTP object index. `--list` is a read-only "view everything" mode — merges the FTP listing, a `SIZE`-probe of known system filenames (surfaces read-only/0-byte LIST-hidden files), and the PTP index, then exits without downloading. |
 | `ftp_traversal_fuzz.py` | FTP attack-surface fuzz — path traversal, command injection, overflow against the stripped FTP daemon (`wificam:wificam`). |
@@ -122,6 +123,23 @@ python3 tools/recover_camera.py --ssid ActionCam_C762D5 --list
 
 # Preview the exact nmcli + ftp_pull commands without touching anything:
 python3 tools/recover_camera.py -n --ssid ActionCam_C762D5
+```
+
+When several cameras are powered up at once, `recover_batch.py` sweeps the
+whole fleet in one shot instead of one camera at a time — scan, multi-select
+the cameras you know, review every camera's file inventory, then a single `y`
+downloads them all (cycling through each camera's AP automatically into its
+own `~/larkfly-recovered/<SSID>/`):
+
+```bash
+# Scan, multi-select (e.g. '1,3,4' or 'all'), review listings, one y to pull all:
+python3 tools/recover_batch.py
+
+# Name the fleet explicitly and auto-confirm — no menus, no prompt:
+python3 tools/recover_batch.py --ssid ActionCam_C762D5 --ssid ActionCam_1A80DF --yes
+
+# Just inventory every selected camera, download nothing:
+python3 tools/recover_batch.py --scan-only
 ```
 
 Override the dongle interface with `--iface` (or `$IFACE`). The `/32`
